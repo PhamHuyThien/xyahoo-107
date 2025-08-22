@@ -1,15 +1,15 @@
-final class quyen_gd implements quyen_ca {
-   private quyen_et a;
+final class quyen_gd implements Action {
+   private GameManager a;
 
-   quyen_gd(quyen_et var1) {
+   quyen_gd(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (this.a.b(quyen_cz.a()) && quyen_cz.b) {
+   public final void action() {
+      if (this.a.b(GameScreen.getInstance()) && GameScreen.isInGame) {
          this.a.a("Bạn có muốn thoát bàn đang chơi?", new quyen_ge(this));
       } else {
-         quyen_a.e(quyen_et.T.a.c().c);
+         quyen_a.e(GameManager.gameRoom.gameListComponent.getSelectedItem().c);
       }
    }
 }

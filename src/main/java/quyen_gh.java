@@ -1,16 +1,16 @@
-final class quyen_gh implements quyen_ca {
+final class quyen_gh implements Action {
    private final String a;
    private final String b;
-   private final quyen_co c;
+   private final DialogScreen c;
 
-   quyen_gh(quyen_et var1, String var2, String var3, quyen_co var4) {
+   quyen_gh(GameManager var1, String var2, String var3, DialogScreen var4) {
       this.a = var2;
       this.b = var3;
       this.c = var4;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_a.b(this.a, this.b);
-      quyen_et.c.c(this.c);
+      GameManager.instance.removeScreen(this.c);
    }
 }

@@ -1,11 +1,11 @@
-final class quyen_hb implements quyen_ca {
-   private quyen_gz a;
+final class quyen_hb implements Action {
+   private GameLobbyScreen a;
 
-   quyen_hb(quyen_gz var1) {
+   quyen_hb(GameLobbyScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_jv.a(new quyen_ju(5000012, 39));
+   public final void action() {
+      NetworkManager.sendPacket(new Packet(5000012, 39));
    }
 }

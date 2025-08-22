@@ -1,13 +1,13 @@
-final class quyen_fp implements quyen_ca {
-   private quyen_et a;
+final class quyen_fp implements Action {
+   private GameManager a;
 
-   quyen_fp(quyen_et var1) {
+   quyen_fp(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_n.b();
-      this.a.f();
-      quyen_et.a();
+   public final void action() {
+      GameGraphics.clearKeyStates();
+      this.a.closeDialog();
+      GameManager.showMainScreen();
    }
 }

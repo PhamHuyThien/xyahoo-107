@@ -14,8 +14,8 @@ import javax.microedition.media.control.RecordControl;
 import javax.microedition.media.control.VideoControl;
 
 public final class quyen_l extends Canvas implements CommandListener {
-   public quyen_ca a;
-   public quyen_ca b;
+   public Action a;
+   public Action b;
    private Player d = null;
    private VideoControl e = null;
    private static quyen_l f;
@@ -43,7 +43,7 @@ public final class quyen_l extends Canvas implements CommandListener {
 
    public final void a(int var1) {
       this.n = var1;
-      quyen_et.c();
+      GameManager.garbageCollect();
       this.c();
       String var2 = null;
       String var3 = null;
@@ -63,7 +63,7 @@ public final class quyen_l extends Canvas implements CommandListener {
       this.addCommand(this.m);
 
       try {
-         if (quyen_cs.v == 0) {
+         if (TextInputComponent.keyboardLayout == 0) {
             try {
                this.d = Manager.createPlayer(var2);
             } catch (Exception var8) {
@@ -102,7 +102,7 @@ public final class quyen_l extends Canvas implements CommandListener {
       }
 
       this.e.setVisible(true);
-      Display.getDisplay(Xuka.i).setCurrent(this);
+      Display.getDisplay(Xuka.instance).setCurrent(this);
 
       try {
          this.d.start();
@@ -116,8 +116,8 @@ public final class quyen_l extends Canvas implements CommandListener {
       var1.setColor(0);
       var1.fillRect(0, 0, this.getWidth(), this.getHeight());
       if (this.g) {
-         quyen_bt.a(quyen_bt.c).a("Lỗi camera", 10, 10, var1);
-         quyen_bt.a(quyen_bt.c).a(this.h, 10, 10 + quyen_bt.i, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText("Lỗi camera", 10, 10, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.h, 10, 10 + FontRenderer.paragraphSpacing, var1);
       }
    }
 
@@ -141,15 +141,15 @@ public final class quyen_l extends Canvas implements CommandListener {
 
    public final void commandAction(Command var1, Displayable var2) {
       if (this.n == 0) {
-         quyen_et.e();
-         quyen_et.a();
+         GameManager.getInstance();
+         GameManager.showMainScreen();
          if (var1.getLabel().equals("OK")) {
             new Thread(new quyen_m(this)).start();
          }
 
          if (var1.getLabel().equals(quyen_cr.c())) {
             if (this.b != null) {
-               this.b.a();
+               this.b.action();
             }
 
             this.c();
@@ -170,7 +170,7 @@ public final class quyen_l extends Canvas implements CommandListener {
                var4.i.startRecord();
             } catch (Exception var3) {
                Alert var5 = new Alert("Error start", var3.toString(), null, AlertType.ERROR);
-               Display.getDisplay(Xuka.i).setCurrent(var5);
+               Display.getDisplay(Xuka.instance).setCurrent(var5);
                return;
             }
          } else {
@@ -181,7 +181,7 @@ public final class quyen_l extends Canvas implements CommandListener {
                this.d();
                this.c();
                if (this.a != null) {
-                  this.a.a();
+                  this.a.action();
                }
 
                this.e();
@@ -192,7 +192,7 @@ public final class quyen_l extends Canvas implements CommandListener {
                this.d();
                this.c();
                if (this.b != null) {
-                  this.b.a();
+                  this.b.action();
                }
 
                this.e();
@@ -225,7 +225,7 @@ public final class quyen_l extends Canvas implements CommandListener {
             return;
          } catch (Exception var4) {
             Alert var1 = new Alert("Error stop", var4.getMessage(), null, AlertType.ERROR);
-            Display.getDisplay(Xuka.i).setCurrent(var1);
+            Display.getDisplay(Xuka.instance).setCurrent(var1);
          }
       }
    }

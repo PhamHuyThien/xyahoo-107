@@ -1,11 +1,11 @@
-final class quyen_ds implements quyen_ca {
-   private quyen_cz a;
+final class quyen_ds implements Action {
+   private GameScreen a;
 
-   quyen_ds(quyen_cz var1) {
+   quyen_ds(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_cz.b(this.a);
+   public final void action() {
+      GameScreen.showBetInput(this.a);
    }
 }

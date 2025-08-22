@@ -1,27 +1,27 @@
-final class quyen_iu implements quyen_ca {
-   final quyen_ia a;
+final class quyen_iu implements Action {
+   final FriendScreen a;
 
-   quyen_iu(quyen_ia var1) {
+   quyen_iu(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (this.a.G) {
-         quyen_ia.a(this.a).c("");
-         this.a.b.c("");
-         quyen_ia.b(this.a);
+   public final void action() {
+      if (this.a.isSearchMode) {
+         FriendScreen.getSearchInput(this.a).setText("");
+         this.a.mainContactList.setSearchFilter("");
+         FriendScreen.exitSearchMode(this.a);
       }
 
-      if (quyen_ia.c(this.a) == null) {
-         quyen_ia.a(this.a, quyen_bw.a(this.a, "Vui lòng nhập Xubi ID", 0, null));
+      if (FriendScreen.getActiveTextInput(this.a) == null) {
+         FriendScreen.setActiveTextInput(this.a, UIFactory.createPopupDialog(this.a, "Vui lòng nhập Xubi ID", 0, null));
       }
 
-      if (quyen_ia.d(this.a) == null) {
-         quyen_ia.a(this.a, new quyen_iv(this));
+      if (FriendScreen.getPrimaryAction(this.a) == null) {
+         FriendScreen.setPrimaryAction(this.a, new quyen_iv(this));
       }
 
-      quyen_ia.c(this.a).z = quyen_ia.d(this.a);
-      this.a.a(quyen_ia.c(this.a));
-      quyen_hr.a(this.a, quyen_ia.c(this.a));
+      FriendScreen.getActiveTextInput(this.a).alternateAction = FriendScreen.getPrimaryAction(this.a);
+      this.a.addComponent(FriendScreen.getActiveTextInput(this.a));
+      UIUtils.showTextInput(this.a, FriendScreen.getActiveTextInput(this.a));
    }
 }

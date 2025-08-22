@@ -1,10 +1,10 @@
-final class quyen_dv implements quyen_ca {
-   quyen_dv(quyen_cz var1) {
+final class quyen_dv implements Action {
+   quyen_dv(GameScreen var1) {
    }
 
-   public final void a() {
-      if (quyen_cz.Y == 0) {
-         quyen_a.g(quyen_cz.Z);
+   public final void action() {
+      if (GameScreen.totalRooms == 0) {
+         quyen_a.g(GameScreen.gameTypeId);
       }
    }
 }

@@ -1,11 +1,11 @@
-final class quyen_eg implements quyen_ca {
-   private final quyen_bu a;
-   private final quyen_bu b;
-   private final quyen_bv c;
-   private final quyen_bu d;
-   private final quyen_bu e;
+final class quyen_eg implements Action {
+   private final CheckboxComponent a;
+   private final CheckboxComponent b;
+   private final DropdownComponent c;
+   private final CheckboxComponent d;
+   private final CheckboxComponent e;
 
-   quyen_eg(quyen_bu var1, quyen_bu var2, quyen_bv var3, quyen_bu var4, quyen_bu var5) {
+   quyen_eg(CheckboxComponent var1, CheckboxComponent var2, DropdownComponent var3, CheckboxComponent var4, CheckboxComponent var5) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
@@ -13,36 +13,36 @@ final class quyen_eg implements quyen_ca {
       this.e = var5;
    }
 
-   public final void a() {
-      if (quyen_et.c.j != null) {
-         quyen_et.c.j.b(1);
+   public final void action() {
+      if (GameManager.instance.loginScreen != null) {
+         GameManager.instance.loginScreen.startSlideAnimation(1);
       } else {
-         quyen_et.c.N.b(1);
+         GameManager.instance.mainMenu.startSlideAnimation(1);
       }
 
-      quyen_et.c.c(quyen_ec.j());
-      if (quyen_et.n != this.a.a) {
-         quyen_et.n = this.a.a;
-         Xuka.a("atlog", quyen_et.n);
+      GameManager.instance.removeScreen(quyen_ec.j());
+      if (GameManager.autoLogin != this.a.isChecked) {
+         GameManager.autoLogin = this.a.isChecked;
+         Xuka.saveBooleanSetting("atlog", GameManager.autoLogin);
       }
 
-      if (quyen_et.o != this.b.a) {
-         quyen_et.o = this.b.a;
-         Xuka.a("atlogY", quyen_et.o);
+      if (GameManager.autoLoginYahoo != this.b.isChecked) {
+         GameManager.autoLoginYahoo = this.b.isChecked;
+         Xuka.saveBooleanSetting("atlogY", GameManager.autoLoginYahoo);
       }
 
-      if (quyen_cs.e != this.c.a()) {
-         Xuka.d(quyen_cs.e = this.c.a());
+      if (TextInputComponent.inputModeIndex != this.c.getSelectedIndex()) {
+         Xuka.saveCaret(TextInputComponent.inputModeIndex = this.c.getSelectedIndex());
       }
 
-      if (quyen_et.m != this.d.a) {
-         quyen_et.m = this.d.a;
-         Xuka.a("vibrate", quyen_et.m);
+      if (GameManager.vibrateEnabled != this.d.isChecked) {
+         GameManager.vibrateEnabled = this.d.isChecked;
+         Xuka.saveBooleanSetting("vibrate", GameManager.vibrateEnabled);
       }
 
-      if (quyen_et.l != !this.e.a) {
-         quyen_et.l = !this.e.a;
-         Xuka.a("sound", quyen_et.l);
+      if (GameManager.soundEnabled != !this.e.isChecked) {
+         GameManager.soundEnabled = !this.e.isChecked;
+         Xuka.saveBooleanSetting("sound", GameManager.soundEnabled);
       }
    }
 }

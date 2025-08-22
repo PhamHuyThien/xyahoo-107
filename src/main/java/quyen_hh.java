@@ -1,11 +1,11 @@
-final class quyen_hh implements quyen_ca {
-   private quyen_hg a;
+final class quyen_hh implements Action {
+   private ChatScreen a;
 
-   quyen_hh(quyen_hg var1) {
+   quyen_hh(ChatScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().c(this.a);
+   public final void action() {
+      GameManager.getInstance().removeScreen(this.a);
    }
 }

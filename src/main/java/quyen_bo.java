@@ -13,8 +13,8 @@ final class quyen_bo implements Runnable {
             quyen_bn.g("/");
             this.a.c();
          } catch (Exception var1) {
-            quyen_et.e();
-            quyen_et.a("Xubi", "Điện thoại không hỗ trợ chức năng này", true);
+            GameManager.getInstance();
+            GameManager.showAlert("Xubi", "Điện thoại không hỗ trợ chức năng này", true);
          }
       } catch (Exception var2) {
       }

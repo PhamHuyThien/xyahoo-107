@@ -1,11 +1,11 @@
-final class quyen_bi implements quyen_ca {
-   private quyen_be a;
+final class quyen_bi implements Action {
+   private DownloadScreen a;
 
-   quyen_bi(quyen_be var1) {
+   quyen_bi(DownloadScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.c.a(this.a.c, 1);
+   public final void action() {
+      GameManager.instance.showContextMenu(this.a.contextMenu, 1);
    }
 }

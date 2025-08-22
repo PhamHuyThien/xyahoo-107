@@ -1,11 +1,11 @@
-final class quyen_ay implements quyen_ca {
-   private final quyen_ci a;
+final class quyen_ay implements Action {
+   private final ContextMenu a;
 
-   quyen_ay(quyen_ci var1) {
+   quyen_ay(ContextMenu var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().a(this.a, 0);
+   public final void action() {
+      GameManager.getInstance().showContextMenu(this.a, 0);
    }
 }

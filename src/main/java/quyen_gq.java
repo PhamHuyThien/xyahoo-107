@@ -1,12 +1,12 @@
-final class quyen_gq implements quyen_ca {
-   private quyen_go a;
+final class quyen_gq implements Action {
+   private PhotoViewerScreen a;
 
-   quyen_gq(quyen_go var1) {
+   quyen_gq(PhotoViewerScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.c.a(this.a.j, this.a.b, (byte)0);
-      quyen_et.c.I();
+   public final void action() {
+      GameManager.instance.a(this.a.title, this.a.imageBytes, (byte)0);
+      GameManager.instance.startFileSend();
    }
 }

@@ -1,11 +1,11 @@
-final class quyen_jd implements quyen_ca {
-   private quyen_jc a;
+final class quyen_jd implements Action {
+   private YahooScreen a;
 
-   quyen_jd(quyen_jc var1) {
+   quyen_jd(YahooScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_ia.a(this.a.a);
+   public final void action() {
+      FriendScreen.toggleOfflineFilter(this.a.contactList);
    }
 }

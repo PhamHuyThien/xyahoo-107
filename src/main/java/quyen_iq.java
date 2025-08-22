@@ -1,20 +1,20 @@
-final class quyen_iq implements quyen_ca {
+final class quyen_iq implements Action {
    private quyen_ip a;
    private final long[] b;
-   private final quyen_co c;
+   private final DialogScreen c;
 
-   quyen_iq(quyen_ip var1, long[] var2, quyen_co var3) {
+   quyen_iq(quyen_ip var1, long[] var2, DialogScreen var3) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_ip var1 = this.a;
-      quyen_a.a(this.b, quyen_ia.c(this.a.a).c());
+      quyen_a.a(this.b, FriendScreen.getActiveTextInput(this.a.a).getText());
       var1 = this.a;
-      quyen_ia.a(this.a.a, (quyen_cs) null);
-      quyen_et.c.c(this.c);
+      FriendScreen.setActiveTextInput(this.a.a, (TextInputComponent) null);
+      GameManager.instance.removeScreen(this.c);
       System.gc();
    }
 }

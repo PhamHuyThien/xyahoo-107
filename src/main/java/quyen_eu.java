@@ -1,10 +1,10 @@
-final class quyen_eu implements quyen_ca {
-   quyen_eu(quyen_et var1) {
+final class quyen_eu implements Action {
+   quyen_eu(GameManager var1) {
    }
 
-   public final void a() {
-      quyen_et.O = true;
-      quyen_n.a.a();
+   public final void action() {
+      GameManager.isConnected = true;
+      GameGraphics.instance.initializeConnection();
       quyen_a.b();
    }
 }

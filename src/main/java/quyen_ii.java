@@ -1,22 +1,22 @@
 import java.util.Vector;
 
-final class quyen_ii implements quyen_ca {
-   private quyen_ia a;
-   private final quyen_ch b;
+final class quyen_ii implements Action {
+   private FriendScreen a;
+   private final ListComponent b;
 
-   quyen_ii(quyen_ia var1, quyen_ch var2) {
+   quyen_ii(FriendScreen var1, ListComponent var2) {
       this.a = var1;
       this.b = var2;
    }
 
-   public final void a() {
-      String var1 = this.b.c().c;
-      long var2 = this.b.c().m;
-      Vector var4 = (Vector)this.a.N.get(var1);
-      this.a.N.remove(var1);
-      quyen_et.c.a(var1, var4, var2);
-      this.b.b.b(var1, 0L);
-      this.b.b();
-      this.a.k();
+   public final void action() {
+      String var1 = this.b.getSelectedItem().c;
+      long var2 = this.b.getSelectedItem().m;
+      Vector var4 = (Vector)this.a.offlineMessages.get(var1);
+      this.a.offlineMessages.remove(var1);
+      GameManager.instance.a(var1, var4, var2);
+      this.b.dataSource.removeDownload(var1, 0L);
+      this.b.buildListItems();
+      this.a.updateOfflineMessageButton();
    }
 }

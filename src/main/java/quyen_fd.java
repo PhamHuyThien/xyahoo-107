@@ -1,18 +1,18 @@
-final class quyen_fd implements quyen_ca {
+final class quyen_fd implements Action {
    private quyen_fc a;
 
    quyen_fd(quyen_fc var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_fc var1 = this.a;
-      if (this.a.a.i != null) {
+      if (this.a.a.yahooChat != null) {
          var1 = this.a;
-         this.a.a.i.a();
+         this.a.a.yahooChat.logout();
       }
 
       var1 = this.a;
-      this.a.a.k();
+      this.a.a.disconnect();
    }
 }

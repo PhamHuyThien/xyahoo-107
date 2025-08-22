@@ -1,13 +1,13 @@
-final class quyen_ew implements quyen_ca {
+final class quyen_ew implements Action {
    private quyen_gn a;
-   private final quyen_ca b;
+   private final Action b;
 
-   quyen_ew(quyen_gn var1, quyen_ca var2) {
+   quyen_ew(quyen_gn var1, Action var2) {
       this.a = var1;
       this.b = var2;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_gn var1 = this.a;
       this.a.a.b("Lỗi gửi SMS", this.b);
    }

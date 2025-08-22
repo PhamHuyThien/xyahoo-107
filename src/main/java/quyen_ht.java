@@ -15,7 +15,7 @@ import javax.microedition.media.control.VolumeControl;
 
 public final class quyen_ht extends Form implements CommandListener, PlayerListener {
    private static quyen_ht a;
-   private quyen_ca b;
+   private Action b;
    private Command c = new Command(quyen_cr.c(), 2, 1);
    private Command d;
    private Command e = new Command("Âm lượng", 1, 2);
@@ -55,7 +55,7 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
       this.n.addCommand(this.h);
       this.n.setItemStateListener(new quyen_hu(this));
       this.n.setCommandListener(this);
-      Display.getDisplay(Xuka.i).setCurrent(this);
+      Display.getDisplay(Xuka.instance).setCurrent(this);
    }
 
    public final void a(byte[] var1, String var2) {
@@ -83,7 +83,7 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
       this.j = var1;
       this.k = var2;
       this.d();
-      Display.getDisplay(Xuka.i).setCurrent(a);
+      Display.getDisplay(Xuka.instance).setCurrent(a);
 
       try {
          this.p = new ByteArrayInputStream(var1);
@@ -93,13 +93,13 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
          this.m = (VolumeControl)this.o.getControl("VolumeControl");
          this.m.setLevel(50);
          this.l.setValue(this.m.getLevel());
-         this.l.setLabel(quyen_hr.a("Âm lượng", ": ", Integer.toString(this.m.getLevel()), null));
+         this.l.setLabel(UIUtils.concatStrings("Âm lượng", ": ", Integer.toString(this.m.getLevel()), null));
          this.o.start();
       } catch (Exception var5) {
          var5.printStackTrace();
-         quyen_et.a();
+         GameManager.showMainScreen();
          this.e();
-         quyen_et.c.d("Điện thoại không hỗ trợ chức năng này");
+         GameManager.instance.d("Điện thoại không hỗ trợ chức năng này");
       }
    }
 
@@ -146,20 +146,20 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
          if (var1.getLabel().equals("Lưu")) {
             this.d();
             if (this.b != null) {
-               this.b.a();
+               this.b.action();
                return;
             }
          } else {
             if (var1.getLabel().equals("Âm lượng")) {
-               Display.getDisplay(Xuka.i).setCurrent(this.n);
+               Display.getDisplay(Xuka.instance).setCurrent(this.n);
                return;
             }
 
             if (var1.getLabel().equals(quyen_cr.c())) {
                if (this.i == 0) {
-                  Display.getDisplay(Xuka.i).setCurrent(quyen_hy.a());
+                  Display.getDisplay(Xuka.instance).setCurrent(quyen_hy.a());
                } else if (this.i == 2) {
-                  quyen_et.a();
+                  GameManager.showMainScreen();
                }
 
                this.e();
@@ -167,13 +167,13 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
             }
 
             if (var1.getLabel().equals(quyen_cr.b()) && var2 == this.n) {
-               Display.getDisplay(Xuka.i).setCurrent(this);
+               Display.getDisplay(Xuka.instance).setCurrent(this);
                return;
             }
 
             if (var1.getLabel().equals(quyen_cr.b())) {
                this.d();
-               Display.getDisplay(Xuka.i).setCurrent(quyen_hy.a());
+               Display.getDisplay(Xuka.instance).setCurrent(quyen_hy.a());
             }
          }
       }
@@ -223,7 +223,7 @@ public final class quyen_ht extends Form implements CommandListener, PlayerListe
 
             try {
                this.append(this.q);
-               Display.getDisplay(Xuka.i).setCurrent(this);
+               Display.getDisplay(Xuka.instance).setCurrent(this);
                return;
             } catch (Exception var4) {
                return;

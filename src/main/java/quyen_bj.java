@@ -9,7 +9,7 @@ public final class quyen_bj {
    public String f;
    public int g;
    public boolean h;
-   public quyen_ba i;
+   public DownloadData i;
    public String j;
    public int[] k;
    public String l;

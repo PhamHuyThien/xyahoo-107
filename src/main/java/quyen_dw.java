@@ -1,11 +1,11 @@
-final class quyen_dw implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dw implements Action {
+   private GameScreen a;
 
-   quyen_dw(quyen_cz var1) {
+   quyen_dw(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().a(quyen_cz.c(this.a), 0);
+   public final void action() {
+      GameManager.getInstance().showContextMenu(GameScreen.getLobbyMenu(this.a), 0);
    }
 }

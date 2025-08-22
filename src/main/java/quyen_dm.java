@@ -1,11 +1,11 @@
-final class quyen_dm implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dm implements Action {
+   private GameScreen a;
 
-   quyen_dm(quyen_cz var1) {
+   quyen_dm(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.F.q = quyen_cz.g(this.a);
+   public final void action() {
+      this.a.chatInputComponent.rightSoftKey = GameScreen.getChatSendButton(this.a);
    }
 }

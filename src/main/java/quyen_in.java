@@ -1,13 +1,13 @@
-final class quyen_in implements quyen_ca {
-    private quyen_ia a;
+final class quyen_in implements Action {
+    private FriendScreen a;
 
-    quyen_in(quyen_ia var1) {
+    quyen_in(FriendScreen var1) {
         this.a = var1;
     }
 
-    public final void a() {
-        quyen_et.c.a(this.a.O);
-        this.a.O.b(1);
-        quyen_et.c.e(this.a.O);
+    public final void action() {
+        GameManager.instance.addScreenToStack(this.a.offlineMessageScreen);
+        this.a.offlineMessageScreen.startSlideAnimation(1);
+        GameManager.instance.e(this.a.offlineMessageScreen);
     }
 }

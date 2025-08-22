@@ -1,9 +1,9 @@
-final class quyen_gx implements quyen_ca {
+final class quyen_gx implements Action {
    quyen_gx(quyen_gu var1) {
    }
 
-   public final void a() {
-      quyen_jv.i = true;
-      quyen_jv.c();
+   public final void action() {
+      NetworkManager.forceDisconnect = true;
+      NetworkManager.forceDisconnect();
    }
 }

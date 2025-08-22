@@ -1,16 +1,16 @@
-final class quyen_fs implements quyen_ca {
-   private quyen_et a;
-   private final quyen_ca b;
+final class quyen_fs implements Action {
+   private GameManager a;
+   private final Action b;
 
-   quyen_fs(quyen_et var1, quyen_ca var2) {
+   quyen_fs(GameManager var1, Action var2) {
       this.a = var1;
       this.b = var2;
    }
 
-   public final void a() {
-      this.a.f();
+   public final void action() {
+      this.a.closeDialog();
       if (this.b != null) {
-         this.b.a();
+         this.b.action();
       }
    }
 }

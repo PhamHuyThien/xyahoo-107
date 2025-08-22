@@ -3,11 +3,11 @@ import javax.microedition.lcdui.Graphics;
 public final class quyen_cq {
    private static int b = 15;
    public static boolean a = false;
-   private static final int c = quyen_cj.i - quyen_et.e;
+   private static final int c = Screen.screenHeight - GameManager.footerHeight;
    private static int d;
    private static int e;
-   private static int f = quyen_cj.h - 4 - 1;
-   private static int g = quyen_et.e + 2;
+   private static int f = Screen.screenWidth - 4 - 1;
+   private static int g = GameManager.footerHeight + 2;
    private static boolean h = false;
    private static int i = 0;
 

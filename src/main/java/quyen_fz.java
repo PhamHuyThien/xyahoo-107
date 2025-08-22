@@ -1,11 +1,11 @@
-final class quyen_fz implements quyen_ca {
-   private quyen_et a;
+final class quyen_fz implements Action {
+   private GameManager a;
 
-   quyen_fz(quyen_et var1) {
+   quyen_fz(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.G();
+   public final void action() {
+      this.a.cancelFileSend();
    }
 }

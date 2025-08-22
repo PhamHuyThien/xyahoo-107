@@ -1,15 +1,15 @@
-final class quyen_ja implements quyen_ca {
-   private quyen_ia a;
+final class quyen_ja implements Action {
+   private FriendScreen a;
 
-   quyen_ja(quyen_ia var1) {
+   quyen_ja(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (quyen_ia.D = !quyen_ia.D) {
-         this.a.b.c();
+   public final void action() {
+      if (FriendScreen.isAvatarEnabled = !FriendScreen.isAvatarEnabled) {
+         this.a.mainContactList.resetAnimation();
       }
 
-      Xuka.a("onavt", quyen_ia.D);
+      Xuka.saveBooleanSetting("onavt", FriendScreen.isAvatarEnabled);
    }
 }

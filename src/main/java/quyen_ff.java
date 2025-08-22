@@ -1,9 +1,9 @@
-final class quyen_ff implements quyen_ca {
-   quyen_ff(quyen_et var1) {
+final class quyen_ff implements Action {
+   quyen_ff(GameManager var1) {
    }
 
-   public final void a() {
-      quyen_n.a.a();
+   public final void action() {
+      GameGraphics.instance.initializeConnection();
       quyen_a.a();
    }
 }

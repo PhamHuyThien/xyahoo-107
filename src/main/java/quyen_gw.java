@@ -1,11 +1,11 @@
-final class quyen_gw implements quyen_ca {
+final class quyen_gw implements Action {
    private quyen_gu a;
 
    quyen_gw(quyen_gu var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       this.a.i();
    }
 }

@@ -14,10 +14,10 @@ public final class quyen_ea {
          a.put(n, object);
       } else {
          object = n;
-         quyen_ju quyen_ju2 = new quyen_ju(119, 2);
-         quyen_a.a(((Integer)object).intValue(), quyen_ju2);
-         quyen_jv.a(quyen_ju2);
-         object = quyen_et.u[2];
+         Packet packet2 = new Packet(119, 2);
+         quyen_a.a(((Integer)object).intValue(), packet2);
+         NetworkManager.sendPacket(packet2);
+         object = GameManager.statusIcons[2];
          a.put(n, object);
       }
       return (Image) object;
@@ -32,19 +32,19 @@ public final class quyen_ea {
          }
 
          a.put(var0, Image.createImage(var1, 0, var1.length));
-         Xuka.a(b(var0), var1, "xkimg");
+         Xuka.saveData(b(var0), var1, "xkimg");
       } catch (Exception var3) {
          var3.printStackTrace();
       }
    }
 
    private static String b(Integer n) {
-      return quyen_hr.a("img", Integer.toString(n.intValue()), null, null);
+      return UIUtils.concatStrings("img", Integer.toString(n.intValue()), null, null);
    }
 
    private static Image c(Integer var0) {
       Image var1 = null;
-      byte[] var3 = Xuka.a(b(var0), "xkimg");
+      byte[] var3 = Xuka.loadData(b(var0), "xkimg");
 
       try {
          var1 = Image.createImage(var3, 0, var3.length);

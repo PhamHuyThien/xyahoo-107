@@ -24,7 +24,7 @@ final class quyen_bp implements Runnable {
       try {
          this.a.c();
       } catch (Exception var2) {
-         quyen_et.c.d("ERROR: " + var2.toString());
+         GameManager.instance.d("ERROR: " + var2.toString());
       }
    }
 }

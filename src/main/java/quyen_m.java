@@ -7,7 +7,7 @@ final class quyen_m implements Runnable {
 
    public final void run() {
       if (this.a.a != null) {
-         this.a.a.a();
+         this.a.a.action();
       }
 
       this.a.c();

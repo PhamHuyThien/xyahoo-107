@@ -1,14 +1,14 @@
-final class quyen_dh implements quyen_ca {
+final class quyen_dh implements Action {
    private quyen_dg a;
 
    quyen_dh(quyen_dg var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_dg var1 = this.a;
-      this.a.a.a(true);
+      this.a.a.exitGame(true);
       var1 = this.a;
-      quyen_cz.h();
+      GameScreen.requestRoomList();
    }
 }

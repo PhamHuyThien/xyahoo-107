@@ -1,15 +1,15 @@
-final class quyen_dk implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dk implements Action {
+   private GameScreen a;
 
-   quyen_dk(quyen_cz var1) {
+   quyen_dk(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.b(this.a.F);
-      this.a.G = false;
-      quyen_hr.a(this.a, quyen_cz.e(this.a));
-      quyen_cz.f(this.a);
-      this.a.F.c("");
+   public final void action() {
+      this.a.removeComponent(this.a.chatInputComponent);
+      this.a.isChatMode = false;
+      UIUtils.focusComponent(this.a, GameScreen.getFocusedComponent(this.a));
+      GameScreen.adjustScroll(this.a);
+      this.a.chatInputComponent.setText("");
    }
 }

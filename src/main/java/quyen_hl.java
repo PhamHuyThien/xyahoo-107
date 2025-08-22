@@ -1,21 +1,21 @@
-final class quyen_hl implements quyen_ca {
-   private quyen_hg a;
+final class quyen_hl implements Action {
+   private ChatScreen a;
    private final boolean b;
 
-   quyen_hl(quyen_hg var1, boolean var2) {
+   quyen_hl(ChatScreen var1, boolean var2) {
       this.a = var1;
       this.b = var2;
    }
 
-   public final void a() {
+   public final void action() {
       if (this.b) {
-         quyen_a.a(0L, quyen_hg.b(this.a), 2);
+         quyen_a.a(0L, ChatScreen.getYahooContactId(this.a), 2);
       } else {
-         quyen_a.a(this.a.a, null, 1);
+         quyen_a.a(this.a.chatId, null, 1);
       }
 
-      this.a.c.a(this.b ? quyen_jc.c : quyen_ia.B, "BUZZ!", 0);
-      quyen_et.e().d();
-      this.a.c.b();
+      this.a.chatComponent.addPlayerMessage(this.b ? YahooScreen.originalUsername : FriendScreen.currentUserName, "BUZZ!", 0);
+      GameManager.getInstance().vibrate();
+      this.a.chatComponent.scrollToBottom();
    }
 }

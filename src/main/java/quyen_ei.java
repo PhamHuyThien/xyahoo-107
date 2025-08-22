@@ -1,8 +1,8 @@
-final class quyen_ei implements quyen_ca {
+final class quyen_ei implements Action {
    quyen_ei(quyen_eh var1) {
    }
 
-   public final void a() {
-      quyen_et.c.d("Bạn sẽ nhận mật khẩu qua tin nhắn.");
+   public final void action() {
+      GameManager.instance.d("Bạn sẽ nhận mật khẩu qua tin nhắn.");
    }
 }

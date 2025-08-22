@@ -1,18 +1,18 @@
-final class quyen_em implements quyen_ca {
+final class quyen_em implements Action {
    private quyen_el a;
 
    quyen_em(quyen_el var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_el var1 = this.a;
-      if (this.a.a.c.c() != null) {
+      if (this.a.a.c.getText() != null) {
          var1 = this.a;
-         if (this.a.a.c.c().length() > 0) {
-            quyen_n.a.a();
+         if (this.a.a.c.getText().length() > 0) {
+            GameGraphics.instance.initializeConnection();
             var1 = this.a;
-            quyen_a.f(this.a.a.c.c());
+            quyen_a.f(this.a.a.c.getText());
          }
       }
    }

@@ -1,14 +1,14 @@
-final class quyen_cy implements quyen_ca {
-   private quyen_cx a;
+final class quyen_cy implements Action {
+   private GameRoomGridComponent a;
 
-   quyen_cy(quyen_cx var1) {
+   quyen_cy(GameRoomGridComponent var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      String var1 = quyen_cx.a(this.a)[quyen_cx.b(this.a)].a;
-      if (quyen_cx.c(this.a) == 0) {
-         quyen_a.c(var1, quyen_ia.d);
+   public final void action() {
+      String var1 = GameRoomGridComponent.getRoomData(this.a)[GameRoomGridComponent.getSelectedIndex(this.a)].roomId;
+      if (GameRoomGridComponent.getRoomType(this.a) == 0) {
+         quyen_a.c(var1, FriendScreen.currentUserId);
       }
    }
 }

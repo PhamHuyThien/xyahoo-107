@@ -1,11 +1,11 @@
-final class quyen_fb implements quyen_ca {
-   private quyen_et a;
+final class quyen_fb implements Action {
+   private GameManager a;
 
-   quyen_fb(quyen_et var1) {
+   quyen_fb(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.h.h();
+   public final void action() {
+      this.a.friendManager.showStatusDialog();
    }
 }

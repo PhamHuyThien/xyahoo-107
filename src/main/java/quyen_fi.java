@@ -1,15 +1,15 @@
-final class quyen_fi implements quyen_ca {
-   private final quyen_bv a;
-   private final quyen_cs b;
+final class quyen_fi implements Action {
+   private final DropdownComponent a;
+   private final TextInputComponent b;
 
-   quyen_fi(quyen_et var1, quyen_bv var2, quyen_cs var3) {
+   quyen_fi(GameManager var1, DropdownComponent var2, TextInputComponent var3) {
       this.a = var2;
       this.b = var3;
    }
 
-   public final void a() {
-      if (this.a.b != null && this.a.b.length != 0) {
-         this.b.c(this.a.b());
+   public final void action() {
+      if (this.a.optionList != null && this.a.optionList.length != 0) {
+         this.b.setText(this.a.getSelectedText());
       }
    }
 }

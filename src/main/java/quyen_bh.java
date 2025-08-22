@@ -1,11 +1,11 @@
-final class quyen_bh implements quyen_ca {
-   private quyen_be a;
+final class quyen_bh implements Action {
+   private DownloadScreen a;
 
-   quyen_bh(quyen_be var1) {
+   quyen_bh(DownloadScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.a();
+   public final void action() {
+      this.a.deleteAllDownloads();
    }
 }

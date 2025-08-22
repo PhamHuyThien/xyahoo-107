@@ -1,11 +1,11 @@
-final class quyen_fg implements quyen_ca {
-   private quyen_et a;
+final class quyen_fg implements Action {
+   private GameManager a;
 
-   quyen_fg(quyen_et var1) {
+   quyen_fg(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.a(quyen_et.d(this.a), 0);
+   public final void action() {
+      this.a.showContextMenu(GameManager.d(this.a), 0);
    }
 }

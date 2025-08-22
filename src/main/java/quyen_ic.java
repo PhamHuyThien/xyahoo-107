@@ -1,11 +1,11 @@
-final class quyen_ic implements quyen_ca {
-   private quyen_ia a;
+final class quyen_ic implements Action {
+   private FriendScreen a;
 
-   quyen_ic(quyen_ia var1) {
+   quyen_ic(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.l();
+   public final void action() {
+      this.a.showGroupMessageDialog();
    }
 }

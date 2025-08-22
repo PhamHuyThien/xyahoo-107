@@ -13,7 +13,7 @@ public final class quyen_bn extends List implements CommandListener
    public static boolean b;
    private int d;
    private static String e;
-   public quyen_ca c;
+   public Action c;
    private Command f;
    private Command g;
    private Command h;
@@ -32,7 +32,7 @@ public final class quyen_bn extends List implements CommandListener
 
    public final void a(final String title, final int d) {
       if (quyen_bn.b) {
-         quyen_et.e().d("Vui l\u00f2ng ch\u1edd");
+         GameManager.getInstance().d("Vui l\u00f2ng ch\u1edd");
          return;
       }
       this.removeCommand(this.f);
@@ -52,7 +52,7 @@ public final class quyen_bn extends List implements CommandListener
          this.setSelectCommand(this.i);
       }
       this.setTitle(title);
-      Display.getDisplay((MIDlet)Xuka.i).setCurrent((Displayable)this);
+      Display.getDisplay((MIDlet)Xuka.instance).setCurrent((Displayable)this);
       new Thread(new quyen_bo(this)).start();
    }
 
@@ -74,9 +74,9 @@ public final class quyen_bn extends List implements CommandListener
       new Thread(new quyen_bp(this, s)).start();
    }
 
-   private void a(quyen_ca quyen_ca) {
-      if ((quyen_ca = quyen_ca) != null) {
-         new Thread(new quyen_bq(this, quyen_ca)).start();
+   private void a(Action Action) {
+      if ((Action = Action) != null) {
+         new Thread(new quyen_bq(this, Action)).start();
       }
    }
 
@@ -141,7 +141,7 @@ public final class quyen_bn extends List implements CommandListener
                }
                final String string;
                if (!(string = this.getString(this.getSelectedIndex())).endsWith("/") && !string.equals("..")) {
-                  this.a((quyen_ca)null);
+                  this.a((Action)null);
                   return;
                }
                this.h(string);
@@ -179,21 +179,21 @@ public final class quyen_bn extends List implements CommandListener
             }
          }
          else if (command.getLabel().equals("Chia s\u1ebb") && this.d == 1) {
-            this.a((quyen_ca)null);
+            this.a((Action)null);
          }
          return;
       }
       if (this.m == 0) {
-         Display.getDisplay((MIDlet)Xuka.i).setCurrent((Displayable)quyen_hy.a());
+         Display.getDisplay((MIDlet)Xuka.instance).setCurrent((Displayable)quyen_hy.a());
          return;
       }
       if (this.m == 1) {
          quyen_ht.a().a(2);
-         Display.getDisplay((MIDlet)Xuka.i).setCurrent((Displayable)quyen_ht.a());
+         Display.getDisplay((MIDlet)Xuka.instance).setCurrent((Displayable)quyen_ht.a());
          return;
       }
-      quyen_et.e();
-      quyen_et.a();
+      GameManager.getInstance();
+      GameManager.showMainScreen();
    }
 
    public final String a(final boolean b) {
@@ -202,13 +202,13 @@ public final class quyen_bn extends List implements CommandListener
          return null;
       }
       if (b) {
-         return quyen_hr.a("file:///", quyen_bn.e, string, null);
+         return UIUtils.concatStrings("file:///", quyen_bn.e, string, null);
       }
       return string;
    }
 
    public static String b() {
-      return quyen_hr.a("file:///", quyen_bn.e, null, null);
+      return UIUtils.concatStrings("file:///", quyen_bn.e, null, null);
    }
 
    public final void c() {

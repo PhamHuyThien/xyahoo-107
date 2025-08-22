@@ -1,11 +1,11 @@
-final class quyen_fu implements quyen_ca {
-   private quyen_et a;
+final class quyen_fu implements Action {
+   private GameManager a;
 
-   quyen_fu(quyen_et var1) {
+   quyen_fu(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.f();
+   public final void action() {
+      this.a.closeDialog();
    }
 }

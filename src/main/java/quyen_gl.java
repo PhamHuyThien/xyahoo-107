@@ -1,15 +1,15 @@
 import javax.microedition.io.ConnectionNotFoundException;
 
-final class quyen_gl implements quyen_ca {
+final class quyen_gl implements Action {
    private final String a;
 
-   quyen_gl(quyen_et var1, String var2) {
+   quyen_gl(GameManager var1, String var2) {
       this.a = var2;
    }
 
-   public final void a() {
+   public final void action() {
       try {
-         Xuka.i.platformRequest(this.a);
+         Xuka.instance.platformRequest(this.a);
       } catch (ConnectionNotFoundException var2) {
       }
 
@@ -18,6 +18,6 @@ final class quyen_gl implements quyen_ca {
       } catch (InterruptedException var1) {
       }
 
-      Xuka.a();
+      Xuka.shutdown();
    }
 }

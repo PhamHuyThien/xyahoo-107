@@ -1,11 +1,11 @@
-final class quyen_ik implements quyen_ca {
-   private final quyen_ci a;
+final class quyen_ik implements Action {
+   private final ContextMenu a;
 
-   quyen_ik(quyen_ia var1, quyen_ci var2) {
+   quyen_ik(FriendScreen var1, ContextMenu var2) {
       this.a = var2;
    }
 
-   public final void a() {
-      quyen_et.e().a(this.a, 1);
+   public final void action() {
+      GameManager.getInstance().showContextMenu(this.a, 1);
    }
 }

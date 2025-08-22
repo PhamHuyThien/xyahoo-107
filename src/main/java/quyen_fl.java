@@ -1,16 +1,16 @@
-final class quyen_fl implements quyen_ca {
-   private quyen_et a;
+final class quyen_fl implements Action {
+   private GameManager a;
    private final long b;
-   private final quyen_co c;
+   private final DialogScreen c;
 
-   quyen_fl(quyen_et var1, long var2, quyen_co var4) {
+   quyen_fl(GameManager var1, long var2, DialogScreen var4) {
       this.a = var1;
       this.b = var2;
       this.c = var4;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_a.a(this.b, false);
-      this.a.c(this.c);
+      this.a.removeScreen(this.c);
    }
 }

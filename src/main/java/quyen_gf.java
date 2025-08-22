@@ -1,7 +1,7 @@
 final class quyen_gf implements Runnable {
    private final byte[] a;
 
-   quyen_gf(quyen_et var1, byte[] var2) {
+   quyen_gf(GameManager var1, byte[] var2) {
       this.a = var2;
    }
 

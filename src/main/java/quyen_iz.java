@@ -1,11 +1,11 @@
-final class quyen_iz implements quyen_ca {
-   private quyen_ia a;
+final class quyen_iz implements Action {
+   private FriendScreen a;
 
-   quyen_iz(quyen_ia var1) {
+   quyen_iz(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_ia.a(this.a.b);
+   public final void action() {
+      FriendScreen.toggleOfflineFilter(this.a.mainContactList);
    }
 }

@@ -1,8 +1,8 @@
-final class quyen_hc implements quyen_ca {
-   quyen_hc(quyen_gz var1) {
+final class quyen_hc implements Action {
+   quyen_hc(GameLobbyScreen var1) {
    }
 
-   public final void a() {
+   public final void action() {
       quyen_a.d();
    }
 }

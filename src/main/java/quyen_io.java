@@ -1,16 +1,16 @@
-final class quyen_io implements quyen_ca
+final class quyen_io implements Action
 {
-   private quyen_ia a;
-   private final quyen_co b;
+   private FriendScreen a;
+   private final DialogScreen b;
 
-   quyen_io(final quyen_ia a, final quyen_co b) {
+   quyen_io(final FriendScreen a, final DialogScreen b) {
       this.a = a;
       this.b = b;
    }
 
-   public final void a() {
-      quyen_et.c.c(this.b);
-      quyen_ia.a(this.a, (quyen_cs)null);
+   public final void action() {
+      GameManager.instance.removeScreen(this.b);
+      FriendScreen.setActiveTextInput(this.a, (TextInputComponent)null);
       System.gc();
    }
 }

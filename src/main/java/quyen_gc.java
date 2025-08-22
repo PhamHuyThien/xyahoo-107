@@ -1,11 +1,11 @@
-final class quyen_gc implements quyen_ca {
-   private final quyen_cj a;
+final class quyen_gc implements Action {
+   private final Screen a;
 
-   quyen_gc(quyen_cj var1) {
+   quyen_gc(Screen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.c.c(this.a);
+   public final void action() {
+      GameManager.instance.removeScreen(this.a);
    }
 }

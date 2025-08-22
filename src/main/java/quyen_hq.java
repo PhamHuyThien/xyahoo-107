@@ -1,13 +1,13 @@
-final class quyen_hq implements quyen_ca {
-   private quyen_hg a;
+final class quyen_hq implements Action {
+   private ChatScreen a;
 
-   quyen_hq(quyen_hg var1) {
+   quyen_hq(ChatScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (!quyen_et.k.equals("")) {
-         this.a.d.d(quyen_et.k);
+   public final void action() {
+      if (!GameManager.emptyString.equals("")) {
+         this.a.textInputComponent.insertText(GameManager.emptyString);
       }
    }
 }

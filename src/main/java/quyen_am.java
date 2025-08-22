@@ -1,22 +1,22 @@
-final class quyen_am implements quyen_ca {
+final class quyen_am implements Action {
    private final boolean a;
-   private final quyen_cb b;
+   private final GridComponent b;
    private final boolean[] c;
    private final byte[] d;
 
-   quyen_am(boolean var1, quyen_cb var2, boolean[] var3, byte[] var4) {
+   quyen_am(boolean var1, GridComponent var2, boolean[] var3, byte[] var4) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
       this.d = var4;
    }
 
-   public final void a() {
+   public final void action() {
       if (this.a) {
-         quyen_et var10000 = quyen_et.c;
-         int var10001 = this.b.a();
-         quyen_cb var1 = this.b;
-         var10000.a(var10001, this.c[this.b.b * var1.c + var1.a]);
+         GameManager var10000 = GameManager.instance;
+         int var10001 = this.b.getSelectedItemId();
+         GridComponent var1 = this.b;
+         var10000.joinGame(var10001, this.c[this.b.selectedRowIndex * var1.columnsPerRow + var1.selectedColumnIndex]);
       } else {
          quyen_af.a(this.d);
       }

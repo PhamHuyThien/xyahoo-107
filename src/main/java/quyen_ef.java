@@ -1,16 +1,16 @@
-final class quyen_ef implements quyen_ca {
-   private final quyen_bu a;
+final class quyen_ef implements Action {
+   private final CheckboxComponent a;
    private final boolean b;
-   private final quyen_bu c;
+   private final CheckboxComponent c;
    private final boolean d;
-   private final quyen_bu e;
+   private final CheckboxComponent e;
    private final boolean f;
-   private final quyen_bu g;
+   private final CheckboxComponent g;
    private final boolean h;
-   private final quyen_bv i;
+   private final DropdownComponent i;
    private final int j;
 
-   quyen_ef(quyen_bu var1, boolean var2, quyen_bu var3, boolean var4, quyen_bu var5, boolean var6, quyen_bu var7, boolean var8, quyen_bv var9, int var10) {
+   quyen_ef(CheckboxComponent var1, boolean var2, CheckboxComponent var3, boolean var4, CheckboxComponent var5, boolean var6, CheckboxComponent var7, boolean var8, DropdownComponent var9, int var10) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
@@ -23,12 +23,12 @@ final class quyen_ef implements quyen_ca {
       this.j = var10;
    }
 
-   public final void a() {
-      quyen_et.c.c(quyen_ec.j());
-      this.a.a = this.b;
-      this.c.a = this.d;
-      this.e.a = this.f;
-      this.g.a = this.h;
-      this.i.c(this.j);
+   public final void action() {
+      GameManager.instance.removeScreen(quyen_ec.j());
+      this.a.isChecked = this.b;
+      this.c.isChecked = this.d;
+      this.e.isChecked = this.f;
+      this.g.isChecked = this.h;
+      this.i.setSelectedIndex(this.j);
    }
 }

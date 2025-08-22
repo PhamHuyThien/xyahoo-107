@@ -13,14 +13,14 @@ final class quyen_br implements Runnable {
          this.a.deleteAll();
          if ("/".equals(quyen_bn.e())) {
             try {
-               var1 = quyen_bk.a().a(true, quyen_bn.e());
+               var1 = FileSystemInterface.getInstance().listFiles(true, quyen_bn.e());
             } catch (ClassNotFoundException var4) {
             }
          } else {
             this.a.append("..", null);
 
             try {
-               var1 = quyen_bk.a().a(false, quyen_bn.e());
+               var1 = FileSystemInterface.getInstance().listFiles(false, quyen_bn.e());
             } catch (ClassNotFoundException var3) {
             }
 

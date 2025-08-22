@@ -1,98 +1,98 @@
 import javax.microedition.lcdui.Image;
 
-public final class quyen_gu extends quyen_co {
+public final class quyen_gu extends DialogScreen {
    private static String[] D = new String[]{"admin", "root", "system", "xuka", "yahoo"};
-   public quyen_cs a;
-   public quyen_cs b;
-   private quyen_cs E;
+   public TextInputComponent a;
+   public TextInputComponent b;
+   private TextInputComponent E;
    private String F;
    public String c;
    public String d;
 
    public quyen_gu() {
-      super.j = "Đăng Ký";
-      super.m = new quyen_bw(quyen_cr.c(), new quyen_gv(this));
-      super.o = new quyen_bw("Đăng ký", new quyen_gw(this));
+      super.title = "Đăng Ký";
+      super.leftSoftkey = new UIFactory(quyen_cr.c(), new quyen_gv(this));
+      super.centerSoftkey = new UIFactory("Đăng ký", new quyen_gw(this));
    }
 
    public final void a() {
-      this.e();
+      this.removeAllComponents();
       this.a = null;
       this.b = null;
       this.E = null;
       System.gc();
-      quyen_hr.a(quyen_hr.h, quyen_hr.i);
-      this.g();
-      super.B = quyen_cj.i - (quyen_bt.i * 3 + quyen_cp.a + (quyen_n.k > 180 ? 50 : 31) + quyen_et.e) >> 1;
-      quyen_bw.a(this, 0, quyen_cp.c(), quyen_cp.c().getWidth(), quyen_cp.c().getHeight(), false, false);
-      if (quyen_n.k > 220) {
-         super.B += 15;
-      } else if (quyen_n.k > 180 && quyen_n.k <= 220) {
-         super.B += 10;
+      UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
+      this.calculateDialogDimensions();
+      super.nextComponentY = Screen.screenHeight - (FontRenderer.paragraphSpacing * 3 + quyen_cp.a + (GameGraphics.screenHeight > 180 ? 50 : 31) + GameManager.footerHeight) >> 1;
+      UIFactory.createImageComponent(this, 0, quyen_cp.c(), quyen_cp.c().getWidth(), quyen_cp.c().getHeight(), false, false);
+      if (GameGraphics.screenHeight > 220) {
+         super.nextComponentY += 15;
+      } else if (GameGraphics.screenHeight > 180 && GameGraphics.screenHeight <= 220) {
+         super.nextComponentY += 10;
       } else {
-         super.B += 5;
+         super.nextComponentY += 5;
       }
 
-      this.a = quyen_bw.a(this, quyen_hr.a("Xubi ID", ":", null, null), 0, -1);
-      super.B += 5;
-      this.b = quyen_bw.a(this, quyen_hr.a("Mật khẩu", ":", null, null), 2, -1);
-      super.B += 5;
-      this.E = quyen_bw.a(this, quyen_hr.a("Nhập lại", ":", null, null), 2, -1);
-      quyen_hr.a(this, (quyen_bx)this.a);
+      this.a = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Xubi ID", ":", null, null), 0, -1);
+      super.nextComponentY += 5;
+      this.b = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Mật khẩu", ":", null, null), 2, -1);
+      super.nextComponentY += 5;
+      this.E = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Nhập lại", ":", null, null), 2, -1);
+      UIUtils.focusComponent(this, (UIComponent)this.a);
    }
 
    protected final void h() {
-      quyen_et var1;
-      (var1 = quyen_et.e()).a((quyen_cj)var1.j);
-      var1.e(var1.j);
-      var1.j.b(1);
-      var1.d(this);
+      GameManager var1;
+      (var1 = GameManager.getInstance()).addScreenToStack((Screen)var1.loginScreen);
+      var1.e(var1.loginScreen);
+      var1.loginScreen.startSlideAnimation(1);
+      var1.destroyScreen(this);
    }
 
    public final void i() {
       int var1;
-      if ((var1 = quyen_hs.a(this.a.c())) == 1) {
-         quyen_et.e().a("ID phải trên 5 ký tự", (Image) null, 1);
-         quyen_hr.a(this, (quyen_bx)this.a);
+      if ((var1 = quyen_hs.a(this.a.getText())) == 1) {
+         GameManager.getInstance().showNotification("ID phải trên 5 ký tự", (Image) null, 1);
+         UIUtils.focusComponent(this, (UIComponent)this.a);
       } else if (var1 == 2) {
-         quyen_et.e().a("ID không được bắt đầu bằng số", (Image) null, 1);
-         quyen_hr.a(this, (quyen_bx)this.a);
+         GameManager.getInstance().showNotification("ID không được bắt đầu bằng số", (Image) null, 1);
+         UIUtils.focusComponent(this, (UIComponent)this.a);
       } else if (var1 == 3) {
-         quyen_et.e().a("ID không được chứa ký tự đặc biệt", (Image) null, 1);
-         quyen_hr.a(this, (quyen_bx)this.a);
+         GameManager.getInstance().showNotification("ID không được chứa ký tự đặc biệt", (Image) null, 1);
+         UIUtils.focusComponent(this, (UIComponent)this.a);
       } else {
          for (int var2 = 0; var2 < D.length; var2++) {
-            if (D[var2].equals(this.a.c())) {
-               quyen_et.e().a("Xin chọn tên khác", (Image) null, 1);
-               this.a.c("");
-               quyen_hr.a(this, (quyen_bx)this.a);
+            if (D[var2].equals(this.a.getText())) {
+               GameManager.getInstance().showNotification("Xin chọn tên khác", (Image) null, 1);
+               this.a.setText("");
+               UIUtils.focusComponent(this, (UIComponent)this.a);
                return;
             }
          }
 
-         if (this.b.c().length() >= 6 && this.b.c().length() <= 64) {
-            if (!this.b.c().equalsIgnoreCase(this.a.c()) && (!this.b.c().startsWith("12345") || this.b.c().length() >= 7)) {
-               if (!this.E.c().equals("") && this.b.c().equals(this.E.c())) {
-                  this.a.c(this.a.c().toLowerCase());
-                  if (this.F != null && this.F.equals(this.a.c())) {
+         if (this.b.getText().length() >= 6 && this.b.getText().length() <= 64) {
+            if (!this.b.getText().equalsIgnoreCase(this.a.getText()) && (!this.b.getText().startsWith("12345") || this.b.getText().length() >= 7)) {
+               if (!this.E.getText().equals("") && this.b.getText().equals(this.E.getText())) {
+                  this.a.setText(this.a.getText().toLowerCase());
+                  if (this.F != null && this.F.equals(this.a.getText())) {
                      this.d = this.F;
                   } else {
-                     this.d = this.a.c();
+                     this.d = this.a.getText();
                   }
 
-                  quyen_et.e().a("Đang đăng ký..", null, new quyen_bw(quyen_cr.c(), new quyen_gx(this)), null).a(true);
-                  quyen_et.e().g = new quyen_gy(this);
+                  GameManager.getInstance().a("Đang đăng ký..", null, new UIFactory(quyen_cr.c(), new quyen_gx(this)), null).a(true);
+                  GameManager.getInstance().gameController = new quyen_gy(this);
                } else {
-                  quyen_et.e().a("Nhập lại mật khẩu", (Image) null, 1);
-                  quyen_hr.a(this, (quyen_bx)this.E);
+                  GameManager.getInstance().showNotification("Nhập lại mật khẩu", (Image) null, 1);
+                  UIUtils.focusComponent(this, (UIComponent)this.E);
                }
             } else {
-               quyen_et.c.a("Mật khẩu không nên quá đơn giản. Vui lòng chọn mật khẩu khác.", (Image) null, 1);
-               quyen_hr.a(this, (quyen_bx)this.b);
+               GameManager.instance.showNotification("Mật khẩu không nên quá đơn giản. Vui lòng chọn mật khẩu khác.", (Image) null, 1);
+               UIUtils.focusComponent(this, (UIComponent)this.b);
             }
          } else {
-            quyen_et.e().a("Mật khẩu phải trên 5 ký tự", (Image) null, 1);
-            quyen_hr.a(this, (quyen_bx)this.b);
+            GameManager.getInstance().showNotification("Mật khẩu phải trên 5 ký tự", (Image) null, 1);
+            UIUtils.focusComponent(this, (UIComponent)this.b);
          }
       }
    }

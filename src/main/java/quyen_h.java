@@ -1,15 +1,15 @@
-final class quyen_h implements quyen_ca {
+final class quyen_h implements Action {
    private quyen_g a;
 
    quyen_h(quyen_g var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_g var1 = this.a;
-      long var4 = quyen_b.a(this.a.a).m;
-      quyen_ju var3 = new quyen_ju(5000024, 2);
+      long var4 = ContactListComponent.getSelectedItem(this.a.a).m;
+      Packet var3 = new Packet(5000024, 2);
       quyen_a.a(var4, var3);
-      quyen_jv.a(var3);
+      NetworkManager.sendPacket(var3);
    }
 }

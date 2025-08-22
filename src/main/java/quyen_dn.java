@@ -1,19 +1,19 @@
-final class quyen_dn implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dn implements Action {
+   private GameScreen a;
 
-   quyen_dn(quyen_cz var1) {
+   quyen_dn(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.b(this.a.F);
-      this.a.G = false;
-      quyen_hr.a(this.a, quyen_cz.e(this.a));
-      if (quyen_cz.Y == 0) {
-         quyen_a.a(quyen_cz.Y, quyen_cz.d, quyen_ia.d, this.a.F.c());
+   public final void action() {
+      this.a.removeComponent(this.a.chatInputComponent);
+      this.a.isChatMode = false;
+      UIUtils.focusComponent(this.a, GameScreen.getFocusedComponent(this.a));
+      if (GameScreen.totalRooms == 0) {
+         quyen_a.a(GameScreen.totalRooms, GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.chatInputComponent.getText());
       }
 
-      quyen_cz.f(this.a);
-      this.a.F.c("");
+      GameScreen.adjustScroll(this.a);
+      this.a.chatInputComponent.setText("");
    }
 }

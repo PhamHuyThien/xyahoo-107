@@ -1,21 +1,21 @@
-final class quyen_ek implements quyen_ca {
+final class quyen_ek implements Action {
    private quyen_ec a;
 
    quyen_ek(quyen_ec var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       System.gc();
-      this.a.a.c(this.a.a.c().toLowerCase());
-      quyen_ia.d = this.a.a.c();
-      quyen_ia.C = this.a.d.a ? 0 : 1;
-      if ((quyen_et.L = (byte)this.a.D.a()) == 1) {
+      this.a.a.setText(this.a.a.getText().toLowerCase());
+      FriendScreen.currentUserId = this.a.a.getText();
+      FriendScreen.userStatus = this.a.d.isChecked ? 0 : 1;
+      if ((GameManager.loginType = (byte)this.a.D.getSelectedIndex()) == 1) {
          String var1;
-         if ((var1 = this.a.a.c()).indexOf("@") == -1) {
+         if ((var1 = this.a.a.getText()).indexOf("@") == -1) {
             StringBuffer var2;
-            (var2 = new StringBuffer(quyen_ia.d)).append("@yahoo.com");
-            quyen_ia.d = var2.toString();
+            (var2 = new StringBuffer(FriendScreen.currentUserId)).append("@yahoo.com");
+            FriendScreen.currentUserId = var2.toString();
          }
 
          String var5 = var1;
@@ -30,45 +30,45 @@ final class quyen_ek implements quyen_ca {
             var5 = var1.substring(0, var1.indexOf("@yahoo"));
          }
 
-         Xuka.c(var5);
-         Xuka.d(this.a.b.c());
-         Xuka.a("statusYahoo", this.a.d.a);
-         Xuka.b(var3);
-         if (quyen_et.c.i != null) {
-            quyen_et.c.i.F.c(var5);
-            quyen_et.c.i.G.c(this.a.b.c());
-            quyen_et.c.i.H.a = this.a.d.a;
-            quyen_et.c.i.I.c(var3);
+         Xuka.saveYahooID(var5);
+         Xuka.saveYahooPassword(this.a.b.getText());
+         Xuka.saveBooleanSetting("statusYahoo", this.a.d.isChecked);
+         Xuka.saveYahooDomain(var3);
+         if (GameManager.instance.yahooChat != null) {
+            GameManager.instance.yahooChat.usernameInput.setText(var5);
+            GameManager.instance.yahooChat.passwordInput.setText(this.a.b.getText());
+            GameManager.instance.yahooChat.invisibleCheckbox.isChecked = this.a.d.isChecked;
+            GameManager.instance.yahooChat.domainDropdown.setSelectedIndex(var3);
          }
       }
 
-      Xuka.e(this.a.a.c());
-      Xuka.b(this.a.b.c());
-      Xuka.c(this.a.D.a());
-      Xuka.a("status", this.a.d.a);
-      quyen_ia.B = quyen_ia.d;
-      quyen_et.e().B();
+      Xuka.saveUserID(this.a.a.getText());
+      Xuka.savePassword(this.a.b.getText());
+      Xuka.saveIDType(this.a.D.getSelectedIndex());
+      Xuka.saveBooleanSetting("status", this.a.d.isChecked);
+      FriendScreen.currentUserName = FriendScreen.currentUserId;
+      GameManager.getInstance().B();
       int var4;
-      if ((var4 = quyen_et.a(false)) != -1) {
-         quyen_bb var6;
-         if ((var6 = quyen_et.a(false, quyen_ia.d)) != null) {
-            quyen_et.c.h.b.a(var6, -1);
-            quyen_et.c.h.b.c = false;
-            quyen_et.c.h.i();
-            quyen_ia.A = quyen_et.g(quyen_ia.d);
+      if ((var4 = GameManager.a(false)) != -1) {
+         DownloadDataManager var6;
+         if ((var6 = GameManager.loadBuddyList(false, FriendScreen.currentUserId)) != null) {
+            GameManager.instance.friendManager.mainContactList.setContactData(var6, -1);
+            GameManager.instance.friendManager.mainContactList.isLoading = false;
+            GameManager.instance.friendManager.addAllFriendsToOnline();
+            FriendScreen.currentUserTimestamp = GameManager.g(FriendScreen.currentUserId);
          } else {
             var4 = -1;
          }
       }
 
       String var7;
-      quyen_ia.E = (var7 = Xuka.c(quyen_ia.d, false)) == null ? "" : var7;
+      FriendScreen.statusMessage = (var7 = Xuka.loadStringData(FriendScreen.currentUserId, false)) == null ? "" : var7;
       if (var7 != null && var7.length() > 0) {
-         quyen_ia.a(quyen_ia.E);
+         FriendScreen.updateStatusMessage(FriendScreen.statusMessage);
       }
 
       System.gc();
-      quyen_n.a.a();
-      quyen_a.a(quyen_ia.d, this.a.b.c(), quyen_ia.C, 1, var4, quyen_et.L, quyen_ia.E);
+      GameGraphics.instance.initializeConnection();
+      quyen_a.a(FriendScreen.currentUserId, this.a.b.getText(), FriendScreen.userStatus, 1, var4, GameManager.loginType, FriendScreen.statusMessage);
    }
 }

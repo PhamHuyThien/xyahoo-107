@@ -1,4 +1,4 @@
-final class quyen_fw implements quyen_ca {
+final class quyen_fw implements Action {
    private quyen_fv a;
    private final quyen_bn b;
    private final String c;
@@ -9,19 +9,19 @@ final class quyen_fw implements quyen_ca {
       this.c = var3;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_fv var1 = this.a;
-      quyen_et.a(this.a.a, (byte)-1);
+      GameManager.a(this.a.a, (byte)-1);
       if (this.b.d(this.c)) {
          var1 = this.a;
-         quyen_et.a(this.a.a, (byte)0);
+         GameManager.a(this.a.a, (byte)0);
       } else if (this.b.e(this.c)) {
          var1 = this.a;
-         quyen_et.a(this.a.a, (byte)1);
+         GameManager.a(this.a.a, (byte)1);
       }
 
       var1 = this.a;
-      if (quyen_et.f(this.a.a) != -1) {
+      if (GameManager.f(this.a.a) != -1) {
          var1 = this.a;
          this.a.a.e(true);
       } else {

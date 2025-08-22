@@ -1,11 +1,11 @@
-final class quyen_id implements quyen_ca {
-   private quyen_ia a;
+final class quyen_id implements Action {
+   private FriendScreen a;
 
-   quyen_id(quyen_ia var1) {
+   quyen_id(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().a(this.a.F, 0);
+   public final void action() {
+      GameManager.getInstance().showContextMenu(this.a.contextMenu, 0);
    }
 }

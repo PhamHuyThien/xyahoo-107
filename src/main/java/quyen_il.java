@@ -1,11 +1,11 @@
-final class quyen_il implements quyen_ca {
-   private quyen_ia a;
+final class quyen_il implements Action {
+   private FriendScreen a;
 
-   quyen_il(quyen_ia var1) {
+   quyen_il(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.c.c(this.a.O);
+   public final void action() {
+      GameManager.instance.removeScreen(this.a.offlineMessageScreen);
    }
 }

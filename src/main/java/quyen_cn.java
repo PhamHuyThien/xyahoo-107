@@ -1,17 +1,17 @@
-final class quyen_cn implements quyen_ca {
-   private final quyen_cs a;
-   private final quyen_cj b;
+final class quyen_cn implements Action {
+   private final TextInputComponent a;
+   private final Screen b;
 
-   quyen_cn(quyen_cs var1, quyen_cj var2) {
+   quyen_cn(TextInputComponent var1, Screen var2) {
       this.a = var1;
       this.b = var2;
    }
 
-   public final void a() {
-      if (this.a.z != null) {
-         this.a.z.a();
+   public final void action() {
+      if (this.a.alternateAction != null) {
+         this.a.alternateAction.action();
       }
 
-      quyen_hr.b(this.b, this.a);
+      UIUtils.hideTextInput(this.b, this.a);
    }
 }

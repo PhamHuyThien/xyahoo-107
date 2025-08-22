@@ -1,5 +1,5 @@
-final class quyen_ax implements quyen_ca {
-   public final void a() {
-      quyen_et.e().a(0);
+final class quyen_ax implements Action {
+   public final void action() {
+      GameManager.getInstance().showEmojiPicker(0);
    }
 }

@@ -1,14 +1,14 @@
-final class quyen_dt implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dt implements Action {
+   private GameScreen a;
 
-   quyen_dt(quyen_cz var1) {
+   quyen_dt(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (quyen_cz.Y == 0) {
-         this.a.g();
-         quyen_cz.h();
+   public final void action() {
+      if (GameScreen.totalRooms == 0) {
+         this.a.returnToLobby();
+         GameScreen.requestRoomList();
       }
    }
 }

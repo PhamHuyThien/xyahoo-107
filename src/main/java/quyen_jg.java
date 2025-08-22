@@ -1,11 +1,11 @@
-final class quyen_jg implements quyen_ca {
-   private quyen_jc a;
+final class quyen_jg implements Action {
+   private YahooScreen a;
 
-   quyen_jg(quyen_jc var1) {
+   quyen_jg(YahooScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.g();
+   public final void action() {
+      this.a.performLogin();
    }
 }

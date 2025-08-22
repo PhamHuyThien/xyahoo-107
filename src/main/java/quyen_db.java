@@ -1,11 +1,11 @@
-final class quyen_db implements quyen_ca {
-   private quyen_cz a;
+final class quyen_db implements Action {
+   private GameScreen a;
 
-   quyen_db(quyen_cz var1) {
+   quyen_db(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.a(true);
+   public final void action() {
+      this.a.exitGame(true);
    }
 }

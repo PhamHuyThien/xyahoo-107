@@ -1,15 +1,15 @@
-final class quyen_ez implements quyen_ca {
-   final quyen_et a;
+final class quyen_ez implements Action {
+   final GameManager a;
 
-   quyen_ez(quyen_et var1) {
+   quyen_ez(GameManager var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (quyen_et.b(this.a) == null || !quyen_et.b(this.a).b("Gửi góp ý")) {
-         quyen_et.a(this.a, quyen_bw.a(this.a.N, "Gửi góp ý", 0, new quyen_fa(this)));
+   public final void action() {
+      if (GameManager.b(this.a) == null || !GameManager.b(this.a).isHelpTextEquals("Gửi góp ý")) {
+         GameManager.a(this.a, UIFactory.createPopupDialog(this.a.mainMenu, "Gửi góp ý", 0, new quyen_fa(this)));
       }
 
-      quyen_hr.a(this.a.N, quyen_et.b(this.a));
+      UIUtils.showTextInput(this.a.mainMenu, GameManager.b(this.a));
    }
 }

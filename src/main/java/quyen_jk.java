@@ -1,11 +1,11 @@
-final class quyen_jk implements quyen_ca {
-   private quyen_jc a;
+final class quyen_jk implements Action {
+   private YahooScreen a;
 
-   quyen_jk(quyen_jc var1) {
+   quyen_jk(YahooScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().c(quyen_jc.g(this.a));
+   public final void action() {
+      GameManager.getInstance().removeScreen(YahooScreen.getStatusScreen(this.a));
    }
 }

@@ -1,26 +1,26 @@
-final class quyen_dq implements quyen_ca {
-    private quyen_cz a;
+final class quyen_dq implements Action {
+    private GameScreen a;
 
-    quyen_dq(quyen_cz var1) {
+    quyen_dq(GameScreen var1) {
         this.a = var1;
     }
 
-    public final void a() {
-        if (quyen_cz.h(this.a).c().length() > 0) {
-            this.a.b(quyen_cz.h(this.a));
-            this.a.E = false;
-            quyen_hr.a(this.a, quyen_cz.e(this.a));
+    public final void action() {
+        if (GameScreen.getBetInputComponent(this.a).getText().length() > 0) {
+            this.a.removeComponent(GameScreen.getBetInputComponent(this.a));
+            this.a.isBettingMode = false;
+            UIUtils.focusComponent(this.a, GameScreen.getFocusedComponent(this.a));
 
             try {
-                long var1 = Long.parseLong(quyen_cz.h(this.a).c());
-                if (quyen_cz.Y == 0) {
-                    quyen_a.a(quyen_cz.Y, quyen_cz.d, this.a.a, var1);
+                long var1 = Long.parseLong(GameScreen.getBetInputComponent(this.a).getText());
+                if (GameScreen.totalRooms == 0) {
+                    quyen_a.a(GameScreen.totalRooms, GameScreen.currentRoomId, this.a.roomOwner, var1);
                 }
             } catch (Exception var3) {
             }
 
-            quyen_cz.f(this.a);
-            quyen_cz.h(this.a).c("");
+            GameScreen.adjustScroll(this.a);
+            GameScreen.getBetInputComponent(this.a).setText("");
         }
     }
 }

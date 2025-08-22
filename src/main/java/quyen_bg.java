@@ -1,13 +1,13 @@
-final class quyen_bg implements quyen_ca {
-   private quyen_be a;
+final class quyen_bg implements Action {
+   private DownloadScreen a;
 
-   quyen_bg(quyen_be var1) {
+   quyen_bg(DownloadScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      String var1 = this.a.a.c().c;
-      this.a.b.b(var1, 0L);
-      this.a.a.b();
+   public final void action() {
+      String var1 = this.a.downloadListComponent.getSelectedItem().c;
+      this.a.downloadDataManager.removeDownload(var1, 0L);
+      this.a.downloadListComponent.buildListItems();
    }
 }

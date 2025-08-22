@@ -1,11 +1,11 @@
-final class quyen_e implements quyen_ca {
-   private quyen_b a;
+final class quyen_e implements Action {
+   private ContactListComponent a;
 
-   quyen_e(quyen_b var1) {
+   quyen_e(ContactListComponent var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_a.h(quyen_b.a(this.a).c);
+   public final void action() {
+      quyen_a.h(ContactListComponent.getSelectedItem(this.a).c);
    }
 }

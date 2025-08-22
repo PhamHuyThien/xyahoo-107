@@ -1,5 +1,5 @@
-final class quyen_ha implements quyen_ca {
-   public final void a() {
-      quyen_et.c.a(11115, false);
+final class quyen_ha implements Action {
+   public final void action() {
+      GameManager.instance.joinGame(11115, false);
    }
 }

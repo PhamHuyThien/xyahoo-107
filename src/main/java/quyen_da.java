@@ -1,8 +1,8 @@
-final class quyen_da implements quyen_ca {
-   quyen_da(quyen_cz var1) {
+final class quyen_da implements Action {
+   quyen_da(GameScreen var1) {
    }
 
-   public final void a() {
-      quyen_et.e().a(0);
+   public final void action() {
+      GameManager.getInstance().showEmojiPicker(0);
    }
 }

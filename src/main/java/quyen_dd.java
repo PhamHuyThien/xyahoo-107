@@ -1,21 +1,21 @@
-final class quyen_dd implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dd implements Action {
+   private GameScreen a;
 
-   quyen_dd(quyen_cz var1) {
+   quyen_dd(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (this.a.o.a.equals("Chơi ngay!")) {
-         quyen_a.e(quyen_cz.d, quyen_ia.d);
+   public final void action() {
+      if (this.a.centerSoftkey.text.equals("Chơi ngay!")) {
+         quyen_a.e(GameScreen.currentRoomId, FriendScreen.currentUserId);
       } else {
-         if (this.a.o.a.equals("Sẵn sàng")) {
-            int var1 = this.a.C.length;
+         if (this.a.centerSoftkey.text.equals("Sẵn sàng")) {
+            int var1 = this.a.playerComponents.length;
 
             while (--var1 >= 0) {
-               if (this.a.C[var1].a.equals(quyen_ia.d)) {
-                  this.a.o.a = "";
-                  quyen_a.d(quyen_cz.d, quyen_ia.d);
+               if (this.a.playerComponents[var1].playerName.equals(FriendScreen.currentUserId)) {
+                  this.a.centerSoftkey.text = "";
+                  quyen_a.d(GameScreen.currentRoomId, FriendScreen.currentUserId);
                }
             }
          }

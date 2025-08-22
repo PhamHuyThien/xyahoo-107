@@ -1,26 +1,26 @@
-final class quyen_iy implements quyen_ca {
-   private quyen_ia a;
+final class quyen_iy implements Action {
+   private FriendScreen a;
 
-   quyen_iy(quyen_ia var1) {
+   quyen_iy(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.e();
-      this.a.c = null;
+   public final void action() {
+      this.a.removeAllComponents();
+      this.a.secondaryContactList = null;
       System.gc();
-      this.a.c = new quyen_b(0, 1, quyen_cj.h - 2, quyen_cj.i - 4 - quyen_et.e, true);
-      this.a.c.a = false;
-      this.a.c.c = true;
-      this.a.a(this.a.c);
-      quyen_hr.a(this.a, this.a.c);
-      quyen_hr.b(quyen_ia.H, "ID Từ Chối");
-      quyen_ia.I = 2;
-      this.a.n = quyen_ia.f(this.a);
-      if (this.a.K.size() > 0) {
-         this.a.a(this.a.K);
+      this.a.secondaryContactList = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true);
+      this.a.secondaryContactList.isChatMode = false;
+      this.a.secondaryContactList.isLoading = true;
+      this.a.toggleOfflineFilter(this.a.secondaryContactList);
+      UIUtils.focusComponent(this.a, this.a.secondaryContactList);
+      UIUtils.setScreenSubtitleText(FriendScreen.instance, "ID Từ Chối");
+      FriendScreen.currentViewMode = 2;
+      this.a.rightSoftkey = FriendScreen.getBackButton(this.a);
+      if (this.a.blockedUsers.size() > 0) {
+         this.a.sendBulkRequest(this.a.blockedUsers);
       } else {
-         this.a.c.c = false;
+         this.a.secondaryContactList.isLoading = false;
       }
    }
 }

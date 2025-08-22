@@ -1,18 +1,18 @@
-final class quyen_fj implements quyen_ca {
-   private quyen_et a;
+final class quyen_fj implements Action {
+   private GameManager a;
    private final String b;
-   private final quyen_cs c;
-   private final quyen_co d;
+   private final TextInputComponent c;
+   private final DialogScreen d;
 
-   quyen_fj(quyen_et var1, String var2, quyen_cs var3, quyen_co var4) {
+   quyen_fj(GameManager var1, String var2, TextInputComponent var3, DialogScreen var4) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
       this.d = var4;
    }
 
-   public final void a() {
-      quyen_a.a(this.b, this.c.c(), (byte)0);
-      this.a.c(this.d);
+   public final void action() {
+      quyen_a.a(this.b, this.c.getText(), (byte)0);
+      this.a.removeScreen(this.d);
    }
 }

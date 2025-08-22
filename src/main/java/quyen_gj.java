@@ -1,7 +1,7 @@
-final class quyen_gj implements quyen_ca {
-   quyen_gj(quyen_et var1) {
+final class quyen_gj implements Action {
+   quyen_gj(GameManager var1) {
    }
 
-   public final void a() {
+   public final void action() {
    }
 }

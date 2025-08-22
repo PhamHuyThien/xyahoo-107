@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- *** GENERATED FROM project.xml - DO NOT EDIT *** -->
-<project name="X-Yahoo-100-impl" default="jar" basedir="..">
+<project name="xyahoo-107-impl" default="jar" basedir="..">
     <!--load-properties-->
     <target name="pre-load-properties">
         <property file="nbproject/private/private.properties"/>

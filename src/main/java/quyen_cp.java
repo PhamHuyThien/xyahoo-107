@@ -40,8 +40,8 @@ public final class quyen_cp {
       if (e == null) {
          try {
             e = Image.createImage("/Logo.png");
-            d = quyen_n.j >> 1;
-            c = quyen_n.k >> 1;
+            d = GameGraphics.screenWidth >> 1;
+            c = GameGraphics.screenHeight >> 1;
          } catch (IOException var0) {
          }
       }
@@ -84,7 +84,7 @@ public final class quyen_cp {
             n7 = !bl ? n2 : (bl ? n2 - quyen_cp.a(string2, n8 + 1, n - n8 - 1, n5) : n2 - (quyen_cp.a(string2, n8 + 1, n - n8 - 1, n5) >> 1));
             n3 += n5 == 0 ? f : f - 1;
          } else if ((n9 = i.indexOf(n9)) >= 0) {
-            graphics2.drawRegion(quyen_bt.g, 0, n9 * (f - 1), 7, f - 1, 0, n7, n3, 20);
+            graphics2.drawRegion(FontRenderer.numberImage, 0, n9 * (f - 1), 7, f - 1, 0, n7, n3, 20);
             n7 += j[n9] - (n5 == 0 ? 1 : 2);
          } else {
             n7 += g;

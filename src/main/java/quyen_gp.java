@@ -1,14 +1,14 @@
-final class quyen_gp implements quyen_ca {
-   private quyen_go a;
+final class quyen_gp implements Action {
+   private PhotoViewerScreen a;
 
-   quyen_gp(quyen_go var1) {
+   quyen_gp(PhotoViewerScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.c = null;
-      this.a.b = null;
-      this.a.a = null;
-      quyen_go.a(this.a, null);
+   public final void action() {
+      this.a.photoComponent = null;
+      this.a.imageBytes = null;
+      this.a.displayImage = null;
+      PhotoViewerScreen.showSaveButton(this.a, null);
    }
 }

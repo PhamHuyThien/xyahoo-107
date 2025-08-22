@@ -1,14 +1,14 @@
-final class quyen_k implements quyen_ca {
-   private quyen_b a;
+final class quyen_k implements Action {
+   private ContactListComponent a;
 
-   quyen_k(quyen_b var1) {
+   quyen_k(ContactListComponent var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_a.a(quyen_b.a(this.a).m, false);
-      if (quyen_ia.H.d(quyen_b.a(this.a).m)) {
-         quyen_ia.H.k(quyen_b.a(this.a).m);
+   public final void action() {
+      quyen_a.a(ContactListComponent.getSelectedItem(this.a).m, false);
+      if (FriendScreen.instance.isRequestPending(ContactListComponent.getSelectedItem(this.a).m)) {
+         FriendScreen.instance.removeFromPendingList(ContactListComponent.getSelectedItem(this.a).m);
       }
    }
 }

@@ -1,18 +1,18 @@
-final class quyen_df implements quyen_ca {
-   private quyen_cz a;
+final class quyen_df implements Action {
+   private GameScreen a;
 
-   quyen_df(quyen_cz var1) {
+   quyen_df(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (this.a.K.f) {
-         this.a.K.f = false;
+   public final void action() {
+      if (this.a.cardGameComponent.isFirstMove) {
+         this.a.cardGameComponent.isFirstMove = false;
       }
 
-      if (quyen_ia.d.equals(this.a.A)) {
-         this.a.K.g = true;
-         quyen_a.f(quyen_cz.d, quyen_ia.d);
+      if (FriendScreen.currentUserId.equals(this.a.currentPlayerTurn)) {
+         this.a.cardGameComponent.gameEnded = true;
+         quyen_a.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
       }
    }
 }

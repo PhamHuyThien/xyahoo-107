@@ -1,4 +1,4 @@
-final class quyen_ex implements quyen_ca {
-   public final void a() {
+final class quyen_ex implements Action {
+   public final void action() {
    }
 }

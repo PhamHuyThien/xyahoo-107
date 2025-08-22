@@ -1,24 +1,24 @@
-final class quyen_jm implements quyen_ca {
-   final quyen_jc a;
+final class quyen_jm implements Action {
+   final YahooScreen a;
 
-   quyen_jm(quyen_jc var1) {
+   quyen_jm(YahooScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (!quyen_jc.a(this.a)) {
-         if (this.a.B) {
-            this.a.D.c("");
-            this.a.a.c("");
-            quyen_jc.c(this.a);
+   public final void action() {
+      if (!YahooScreen.checkConnectionReady(this.a)) {
+         if (this.a.isSearchMode) {
+            this.a.searchInput.setText("");
+            this.a.contactList.setSearchFilter("");
+            YahooScreen.exitSearchMode(this.a);
          }
 
-         if (quyen_jc.d(this.a) == null) {
-            quyen_jc.a(this.a, quyen_bw.a(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
+         if (YahooScreen.getActiveTextInput(this.a) == null) {
+            YahooScreen.setActiveTextInput(this.a, UIFactory.createPopupDialog(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
          }
 
-         this.a.a(quyen_jc.d(this.a));
-         quyen_hr.a(this.a, quyen_jc.d(this.a));
+         this.a.addComponent(YahooScreen.getActiveTextInput(this.a));
+         UIUtils.showTextInput(this.a, YahooScreen.getActiveTextInput(this.a));
       }
    }
 }

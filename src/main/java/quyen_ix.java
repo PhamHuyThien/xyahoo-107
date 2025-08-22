@@ -1,28 +1,28 @@
-final class quyen_ix implements quyen_ca {
+final class quyen_ix implements Action {
    private quyen_iw a;
 
    quyen_ix(quyen_iw var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       quyen_iw var1 = this.a;
-      String var5 = quyen_ia.c(this.a.a).c().trim();
-      quyen_hg var2;
-      if ((var2 = (quyen_hg)quyen_et.c.e(var5)) != null) {
-         var2.b(1);
-         quyen_et.c.f(var5);
+      String var5 = FriendScreen.getActiveTextInput(this.a.a).getText().trim();
+      ChatScreen var2;
+      if ((var2 = (ChatScreen) GameManager.instance.setActiveScreen(var5)) != null) {
+         var2.startSlideAnimation(1);
+         GameManager.instance.f(var5);
       } else {
          long var3;
-         if ((var3 = quyen_ia.H.c(var5)) == 0L) {
+         if ((var3 = FriendScreen.instance.getUserTimestampById(var5)) == 0L) {
             quyen_a.c(var5);
-            quyen_et.c.H = true;
+            GameManager.instance.isLoading = true;
          } else {
-            (var2 = new quyen_hg(var5, false, null, null)).b = var5;
-            var2.a(var3);
-            var2.b(1);
-            quyen_et.c.a(var2);
-            quyen_et.c.f(var2.j);
+            (var2 = new ChatScreen(var5, false, null, null)).chatTitle = var5;
+            var2.setChatId(var3);
+            var2.startSlideAnimation(1);
+            GameManager.instance.addScreenToStack(var2);
+            GameManager.instance.f(var2.title);
          }
       }
 

@@ -1,11 +1,11 @@
-final class quyen_ig implements quyen_ca {
-   private quyen_ia a;
+final class quyen_ig implements Action {
+   private FriendScreen a;
 
-   quyen_ig(quyen_ia var1) {
+   quyen_ig(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_et.e().c(quyen_ia.i(this.a));
+   public final void action() {
+      GameManager.getInstance().removeScreen(FriendScreen.getStatusDialog(this.a));
    }
 }

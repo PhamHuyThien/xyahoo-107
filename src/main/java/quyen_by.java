@@ -2,9 +2,9 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 
 public final class quyen_by {
-   public quyen_bw a;
-   public quyen_bw b;
-   public quyen_bw c;
+   public UIFactory a;
+   public UIFactory b;
+   public UIFactory c;
    private String[] d;
    private boolean e = false;
    private Vector f;
@@ -25,7 +25,7 @@ public final class quyen_by {
    private int u;
    private int v;
 
-   public quyen_by(String var1, int var2, Vector var3, int var4, quyen_bw var5, quyen_bw var6, quyen_bw var7) {
+   public quyen_by(String var1, int var2, Vector var3, int var4, UIFactory var5, UIFactory var6, UIFactory var7) {
       this.j = var1;
       this.f = var3;
       this.g = var4;
@@ -35,28 +35,28 @@ public final class quyen_by {
       this.a();
    }
 
-   public quyen_by(String var1, quyen_bw var2, quyen_bw var3, quyen_bw var4) {
-      this.d = quyen_bt.c(var1, quyen_n.j - 30);
+   public quyen_by(String var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+      this.d = FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30);
       this.a(var2, var3, var4);
       this.a();
    }
 
-   public quyen_by(String[] var1, quyen_bw var2, quyen_bw var3, quyen_bw var4) {
+   public quyen_by(String[] var1, UIFactory var2, UIFactory var3, UIFactory var4) {
       this.d = var1;
       this.a(var2, var3, var4);
       this.a();
    }
 
-   private void a(quyen_bw var1, quyen_bw var2, quyen_bw var3) {
+   private void a(UIFactory var1, UIFactory var2, UIFactory var3) {
       this.a = var1;
       this.c = var3;
       this.b = var2;
       if (this.b != null) {
-         this.u = quyen_n.j - quyen_bt.b(this.b.a) >> 1;
+         this.u = GameGraphics.screenWidth - FontRenderer.getTextWidth(this.b.text) >> 1;
       }
 
       if (this.c != null) {
-         this.v = quyen_n.j - quyen_bt.b(this.c.a) - 4;
+         this.v = GameGraphics.screenWidth - FontRenderer.getTextWidth(this.c.text) - 4;
       }
    }
 
@@ -68,18 +68,18 @@ public final class quyen_by {
    private void a() {
       if (this.f == null) {
          this.k = this.d.length;
-         this.p = this.k * (quyen_bt.e + 2) + (this.e ? 20 : 0);
-         this.q = this.p + (quyen_bt.e << 1) - 1;
+         this.p = this.k * (FontRenderer.fontHeight + 2) + (this.e ? 20 : 0);
+         this.q = this.p + (FontRenderer.fontHeight << 1) - 1;
          if (this.q < 30) {
             this.q = 30;
          }
 
-         if (this.q > quyen_n.k - 35) {
-            this.q = this.p = quyen_n.k - 35;
+         if (this.q > GameGraphics.screenHeight - 35) {
+            this.q = this.p = GameGraphics.screenHeight - 35;
          }
 
          for (int var1 = 0; var1 < this.k; var1++) {
-            int var2 = quyen_bt.b(this.d[var1]) + 10;
+            int var2 = FontRenderer.getTextWidth(this.d[var1]) + 10;
             if (this.r < var2) {
                this.r = var2;
             }
@@ -87,7 +87,7 @@ public final class quyen_by {
       } else {
          for (int var4 = 0; var4 < this.i; var4++) {
             for (int var6 = 0; var6 < this.g; var6++) {
-               int var3 = quyen_bt.b(((String[])this.f.elementAt(var4))[var6]) + 10;
+               int var3 = FontRenderer.getTextWidth(((String[])this.f.elementAt(var4))[var6]) + 10;
                if (this.r < var3) {
                   this.r = var3;
                }
@@ -96,12 +96,12 @@ public final class quyen_by {
 
          this.q = 0;
          if (this.j != null) {
-            this.q = this.q + quyen_bt.e + 11;
+            this.q = this.q + FontRenderer.fontHeight + 11;
          }
 
          for (int var5 = 0; var5 < this.i; var5++) {
             for (int var7 = 0; var7 < this.g; var7++) {
-               this.q = this.q + quyen_bt.e + 2;
+               this.q = this.q + FontRenderer.fontHeight + 2;
             }
 
             this.q += 12;
@@ -113,11 +113,11 @@ public final class quyen_by {
          this.r = 100;
       }
 
-      if (this.r > quyen_n.j - 15) {
-         this.r = quyen_n.j - 15;
+      if (this.r > GameGraphics.screenWidth - 15) {
+         this.r = GameGraphics.screenWidth - 15;
       }
 
-      this.s = quyen_n.k - this.q >> 1;
+      this.s = GameGraphics.screenHeight - this.q >> 1;
       quyen_by var10000;
       int var10001;
       int var10002;
@@ -138,7 +138,7 @@ public final class quyen_by {
    }
 
    public final void a(Graphics var1) {
-      this.l = (quyen_n.j - this.r >> 1) + 1;
+      this.l = (GameGraphics.screenWidth - this.r >> 1) + 1;
       var1.setClip(this.l, this.m, this.n, this.o);
       int var2 = this.r / 50 + 1;
 
@@ -146,40 +146,40 @@ public final class quyen_by {
          int var3 = this.q / 50 + 1;
 
          while (--var3 >= 0) {
-            var1.drawImage(quyen_et.r, this.l + var2 * 50, this.m + var3 * 50, 0);
+            var1.drawImage(GameManager.backgroundImage, this.l + var2 * 50, this.m + var3 * 50, 0);
          }
       }
 
       if (this.r > 110) {
-         var1.drawRegion(quyen_et.s, 0, 0, 55, 20, 0, this.l, this.m, 0);
-         var1.drawRegion(quyen_et.s, 87, 0, 55, 20, 0, this.l + this.n - 55, this.m, 0);
+         var1.drawRegion(GameManager.dialogBackground, 0, 0, 55, 20, 0, this.l, this.m, 0);
+         var1.drawRegion(GameManager.dialogBackground, 87, 0, 55, 20, 0, this.l + this.n - 55, this.m, 0);
          var1.setClip(this.l + 55, this.m, this.n - 110, 20);
          int var9 = (this.n - 110 >> 5) + 1;
 
          while (--var9 >= 0) {
-            var1.drawRegion(quyen_et.s, 55, 0, 32, 20, 0, this.l + 55 + var9 * 32, this.m, 0);
+            var1.drawRegion(GameManager.dialogBackground, 55, 0, 32, 20, 0, this.l + 55 + var9 * 32, this.m, 0);
          }
       }
 
       var1.setClip(-1000, -1000, 5000, 5000);
       var1.setColor(14545919);
-      quyen_bs.a(var1, this.l - 1, this.s, this.r - 1, this.q - 1);
+      ButtonComponent.drawRoundedBorder(var1, this.l - 1, this.s, this.r - 1, this.q - 1);
       var1.drawRect(this.l - 1, this.s, this.r - 1, this.q - 1);
-      quyen_bs.a(var1, this.l - 2, this.s - 1, this.r + 1, this.q + 1);
+      ButtonComponent.drawRoundedBorder(var1, this.l - 2, this.s - 1, this.r + 1, this.q + 1);
       var1.setClip(-1000, -1000, 5000, 5000);
       if (this.f == null) {
          for (int var6 = 0; var6 < this.k; var6++) {
-            quyen_bt.a(quyen_bt.c).a(this.d[var6], quyen_n.j - quyen_bt.b(this.d[var6]) >> 1, this.t + var6 * (quyen_bt.e + 2), var1);
+            FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.d[var6], GameGraphics.screenWidth - FontRenderer.getTextWidth(this.d[var6]) >> 1, this.t + var6 * (FontRenderer.fontHeight + 2), var1);
          }
 
          if (this.e) {
-            quyen_et.c.a(var1, quyen_cp.d, this.t + this.k * quyen_bt.e + quyen_bt.e + 3);
+            GameManager.instance.drawLoading(var1, quyen_cp.d, this.t + this.k * FontRenderer.fontHeight + FontRenderer.fontHeight + 3);
          }
       } else {
          var1.setColor(11320516);
          if (this.j != null) {
-            quyen_bt.a(quyen_bt.c).a(this.j, quyen_n.j - quyen_bt.b(this.j) >> 1, this.t, var1);
-            var2 = this.t + quyen_bt.e;
+            FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.j, GameGraphics.screenWidth - FontRenderer.getTextWidth(this.j) >> 1, this.t, var1);
+            var2 = this.t + FontRenderer.fontHeight;
             var1.fillRect(this.l, var2 + 5, this.n, 2);
             var2 += 12;
          } else {
@@ -189,8 +189,8 @@ public final class quyen_by {
          for (int var10 = 0; var10 < this.i; var10++) {
             for (int var4 = 0; var4 < this.g; var4++) {
                String[] var5 = (String[])this.f.elementAt(var10);
-               quyen_bt.a(quyen_bt.c).a(var5[var4], this.h == 0 ? this.l + 10 : quyen_n.j - quyen_bt.b(var5[var4]) >> 1, var2, var1);
-               var2 += quyen_bt.e + 2;
+               FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(var5[var4], this.h == 0 ? this.l + 10 : GameGraphics.screenWidth - FontRenderer.getTextWidth(var5[var4]) >> 1, var2, var1);
+               var2 += FontRenderer.fontHeight + 2;
             }
 
             if (var10 < this.i - 1) {
@@ -201,17 +201,17 @@ public final class quyen_by {
          }
       }
 
-      quyen_cj.f(var1);
+      Screen.renderHeader(var1);
       if (this.a != null) {
-         quyen_bt.a(quyen_bt.c).a(this.a.a, 4, quyen_cj.z, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.a.text, 4, Screen.softkeyY, var1);
       }
 
       if (this.b != null) {
-         quyen_bt.a(quyen_bt.c).a(this.b.a, this.u, quyen_cj.z, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.b.text, this.u, Screen.softkeyY, var1);
       }
 
       if (this.c != null) {
-         quyen_bt.a(quyen_bt.c).a(this.c.a, this.v, quyen_cj.z, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.c.text, this.v, Screen.softkeyY, var1);
       }
    }
 }

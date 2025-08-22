@@ -1,11 +1,11 @@
-final class quyen_at implements quyen_ca {
+final class quyen_at implements Action {
     private final byte[] a;
 
     quyen_at(byte[] var1) {
         this.a = var1;
     }
 
-    public final void a() {
+    public final void action() {
         quyen_af.a(this.a);
     }
 }

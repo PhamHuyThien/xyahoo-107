@@ -1,16 +1,16 @@
-final class quyen_bf implements quyen_ca {
-   private quyen_be a;
+final class quyen_bf implements Action {
+   private DownloadScreen a;
 
-   quyen_bf(quyen_be var1) {
+   quyen_bf(DownloadScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_ba var1;
-      if ((var1 = this.a.a.c().i).e == 0) {
-         quyen_et.c.a(var1.j, var1.h, true, new quyen_go());
+   public final void action() {
+      DownloadData var1;
+      if ((var1 = this.a.downloadListComponent.getSelectedItem().i).downloadType == 0) {
+         GameManager.instance.a(var1.imageBytes, var1.fileName, true, new PhotoViewerScreen());
       } else {
-         quyen_et.a(var1.j, var1.h, true, 2);
+         GameManager.a(var1.imageBytes, var1.fileName, true, 2);
       }
    }
 }

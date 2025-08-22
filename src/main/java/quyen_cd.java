@@ -1,11 +1,11 @@
-final class quyen_cd implements quyen_ca {
-   private quyen_cc a;
+final class quyen_cd implements Action {
+   private ImageComponent a;
 
-   quyen_cd(quyen_cc var1) {
+   quyen_cd(ImageComponent var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.b(0, 0);
+   public final void action() {
+      this.a.handlePointerPress(0, 0);
    }
 }

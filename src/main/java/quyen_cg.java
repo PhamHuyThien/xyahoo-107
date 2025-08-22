@@ -1,11 +1,11 @@
-final class quyen_cg implements quyen_ca {
-   private quyen_cf a;
+final class quyen_cg implements Action {
+   private TextLinkComponent a;
 
-   quyen_cg(quyen_cf var1) {
+   quyen_cg(TextLinkComponent var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.c.a();
+   public final void action() {
+      this.a.linkAction.action();
    }
 }

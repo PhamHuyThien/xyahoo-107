@@ -1,15 +1,15 @@
-final class quyen_do implements quyen_ca {
-   private quyen_cz a;
+final class quyen_do implements Action {
+   private GameScreen a;
 
-   quyen_do(quyen_cz var1) {
+   quyen_do(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      this.a.b(quyen_cz.h(this.a));
-      this.a.E = false;
-      quyen_hr.a(this.a, quyen_cz.e(this.a));
-      quyen_cz.f(this.a);
-      quyen_cz.h(this.a).c("");
+   public final void action() {
+      this.a.removeComponent(GameScreen.getBetInputComponent(this.a));
+      this.a.isBettingMode = false;
+      UIUtils.focusComponent(this.a, GameScreen.getFocusedComponent(this.a));
+      GameScreen.adjustScroll(this.a);
+      GameScreen.getBetInputComponent(this.a).setText("");
    }
 }

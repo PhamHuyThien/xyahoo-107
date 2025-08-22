@@ -1,11 +1,11 @@
-final class quyen_ij implements quyen_ca {
-   private final quyen_ch a;
+final class quyen_ij implements Action {
+   private final ListComponent a;
 
-   quyen_ij(quyen_ia var1, quyen_ch var2) {
+   quyen_ij(FriendScreen var1, ListComponent var2) {
       this.a = var2;
    }
 
-   public final void a() {
-      quyen_a.i(this.a.c().c);
+   public final void action() {
+      quyen_a.i(this.a.getSelectedItem().c);
    }
 }

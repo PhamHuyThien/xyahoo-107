@@ -44,7 +44,7 @@ public final class quyen_hy extends Form implements CommandListener {
       this.addCommand(this.g);
       this.addCommand(this.h);
       this.setCommandListener(this);
-      Display.getDisplay(Xuka.i).setCurrent(this);
+      Display.getDisplay(Xuka.instance).setCurrent(this);
    }
 
    public final void a(String var1) {
@@ -57,12 +57,12 @@ public final class quyen_hy extends Form implements CommandListener {
       this.i = null;
       this.b = null;
       a = null;
-      quyen_et.c.H();
+      GameManager.instance.completeFileSend();
    }
 
    public final void commandAction(Command var1, Displayable var2) {
       if (var1.getLabel().equals(quyen_cr.c())) {
-         quyen_et.a();
+         GameManager.showMainScreen();
          this.b();
       } else {
          String var3 = this.d.getString().trim();
@@ -72,32 +72,32 @@ public final class quyen_hy extends Form implements CommandListener {
          if (var1 == this.g) {
             quyen_eb.a();
             if (quyen_eb.a(this.d.getString())) {
-               quyen_n.b();
+               GameGraphics.clearKeyStates();
                quyen_bn var6;
                (var6 = quyen_bn.a()).a(0);
 
                try {
-                  quyen_bk var7 = quyen_bk.a();
+                  FileSystemInterface var7 = FileSystemInterface.getInstance();
                   var6.c = new quyen_hz(this, var6, var7);
                   var6.a("Chọn thư mục", 2);
                } catch (ClassNotFoundException var5) {
-                  quyen_et.a("Xubi", "Điện thoại không hỗ trợ chức năng này", true);
+                  GameManager.showAlert("Xubi", "Điện thoại không hỗ trợ chức năng này", true);
                }
             } else {
-               quyen_et.e();
-               quyen_et.a("Xubi", "Tên file không hợp lệ", true);
+               GameManager.getInstance();
+               GameManager.showAlert("Xubi", "Tên file không hợp lệ", true);
             }
          } else if (var1 == this.f) {
             if (this.b != null) {
-               quyen_et.c.a(this.i, this.b, (byte)1);
-               quyen_et.c.I();
+               GameManager.instance.a(this.i, this.b, (byte)1);
+               GameManager.instance.startFileSend();
             } else {
                c();
             }
          } else {
             if (var1 == this.e) {
                if (this.b != null) {
-                  quyen_et.a(this.b, this.i, false, 0);
+                  GameManager.a(this.b, this.i, false, 0);
                   return;
                }
 
@@ -109,7 +109,7 @@ public final class quyen_hy extends Form implements CommandListener {
 
    private static void c() {
       Alert var0 = new Alert("X Yahoo!", "Bạn chưa quay video", null, AlertType.ERROR);
-      Display.getDisplay(Xuka.i).setCurrent(var0);
+      Display.getDisplay(Xuka.instance).setCurrent(var0);
    }
 
    static String a(quyen_hy var0) {

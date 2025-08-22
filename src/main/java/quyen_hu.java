@@ -10,6 +10,6 @@ final class quyen_hu implements ItemStateListener {
 
    public final void itemStateChanged(Item var1) {
       quyen_ht.a(this.a).setLevel(quyen_ht.b(this.a).getValue());
-      quyen_ht.b(this.a).setLabel(quyen_hr.a("Âm lượng", " : ", Integer.toString(quyen_ht.a(this.a).getLevel()), null));
+      quyen_ht.b(this.a).setLabel(UIUtils.concatStrings("Âm lượng", " : ", Integer.toString(quyen_ht.a(this.a).getLevel()), null));
    }
 }

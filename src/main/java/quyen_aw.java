@@ -1,4 +1,4 @@
-final class quyen_aw implements quyen_ca {
+final class quyen_aw implements Action {
    private final String a;
    private final String b;
 
@@ -7,8 +7,8 @@ final class quyen_aw implements quyen_ca {
       this.b = var2;
    }
 
-   public final void a() {
-      quyen_et.c.d("Vui lòng chờ");
-      Xuka.a(this.a, this.b, null, null, true);
+   public final void action() {
+      GameManager.instance.d("Vui lòng chờ");
+      Xuka.sendRequest(this.a, this.b, null, null, true);
    }
 }

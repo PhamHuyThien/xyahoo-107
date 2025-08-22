@@ -1,11 +1,11 @@
-final class quyen_dl implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dl implements Action {
+   private GameScreen a;
 
-   quyen_dl(quyen_cz var1) {
+   quyen_dl(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      quyen_cz.a(this.a);
+   public final void action() {
+      GameScreen.showChatInput(this.a);
    }
 }

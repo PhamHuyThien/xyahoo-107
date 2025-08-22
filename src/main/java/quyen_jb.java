@@ -5,11 +5,11 @@ import javax.wireless.messaging.TextMessage;
 final class quyen_jb implements Runnable {
    private final String a;
    private final String b;
-   private final quyen_ca c;
+   private final Action c;
    private final boolean d;
-   private final quyen_ca e;
+   private final Action e;
 
-   quyen_jb(String var1, String var2, quyen_ca var3, boolean var4, quyen_ca var5) {
+   quyen_jb(String var1, String var2, Action var3, boolean var4, Action var5) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
@@ -25,20 +25,20 @@ final class quyen_jb implements Runnable {
          var2.setPayloadText(this.b);
          var1.send(var2);
          if (this.c == null) {
-            quyen_et.c.f();
-            quyen_et.c.d("Gửi SMS thành công");
+            GameManager.instance.closeDialog();
+            GameManager.instance.d("Gửi SMS thành công");
          } else {
-            this.c.a();
+            this.c.action();
          }
       } catch (Exception var3) {
          if (this.d) {
-            quyen_et.c.f();
+            GameManager.instance.closeDialog();
          }
 
          if (this.e == null) {
-            quyen_et.c.d("Lỗi gửi SMS");
+            GameManager.instance.d("Lỗi gửi SMS");
          } else {
-            this.e.a();
+            this.e.action();
          }
       }
    }

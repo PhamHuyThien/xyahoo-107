@@ -1,34 +1,34 @@
-final class quyen_ie implements quyen_ca {
-   private quyen_ia a;
+final class quyen_ie implements Action {
+   private FriendScreen a;
 
-   quyen_ie(quyen_ia var1) {
+   quyen_ie(FriendScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
-      if (quyen_et.c.f(quyen_et.c.h)) {
-         quyen_et.c.e(quyen_et.c.h);
+   public final void action() {
+      if (GameManager.instance.f(GameManager.instance.friendManager)) {
+         GameManager.instance.e(GameManager.instance.friendManager);
       } else {
-         quyen_et.c.B();
-         quyen_et.c.a(quyen_et.c.h);
-         quyen_et.c.e(quyen_et.c.h);
+         GameManager.instance.B();
+         GameManager.instance.addScreenToStack(GameManager.instance.friendManager);
+         GameManager.instance.e(GameManager.instance.friendManager);
       }
 
-      this.a.e();
-      this.a.c = null;
+      this.a.removeAllComponents();
+      this.a.secondaryContactList = null;
       System.gc();
-      this.a.c = new quyen_b(0, 1, quyen_cj.h - 2, quyen_cj.i - 4 - quyen_et.e, true);
-      this.a.c.a = false;
-      this.a.c.c = true;
-      this.a.a(this.a.c);
-      quyen_hr.a(this.a, this.a.c);
-      quyen_hr.b(quyen_ia.H, "Chờ Kết Bạn");
-      quyen_ia.I = 3;
-      this.a.n = quyen_ia.f(this.a);
-      if (this.a.L.size() > 0) {
-         this.a.a(this.a.L);
+      this.a.secondaryContactList = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true);
+      this.a.secondaryContactList.isChatMode = false;
+      this.a.secondaryContactList.isLoading = true;
+      this.a.toggleOfflineFilter(this.a.secondaryContactList);
+      UIUtils.focusComponent(this.a, this.a.secondaryContactList);
+      UIUtils.setScreenSubtitleText(FriendScreen.instance, "Chờ Kết Bạn");
+      FriendScreen.currentViewMode = 3;
+      this.a.rightSoftkey = FriendScreen.getBackButton(this.a);
+      if (this.a.pendingRequests.size() > 0) {
+         this.a.sendBulkRequest(this.a.pendingRequests);
       } else {
-         this.a.c.c = false;
+         this.a.secondaryContactList.isLoading = false;
       }
    }
 }

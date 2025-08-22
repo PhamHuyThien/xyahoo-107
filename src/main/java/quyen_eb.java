@@ -8,7 +8,7 @@ public final class quyen_eb extends Form implements CommandListener {
    public static quyen_eb a;
    private int d;
    public TextField b = new TextField("", "", 1024, 0);
-   quyen_ca c;
+   Action c;
 
    public static final quyen_eb a() {
       if (a == null) {
@@ -37,28 +37,28 @@ public final class quyen_eb extends Form implements CommandListener {
       if (var1.getLabel().equals("OK")) {
          if (this.d == 0) {
             if (!a(this.b.getString())) {
-               quyen_et.e();
-               quyen_et.a("Xubi", "Tên file không hợp lệ", true);
+               GameManager.getInstance();
+               GameManager.showAlert("Xubi", "Tên file không hợp lệ", true);
                return;
             }
 
-            quyen_et.e();
-            quyen_et.a();
+            GameManager.getInstance();
+            GameManager.showMainScreen();
             if (this.c != null) {
-               this.c.a();
+               this.c.action();
                return;
             }
          }
       } else if (var1.getLabel().equals(quyen_cr.c())) {
-         quyen_et.e();
-         quyen_et.a();
+         GameManager.getInstance();
+         GameManager.showMainScreen();
       }
    }
 
    public static boolean a(String var0) {
       if (var0 != null && var0.length() > 0) {
-         for (int var1 = 0; var1 < quyen_hr.a.length; var1++) {
-            if (var0.indexOf(quyen_hr.a[var1]) >= 0) {
+         for (int var1 = 0; var1 < UIUtils.INVALID_FILENAME_CHARS.length; var1++) {
+            if (var0.indexOf(UIUtils.INVALID_FILENAME_CHARS[var1]) >= 0) {
                return false;
             }
          }

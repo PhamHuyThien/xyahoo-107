@@ -1,8 +1,8 @@
-final class quyen_hk implements quyen_ca {
-   quyen_hk(quyen_hg var1) {
+final class quyen_hk implements Action {
+   quyen_hk(ChatScreen var1) {
    }
 
-   public final void a() {
-      quyen_et.e().a(0);
+   public final void action() {
+      GameManager.getInstance().showEmojiPicker(0);
    }
 }

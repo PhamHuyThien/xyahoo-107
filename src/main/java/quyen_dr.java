@@ -1,21 +1,21 @@
-final class quyen_dr implements quyen_ca {
-   private quyen_cz a;
+final class quyen_dr implements Action {
+   private GameScreen a;
 
-   quyen_dr(quyen_cz var1) {
+   quyen_dr(GameScreen var1) {
       this.a = var1;
    }
 
-   public final void a() {
+   public final void action() {
       int var1 = 0;
 
       boolean var10000;
       while (true) {
-         if (var1 >= quyen_cw.a) {
+         if (var1 >= CardGameComponent.handCardCount) {
             var10000 = false;
             break;
          }
 
-         if (quyen_cw.b[var1].e) {
+         if (CardGameComponent.handCards[var1].isSelected) {
             var10000 = true;
             break;
          }
@@ -24,9 +24,9 @@ final class quyen_dr implements quyen_ca {
       }
 
       if (var10000) {
-         this.a.K.b();
+         this.a.cardGameComponent.deselectAllCards();
       } else {
-         this.a.K.a();
+         this.a.cardGameComponent.selectAllCards();
       }
    }
 }
