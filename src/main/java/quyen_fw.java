@@ -1,0 +1,32 @@
+final class quyen_fw implements quyen_ca {
+   private quyen_fv a;
+   private final quyen_bn b;
+   private final String c;
+
+   quyen_fw(quyen_fv var1, quyen_bn var2, String var3) {
+      this.a = var1;
+      this.b = var2;
+      this.c = var3;
+   }
+
+   public final void a() {
+      quyen_fv var1 = this.a;
+      quyen_et.a(this.a.a, (byte)-1);
+      if (this.b.d(this.c)) {
+         var1 = this.a;
+         quyen_et.a(this.a.a, (byte)0);
+      } else if (this.b.e(this.c)) {
+         var1 = this.a;
+         quyen_et.a(this.a.a, (byte)1);
+      }
+
+      var1 = this.a;
+      if (quyen_et.f(this.a.a) != -1) {
+         var1 = this.a;
+         this.a.a.e(true);
+      } else {
+         var1 = this.a;
+         this.a.a.d("Điện thoại không hổ trợ xem file này");
+      }
+   }
+}

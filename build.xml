@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="xyahoo-107" default="jar" basedir=".">
+    <description>Builds, tests, and runs the project .</description>
+
+    <!--    build để run project trên netbeans-->
+<!--        <import file="nbproject/build-impl.xml"/>-->
+
+    <!--        build project trên intellij-->
+    <property name="src.dir" value="src/main/java"/>
+    <property name="res.dir" value="src/main/resources"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="libs"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="tool.dir" value="tools"/>
+    <property name="emulator.dir" value="F:\source\thienph\AngelChipEmulator.jar"/>
+
+    <target name="clean-all" description="Xóa bin.dir và dist.dir">
+        <echo message="Deleting ${build.dir} and ${dist.dir}..."/>
+        <delete dir="${build.dir}" failonerror="true"/>
+        <delete dir="${dist.dir}" failonerror="true"/>
+    </target>
+
+    <target name="compile">
+        <echo message="Compile sources from ${src.dir} to ${build.dir}..."/>
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" fork="true"
+               bootclasspath="${lib.dir}/jsr-120_1.1.jar;${lib.dir}/cldc_1.1.jar;${lib.dir}/midp_2.1.jar;${lib.dir}/jsr75_1.0.jar;${lib.dir}/jsr135_1.1.jar;${java.home}/lib/rt.jar"
+               includeantruntime="true"
+               encoding="UTF-8"/>
+    </target>
+
+    <target name="copy-resources">
+        <echo message="copy resources from ${res.dir} to ${build.dir}..."/>
+        <mkdir dir="${build.dir}"/>
+        <copy todir="${build.dir}">
+            <fileset dir="${res.dir}"/>
+        </copy>
+    </target>
+
+<!--    <target name="preverify">-->
+<!--        <echo message="preverify classes from ${build.dir}..."/>-->
+<!--        <exec executable="${tool.dir}/preverify.exe" dir="${build.dir}">-->
+<!--            <arg value="-classpath"/>-->
+<!--            <arg value="${lib.dir}/jsr-120_1.1.jar;${lib.dir}/cldc_1.1.jar;${lib.dir}/midp_2.1.jar${lib.dir}/jsr75_1.0.jar;${lib.dir}/jsr135_1.1.jar"/>-->
+<!--            <arg value="-d"/>-->
+<!--            <arg value="${build.dir}"/>-->
+<!--            <arg value="${build.dir}"/>-->
+<!--        </exec>-->
+<!--    </target>-->
+
+    <target name="jar" depends="compile,copy-resources">
+        <echo message="Create jar from ${build.dir} to ${dist.dir}..."/>
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/xyahoo-107.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="MIDlet-Name" value="XYahoo!"/>
+                <attribute name="MIDlet-Version" value="1.0.7"/>
+                <attribute name="MIDlet-Vendor" value="ThienDz"/>
+                <attribute name="MicroEdition-Profile" value="MIDP-2.1"/>
+                <attribute name="MicroEdition-Configuration" value="CLDC-1.1"/>
+                <attribute name="MIDlet-1" value="XYahoo!,/icon.png,Xuka"/>
+                <attribute name="RefCode" value="ref-6ee1y1zb2mqa-144407146217291637185"/>
+                <attribute name="App-ID" value="0"/>
+                <attribute name="Parner-ID" value="400"/>
+                <attribute name="IP-Address" value="127.0.0.1"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run-emulator">
+        <java jar="${emulator.dir}" fork="true" failonerror="true">
+            <arg value="${dist.dir}\xyahoo-107.jar"/>
+        </java>
+    </target>
+
+</project>
