@@ -4,7 +4,7 @@ final class quyen_dv implements Action {
 
    public final void action() {
       if (GameScreen.totalRooms == 0) {
-         quyen_a.g(GameScreen.gameTypeId);
+         PacketSender.g(GameScreen.gameTypeId);
       }
    }
 }

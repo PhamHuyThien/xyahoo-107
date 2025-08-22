@@ -6,7 +6,7 @@ final class quyen_gf implements Runnable {
    }
 
    public final void run() {
-      quyen_af.a(this.a);
+      MessageProcessor.a(this.a);
       System.gc();
    }
 }

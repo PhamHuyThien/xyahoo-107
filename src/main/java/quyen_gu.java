@@ -23,8 +23,8 @@ public final class quyen_gu extends DialogScreen {
       System.gc();
       UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
       this.calculateDialogDimensions();
-      super.nextComponentY = Screen.screenHeight - (FontRenderer.paragraphSpacing * 3 + quyen_cp.a + (GameGraphics.screenHeight > 180 ? 50 : 31) + GameManager.footerHeight) >> 1;
-      UIFactory.createImageComponent(this, 0, quyen_cp.c(), quyen_cp.c().getWidth(), quyen_cp.c().getHeight(), false, false);
+      super.nextComponentY = Screen.screenHeight - (FontRenderer.paragraphSpacing * 3 + TextRenderer.CHAR_SPACING + (GameGraphics.screenHeight > 180 ? 50 : 31) + GameManager.footerHeight) >> 1;
+      UIFactory.createImageComponent(this, 0, TextRenderer.getLogoImage(), TextRenderer.getLogoImage().getWidth(), TextRenderer.getLogoImage().getHeight(), false, false);
       if (GameGraphics.screenHeight > 220) {
          super.nextComponentY += 15;
       } else if (GameGraphics.screenHeight > 180 && GameGraphics.screenHeight <= 220) {
@@ -51,7 +51,7 @@ public final class quyen_gu extends DialogScreen {
 
    public final void i() {
       int var1;
-      if ((var1 = quyen_hs.a(this.a.getText())) == 1) {
+      if ((var1 = TextValidator.validateUsername(this.a.getText())) == 1) {
          GameManager.getInstance().showNotification("ID phải trên 5 ký tự", (Image) null, 1);
          UIUtils.focusComponent(this, (UIComponent)this.a);
       } else if (var1 == 2) {

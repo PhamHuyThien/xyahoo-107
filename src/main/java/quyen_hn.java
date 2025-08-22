@@ -6,6 +6,6 @@ final class quyen_hn implements Action {
    }
 
    public final void action() {
-      quyen_a.h(this.a);
+      PacketSender.h(this.a);
    }
 }

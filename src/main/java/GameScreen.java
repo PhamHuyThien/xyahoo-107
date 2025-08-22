@@ -232,7 +232,7 @@ public final class GameScreen extends Screen {
    }
 
    public static void requestRoomList() {
-      quyen_a.e(gameTypeId);
+      PacketSender.e(gameTypeId);
    }
 
    public final void initializeGameRoom(byte var1, String[] var2, long[] var3, int[] var4) {
@@ -518,7 +518,7 @@ public final class GameScreen extends Screen {
    public final void exitGame(boolean var1) {
       this.returnToLobby();
       this.startSlideAnimation(var1 ? -1 : 1);
-      quyen_a.a(totalRooms, currentRoomId, FriendScreen.currentUserId, this.isGameStarted);
+      PacketSender.a(totalRooms, currentRoomId, FriendScreen.currentUserId, this.isGameStarted);
    }
 
    public final void handlePlayerMove(String var1, int var2, byte[] var3, String var4, boolean var5) {

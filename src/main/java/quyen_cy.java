@@ -8,7 +8,7 @@ final class quyen_cy implements Action {
    public final void action() {
       String var1 = GameRoomGridComponent.getRoomData(this.a)[GameRoomGridComponent.getSelectedIndex(this.a)].roomId;
       if (GameRoomGridComponent.getRoomType(this.a) == 0) {
-         quyen_a.c(var1, FriendScreen.currentUserId);
+         PacketSender.c(var1, FriendScreen.currentUserId);
       }
    }
 }

@@ -166,7 +166,7 @@ public final class GameManager {
       if (var3 != null && var3.cardInfo != null) {
          return var3.cardInfo;
       } else {
-         quyen_a.a(var1, 0);
+         PacketSender.a(var1, 0);
          return null;
       }
    }
@@ -469,30 +469,30 @@ public final class GameManager {
       autoLoginYahoo = Xuka.loadBooleanSetting("atlogY", false);
       statusIcons = new Image[7];
       arrowIcons = new Image[3];
-      quyen_af.a(0);
+      MessageProcessor.a(0);
       byte[] var3;
-      Image var11 = Image.createImage(var3 = quyen_af.b(0), 0, var3.length);
+      Image var11 = Image.createImage(var3 = MessageProcessor.b(0), 0, var3.length);
       byte[] var4;
-      loadingImage = Image.createImage(var4 = quyen_af.b(1), 0, var4.length);
-      var4 = quyen_af.b(2);
+      loadingImage = Image.createImage(var4 = MessageProcessor.b(1), 0, var4.length);
+      var4 = MessageProcessor.b(2);
       byte[] var5;
-      dialogBackground = Image.createImage(var5 = quyen_af.b(3), 0, var5.length);
+      dialogBackground = Image.createImage(var5 = MessageProcessor.b(3), 0, var5.length);
       backgroundImage = Image.createImage(var4, 0, var4.length);
-      var4 = quyen_af.b(4);
-      var5 = quyen_af.b(5);
-      byte[] var6 = quyen_af.b(6);
+      var4 = MessageProcessor.b(4);
+      var5 = MessageProcessor.b(5);
+      byte[] var6 = MessageProcessor.b(6);
       arrowIcons[0] = Image.createImage(var4, 0, var4.length);
       arrowIcons[1] = Image.createImage(var5, 0, var5.length);
       arrowIcons[2] = Image.createImage(var6, 0, var6.length);
       System.gc();
-      gameIcons = Image.createImage(var4 = quyen_af.b(7), 0, var4.length);
-      var4 = quyen_af.b(8);
-      var5 = quyen_af.b(9);
-      var6 = quyen_af.b(10);
-      byte[] var7 = quyen_af.b(11);
-      byte[] var8 = quyen_af.b(12);
-      byte[] var9 = quyen_af.b(13);
-      byte[] var10 = quyen_af.b(14);
+      gameIcons = Image.createImage(var4 = MessageProcessor.b(7), 0, var4.length);
+      var4 = MessageProcessor.b(8);
+      var5 = MessageProcessor.b(9);
+      var6 = MessageProcessor.b(10);
+      byte[] var7 = MessageProcessor.b(11);
+      byte[] var8 = MessageProcessor.b(12);
+      byte[] var9 = MessageProcessor.b(13);
+      byte[] var10 = MessageProcessor.b(14);
       statusIcons[0] = Image.createImage(var4, 0, var4.length);
       statusIcons[1] = Image.createImage(var5, 0, var5.length);
       statusIcons[2] = Image.createImage(var6, 0, var6.length);
@@ -500,8 +500,8 @@ public final class GameManager {
       statusIcons[4] = Image.createImage(var8, 0, var8.length);
       statusIcons[5] = Image.createImage(var9, 0, var9.length);
       statusIcons[6] = Image.createImage(var10, 0, var10.length);
-      Image var17 = Image.createImage(var4 = quyen_af.b(15), 0, var4.length);
-      quyen_af.a();
+      Image var17 = Image.createImage(var4 = MessageProcessor.b(15), 0, var4.length);
+      MessageProcessor.a();
       int var20 = GameGraphics.screenHeight - (footerHeight << 1) + 2;
       Graphics var23 = (backgroundBuffer = Image.createImage(GameGraphics.screenWidth, var20)).getGraphics();
       int var24 = (GameGraphics.screenWidth >> 5) + 1;
@@ -578,37 +578,37 @@ public final class GameManager {
 
    public static void loadChatImages() {
       if (chatBackground == null) {
-         quyen_af.a(2);
+         MessageProcessor.a(2);
          byte[] var0;
-         cardImage = Image.createImage(var0 = quyen_af.b(0), 0, var0.length);
+         cardImage = Image.createImage(var0 = MessageProcessor.b(0), 0, var0.length);
          System.gc();
-         chatBackground = Image.createImage(var0 = quyen_af.b(1), 0, var0.length);
+         chatBackground = Image.createImage(var0 = MessageProcessor.b(1), 0, var0.length);
          System.gc();
-         avatarImage = Image.createImage(var0 = quyen_af.b(2), 0, var0.length);
+         avatarImage = Image.createImage(var0 = MessageProcessor.b(2), 0, var0.length);
          System.gc();
-         menuImage = Image.createImage(var0 = quyen_af.b(3), 0, var0.length);
-         decorationImage = Image.createImage(var0 = quyen_af.b(4), 0, var0.length);
+         menuImage = Image.createImage(var0 = MessageProcessor.b(3), 0, var0.length);
+         decorationImage = Image.createImage(var0 = MessageProcessor.b(4), 0, var0.length);
          System.gc();
-         buttonImage = Image.createImage(var0 = quyen_af.b(5), 0, var0.length);
-         gameBackground = Image.createImage(var0 = quyen_af.b(6), 0, var0.length);
+         buttonImage = Image.createImage(var0 = MessageProcessor.b(5), 0, var0.length);
+         gameBackground = Image.createImage(var0 = MessageProcessor.b(6), 0, var0.length);
          System.gc();
-         emojiImage = Image.createImage(var0 = quyen_af.b(7), 0, var0.length);
+         emojiImage = Image.createImage(var0 = MessageProcessor.b(7), 0, var0.length);
          System.gc();
-         quyen_af.a();
+         MessageProcessor.a();
       }
    }
 
    public static void loadGameImages() {
       if (splashImage == null) {
-         quyen_af.a(1);
+         MessageProcessor.a(1);
          byte[] var0;
-         splashImage = Image.createImage(var0 = quyen_af.b(0), 0, var0.length);
+         splashImage = Image.createImage(var0 = MessageProcessor.b(0), 0, var0.length);
          System.gc();
-         roomIcon = Image.createImage(var0 = quyen_af.b(1), 0, var0.length);
-         settingsIcon = Image.createImage(var0 = quyen_af.b(2), 0, var0.length);
-         friendListIcon = Image.createImage(var0 = quyen_af.b(3), 0, var0.length);
+         roomIcon = Image.createImage(var0 = MessageProcessor.b(1), 0, var0.length);
+         settingsIcon = Image.createImage(var0 = MessageProcessor.b(2), 0, var0.length);
+         friendListIcon = Image.createImage(var0 = MessageProcessor.b(3), 0, var0.length);
          System.gc();
-         quyen_af.a();
+         MessageProcessor.a();
       }
    }
 
@@ -1072,8 +1072,8 @@ public final class GameManager {
          int var5 = this.notificationQueue.size();
 
          while (--var5 >= 0) {
-            quyen_a var6;
-            if ((var6 = (quyen_a)var4.notificationQueue.elementAt(var5)) != null) {
+            Notification var6;
+            if ((var6 = (Notification)var4.notificationQueue.elementAt(var5)) != null) {
                if ((long)var4.notificationTimer % var6.c == 0L) {
                   var6.e = true;
                }
@@ -1324,7 +1324,7 @@ public final class GameManager {
                if (this.currentScreen == GameScreen.instance && GameScreen.isInGame) {
                   String var30 = FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX];
                   if (GameScreen.totalRooms == 0) {
-                     quyen_a.a(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
+                     PacketSender.a(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
                   }
                }
 
@@ -1776,7 +1776,7 @@ public final class GameManager {
    }
 
    public final void a(String var1, String var2, int var3) {
-      var2 = quyen_hs.b(var2);
+      var2 = TextValidator.filterBadWords(var2);
 
       try {
          this.yahooChat.contactList.updateContactSubtext(var1, var2, 1);
@@ -1944,11 +1944,11 @@ public final class GameManager {
                if (this.friendManager.onlineFriends.size() > 0) {
                   long[] var6 = FriendScreen.vectorToLongArray(this.friendManager.onlineFriends);
                   Packet var3 = new Packet(5000029, 2);
-                  quyen_a.a(var6.length, var3);
+                  PacketUtils.writeInt(var6.length, var3);
                   int var4 = 0;
 
                   for (int var5 = var6.length; var4 < var5; var4++) {
-                     quyen_a.a(var6[var4], var3);
+                     PacketUtils.writeLong(var6[var4], var3);
                   }
 
                   NetworkManager.sendPacket(var3);
@@ -1964,7 +1964,7 @@ public final class GameManager {
             this.e(this.friendManager);
          } else if (var1 == 11114) {
             if (gameRoom == null || !this.f(gameRoom)) {
-               quyen_a.d();
+               PacketSender.d();
                return;
             }
 
@@ -1982,12 +1982,12 @@ public final class GameManager {
             this.isLoading = var9;
             if (var2) {
                Packet var7 = new Packet(122, 2);
-               quyen_a.a(var1, var7);
+               PacketUtils.writeInt(var1, var7);
                NetworkManager.sendPacket(var7);
                return;
             }
 
-            quyen_a.a(var1);
+            PacketSender.a(var1);
          }
       }
    }
@@ -2045,7 +2045,7 @@ public final class GameManager {
          this.P();
       }
 
-      quyen_cp.b();
+      TextRenderer.clearLogoCache();
    }
 
    public static UIFactory createCloseButton() {
@@ -2086,7 +2086,7 @@ public final class GameManager {
    public final void E() {
       this.x();
       if (YahooScreen.yahooStatus == 0 && YahooScreen.statusMessage != null && YahooScreen.statusMessage.length() > 0) {
-         quyen_a.c(YahooScreen.statusMessage, 2);
+         PacketSender.c(YahooScreen.statusMessage, 2);
       }
 
       this.yahooChat.isConnectionReady = true;
@@ -2169,7 +2169,7 @@ public final class GameManager {
                var4 = 1;
             }
 
-            quyen_a var8 = new quyen_a(var1, var2, var3, (long)(var4 * 25), (long)var5, var6, true);
+            Notification var8 = new Notification(var1, var2, var3, (long)(var4 * 25), (long)var5, var6, true);
             this.notificationQueue.addElement(var8);
             return;
          }
@@ -2203,10 +2203,10 @@ public final class GameManager {
             Xuka.platform = "null";
          }
 
-         quyen_a.a(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
+         PacketSender.a(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
       }
 
-      quyen_a.e();
+      PacketSender.e();
    }
 
    public final void b(byte[] var1) {
@@ -2298,14 +2298,14 @@ public final class GameManager {
       try {
          if (this.isFileSending && this.uploadData != null) {
             if (this.fileSentBytes < this.uploadData.length - this.fileBufferSize) {
-               quyen_a.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
+               PacketSender.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
                this.fileSentBytes = this.fileSentBytes + this.fileBufferSize;
                this.fileProgress = 100 * this.fileSentBytes / this.uploadData.length;
                if (this.fileSentBytes >= this.uploadData.length) {
                   this.completeFileSend();
                }
             } else {
-               quyen_a.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
+               PacketSender.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
                this.completeFileSend();
                this.fileProgress = 100;
             }
@@ -2357,7 +2357,7 @@ public final class GameManager {
    public final void startFileSend() {
       if (!this.isFileSending) {
          this.isFileSending = true;
-         quyen_a.a(this.uploadData.length, this.uploadType, this.uploadFileName);
+         PacketSender.a(this.uploadData.length, this.uploadType, this.uploadFileName);
          this.showNotification("Đang gửi file..", (Image) null, 2);
       } else {
          this.a("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new UIFactory("Hủy bỏ", new quyen_fz(this)), null, this.b(quyen_cr.c()));
@@ -2754,7 +2754,7 @@ public final class GameManager {
       if (Xuka.loadIntData(c(var1, true), "xkcsp") == var2 && (var4 = Xuka.loadData(c(var1, false), "xkcsp")) != null) {
          this.c(var4);
       } else {
-         quyen_a.a(var1);
+         PacketSender.a(var1);
       }
    }
 

@@ -8,7 +8,7 @@ final class quyen_f implements Action {
    public final void action() {
       long var1 = ContactListComponent.getSelectedItem(this.a).m;
       Packet var3 = new Packet(5000019, 2);
-      quyen_a.a(var1, var3);
+      PacketUtils.writeLong(var1, var3);
       NetworkManager.sendPacket(var3);
    }
 }

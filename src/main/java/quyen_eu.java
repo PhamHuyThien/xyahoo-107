@@ -5,6 +5,6 @@ final class quyen_eu implements Action {
    public final void action() {
       GameManager.isConnected = true;
       GameGraphics.instance.initializeConnection();
-      quyen_a.b();
+      PacketSender.b();
    }
 }

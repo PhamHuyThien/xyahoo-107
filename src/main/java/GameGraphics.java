@@ -76,7 +76,7 @@ public final class GameGraphics extends Canvas implements Runnable {
       try {
          switch (gameState) {
             case 0:
-               quyen_af.a(var1);
+               MessageProcessor.a(var1);
             default:
                return;
             case 1:
@@ -96,7 +96,7 @@ public final class GameGraphics extends Canvas implements Runnable {
          try {
             switch (gameState) {
                case 0:
-                  quyen_af.b();
+                  MessageProcessor.b();
                   break;
                case 1:
                   GameManager.instance.handleInput(keyPressed, keyRepeated, charInput);

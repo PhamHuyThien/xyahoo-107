@@ -9,7 +9,7 @@ final class quyen_h implements Action {
       quyen_g var1 = this.a;
       long var4 = ContactListComponent.getSelectedItem(this.a.a).m;
       Packet var3 = new Packet(5000024, 2);
-      quyen_a.a(var4, var3);
+      PacketUtils.writeLong(var4, var3);
       NetworkManager.sendPacket(var3);
    }
 }

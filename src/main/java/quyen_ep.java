@@ -10,7 +10,7 @@ final class quyen_ep implements Action {
          GameManager.getInstance().d(UIUtils.concatStrings("Vui lòng nhập ID. ", "Bạn sẽ nhận mật khẩu qua tin nhắn.", null, null));
       } else {
          GameGraphics.instance.initializeConnection();
-         quyen_a.e();
+         PacketSender.e();
          NetworkManager.sendPacket(new Packet(269, 2));
          GameManager.instance.c(true);
       }

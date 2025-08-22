@@ -4,7 +4,7 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-public class quyen_af {
+public class MessageProcessor {
    private static Vector b;
    private static ContextMenu c;
    private static byte d;
@@ -14,7 +14,7 @@ public class quyen_af {
    private static boolean g;
 
    private static String a(Packet var0) {
-      return quyen_a.g(var0);
+      return PacketUtils.readString(var0);
    }
 
    public static void a(byte[] var0) {
@@ -23,14 +23,14 @@ public class quyen_af {
          (var1 = new Packet(0, 0)).setPayload(new ByteBuffer(var0));
 
          while (true) {
-            int var148;
-            switch (var148 = quyen_a.d(var1)) {
+            int var148 = PacketUtils.readInt(var1);
+            switch (var148) {
                case 0:
-                  int var170 = quyen_a.d(var1);
+                  int var170 = PacketUtils.readInt(var1);
                   GameManager.instance.destroyScreen(GameManager.instance.b(var170));
                   break;
                case 1:
-                  boolean var217 = quyen_a.e(var1);
+                  boolean var217 = PacketUtils.readBoolean(var1);
                   String var169 = a(var1);
                   GameManager.instance.c(var169).a(var217);
                   break;
@@ -60,10 +60,10 @@ public class quyen_af {
                   System.gc();
                   return;
                case 3:
-                  int var167 = quyen_a.d(var1);
+                  int var167 = PacketUtils.readInt(var1);
                   Packet var183 = new Packet(0, 0);
-                  quyen_a.a(var167, var183);
-                  int var168 = quyen_a.d(var1);
+                  PacketUtils.writeInt(var167, var183);
+                  int var168 = PacketUtils.readInt(var1);
                   int var193 = 0;
 
                   for (; var193 < var168; var193++) {
@@ -71,12 +71,12 @@ public class quyen_af {
                      int var232 = var1.getPayload().readByte();
                      if (var212 == 0) {
                         if (var232 == 0) {
-                           quyen_a.a(quyen_a.d(var1), var183);
+                           PacketUtils.writeInt(PacketUtils.readInt(var1), var183);
                         } else if (var232 == 1) {
-                           var232 = quyen_a.d(var1);
+                           var232 = PacketUtils.readInt(var1);
                            Screen var256 = GameManager.instance.b(var232);
-                           int var274 = quyen_a.d(var1);
-                           boolean var216 = quyen_a.e(var1);
+                           int var274 = PacketUtils.readInt(var1);
+                           boolean var216 = PacketUtils.readBoolean(var1);
                            var232 = 0;
                            UIComponent var275;
                            if ((var275 = var256.findComponentByID(var274)) != null) {
@@ -102,16 +102,16 @@ public class quyen_af {
                               }
                            }
 
-                           quyen_a.a(var232, var183);
+                           PacketUtils.writeInt(var232, var183);
                         }
                      } else if (var212 == 1) {
                         if (var232 == 0) {
-                           quyen_a.a(a(var1), var183);
+                           PacketUtils.writeString(a(var1), var183);
                         } else if (var232 == 1) {
-                           var232 = quyen_a.d(var1);
+                           var232 = PacketUtils.readInt(var1);
                            Screen var255 = GameManager.instance.b(var232);
-                           int var272 = quyen_a.d(var1);
-                           boolean var215 = quyen_a.e(var1);
+                           int var272 = PacketUtils.readInt(var1);
+                           boolean var215 = PacketUtils.readBoolean(var1);
                            UIComponent var238 = var255.findComponentByID(var272);
                            String var273 = "";
                            if (var238 instanceof TextInputComponent) {
@@ -127,56 +127,56 @@ public class quyen_af {
                               var273 = (var282 = (ListComponent)var238).getSelectedItem().j;
                            }
 
-                           quyen_a.a(var273, var183);
+                           PacketUtils.writeString(var273, var183);
                         }
                      } else if (var212 == 2) {
                         if (var232 == 0) {
-                           quyen_a.a(quyen_a.e(var1), var183);
+                           PacketUtils.writeBoolean(PacketUtils.readBoolean(var1), var183);
                         } else if (var232 == 1) {
-                           var232 = quyen_a.d(var1);
+                           var232 = PacketUtils.readInt(var1);
                            Screen var254 = GameManager.instance.b(var232);
-                           int var271 = quyen_a.d(var1);
+                           int var271 = PacketUtils.readInt(var1);
                            UIComponent var214;
                            if ((var214 = var254.findComponentByID(var271)) instanceof CheckboxComponent) {
                               boolean var236 = ((CheckboxComponent)var214).isChecked;
-                              quyen_a.a(((CheckboxComponent)var214).isChecked, var183);
+                              PacketUtils.writeBoolean(((CheckboxComponent)var214).isChecked, var183);
                            }
                         }
                      } else if (var212 == 3 && var232 == 1) {
-                        var232 = quyen_a.d(var1);
+                        var232 = PacketUtils.readInt(var1);
                         Screen var253 = GameManager.instance.b(var232);
-                        int var269 = quyen_a.d(var1);
+                        int var269 = PacketUtils.readInt(var1);
                         UIComponent var213;
                         if ((var213 = var253.findComponentByID(var269)) instanceof ListComponent) {
                            String[] var234;
                            if ((var234 = ((ListComponent)var213).getSelectedItemIds()) != null) {
-                              quyen_a.a(var269 = var234.length, var183);
+                              PacketUtils.writeInt(var269 = var234.length, var183);
 
                               for (int var281 = 0; var281 < var269; var281++) {
-                                 quyen_a.a(var234[var281], var183);
+                                 PacketUtils.writeString(var234[var281], var183);
                               }
                            } else {
-                              quyen_a.a(0, var183);
+                              PacketUtils.writeInt(0, var183);
                            }
                         } else {
-                           quyen_a.a(0, var183);
+                           PacketUtils.writeInt(0, var183);
                         }
                      }
                   }
 
-                  quyen_a.a(d, var183);
-                  quyen_a.a(var183.getPayload().getBuffer());
+                  PacketUtils.writeByte(d, var183);
+                  PacketSender.a(var183.getPayload().getBuffer());
                   break;
                case 4:
                   DialogScreen var331;
                   (var331 = new DialogScreen()).unused2 = true;
-                  String var332 = quyen_a.g(var1);
+                  String var332 = PacketUtils.readString(var1);
                   var331.title = var332;
-                  int var333 = quyen_a.d(var1);
+                  int var333 = PacketUtils.readInt(var1);
                   var331.unused1 = var333;
                   GameManager.instance.destroyScreen(GameManager.instance.b(var333));
                   var331.startSlideAnimation(1);
-                  boolean var334 = quyen_a.e(var1);
+                  boolean var334 = PacketUtils.readBoolean(var1);
                   GameManager.instance.addScreenToStack((Screen)var331);
                   if (var334) {
                      GameManager.instance.o();
@@ -187,7 +187,7 @@ public class quyen_af {
                   }
                   break;
                case 5:
-                  int var192 = quyen_a.d(var1);
+                  int var192 = PacketUtils.readInt(var1);
                   Screen var211 = GameManager.instance.b(var192);
                   switch (var1.getPayload().readByte()) {
                      case 0:
@@ -212,15 +212,15 @@ public class quyen_af {
                   var211.needsUpdate = true;
                   break;
                case 6:
-                  int var165 = quyen_a.d(var1);
+                  int var165 = PacketUtils.readInt(var1);
                   DialogScreen var166 = (DialogScreen) GameManager.instance.b(var165);
                   byte var251 = var1.getPayload().readByte();
                   Object var180 = null;
                   switch (var251) {
                      case 0:
-                        String var305 = quyen_a.g(var1);
-                        int var307 = quyen_a.d(var1);
-                        int var308 = quyen_a.d(var1);
+                        String var305 = PacketUtils.readString(var1);
+                        int var307 = PacketUtils.readInt(var1);
+                        int var308 = PacketUtils.readInt(var1);
                         TextInputComponent var309;
                         var180 = var309 = UIFactory.createLabeledTextInput(var166, var305, var307, var308);
                         a(var166, (UIComponent)var180, var1);
@@ -228,15 +228,15 @@ public class quyen_af {
                         break;
                      case 1:
                         String var310 = a(var1);
-                        int var70 = quyen_a.d(var1);
+                        int var70 = PacketUtils.readInt(var1);
                         if (var310.equals("")) {
                            TextComponent var311;
-                           (var311 = UIFactory.createSpacer(var166, var70)).textColor = new Integer(UIUtils.validateColor(quyen_a.d(var1)));
+                           (var311 = UIFactory.createSpacer(var166, var70)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(var1)));
                            var311.isVisible = !var310.trim().equals("");
                            var180 = var311;
                            var1.getPayload().readByte();
                         } else {
-                           var180 = UIFactory.createWrappedText(var310, var166, var70, UIUtils.validateColor(quyen_a.d(var1)), true, true)[0];
+                           var180 = UIFactory.createWrappedText(var310, var166, var70, UIUtils.validateColor(PacketUtils.readInt(var1)), true, true)[0];
                            a(var166, (UIComponent)var180, var1);
                         }
                      case 2:
@@ -247,9 +247,9 @@ public class quyen_af {
                         break;
                      case 4:
                         String var312 = a(var1);
-                        int var73 = quyen_a.d(var1);
-                        int var74 = UIUtils.validateColor(quyen_a.d(var1));
-                        byte[] var75 = quyen_a.b(var1);
+                        int var73 = PacketUtils.readInt(var1);
+                        int var74 = UIUtils.validateColor(PacketUtils.readInt(var1));
+                        byte[] var75 = PacketUtils.readBytes(var1);
                         TextLinkComponent var76;
                         (var76 = UIFactory.createCustomButton(var166, var312, var73, new quyen_ah(var75), var166.dialogX, var166.nextComponentY, var166.dialogWidth)).textColor = new Integer(var74);
                         var180 = var76;
@@ -257,7 +257,7 @@ public class quyen_af {
                         break;
                      case 5:
                         String var80 = a(var1);
-                        quyen_a.d(var1);
+                        PacketUtils.readInt(var1);
                         var180 = UIFactory.createSimpleText(var166, var80)[0];
                         break;
                      case 6:
@@ -268,18 +268,18 @@ public class quyen_af {
                         int var314 = 0;
                         if (var251 == 12) {
                            byte[] var315;
-                           var313 = (var82 = Image.createImage(var315 = quyen_a.b(var1), 0, var315.length)).getWidth();
+                           var313 = (var82 = Image.createImage(var315 = PacketUtils.readBytes(var1), 0, var315.length)).getWidth();
                            var314 = var82.getHeight();
                         } else if (var251 == 6) {
-                           var83 = quyen_a.d(var1);
-                           var313 = quyen_a.d(var1);
-                           var314 = quyen_a.d(var1);
+                           var83 = PacketUtils.readInt(var1);
+                           var313 = PacketUtils.readInt(var1);
+                           var314 = PacketUtils.readInt(var1);
                         }
 
-                        boolean var316 = quyen_a.e(var1);
-                        boolean var317 = quyen_a.e(var1);
-                        String var318 = quyen_a.g(var1);
-                        byte[] var89 = quyen_a.b(var1);
+                        boolean var316 = PacketUtils.readBoolean(var1);
+                        boolean var317 = PacketUtils.readBoolean(var1);
+                        String var318 = PacketUtils.readString(var1);
+                        byte[] var89 = PacketUtils.readBytes(var1);
                         ImageComponent var90 = UIFactory.createImageComponent(var166, var83, var82, var313, var314, var316, var317);
                         if (var89 != null && var89.length > 1) {
                            var90.setClickAction(var318, new quyen_aj(var89));
@@ -290,21 +290,21 @@ public class quyen_af {
                         break;
                      case 7:
                         String var118 = a(var1);
-                        int var119 = quyen_a.d(var1);
+                        int var119 = PacketUtils.readInt(var1);
                         int var120;
-                        String[] var121 = new String[var120 = quyen_a.d(var1)];
+                        String[] var121 = new String[var120 = PacketUtils.readInt(var1)];
 
                         for (int var122 = 0; var122 < var120; var122++) {
                            var121[var122] = a(var1);
                         }
 
-                        byte[] var328 = quyen_a.b(var1);
+                        byte[] var328 = PacketUtils.readBytes(var1);
                         DropdownComponent var123 = UIFactory.createChoiceBoxWithID(var166, var118, var121, var119);
                         if (var328 != null && var328.length > 1) {
                            var123.setChangeAction(new quyen_an(var328));
                         }
 
-                        int var124 = quyen_a.d(var1);
+                        int var124 = PacketUtils.readInt(var1);
                         var180 = var123;
                         a(var166, var123, var1);
                         var123.textInputHandler.posX = var123.posX;
@@ -315,15 +315,15 @@ public class quyen_af {
                         int[] var92 = new int[var91 = var1.getPayload().readByte()];
 
                         for (int var93 = 0; var93 < var91; var93++) {
-                           var92[var93] = quyen_a.d(var1);
+                           var92[var93] = PacketUtils.readInt(var1);
                         }
 
-                        int var84 = quyen_a.d(var1);
-                        int var85 = quyen_a.d(var1);
-                        boolean var86 = quyen_a.e(var1);
-                        boolean var87 = quyen_a.e(var1);
-                        String var88 = quyen_a.g(var1);
-                        byte[] var319 = quyen_a.b(var1);
+                        int var84 = PacketUtils.readInt(var1);
+                        int var85 = PacketUtils.readInt(var1);
+                        boolean var86 = PacketUtils.readBoolean(var1);
+                        boolean var87 = PacketUtils.readBoolean(var1);
+                        String var88 = PacketUtils.readString(var1);
+                        byte[] var319 = PacketUtils.readBytes(var1);
                         ImageComponent var335;
                         (var335 = new ImageComponent()).setSize(var84, var85);
                         var335.isVisible = var86;
@@ -340,37 +340,37 @@ public class quyen_af {
                         a(var166, var335, var1);
                         break;
                      case 11:
-                        boolean var94 = quyen_a.e(var1);
+                        boolean var94 = PacketUtils.readBoolean(var1);
                         byte var95 = var1.getPayload().readByte();
                         byte var96 = var1.getPayload().readByte();
                         int var97 = -1;
                         int var98 = -1;
                         if (var96 == 2) {
-                           var97 = quyen_a.d(var1);
-                           var98 = quyen_a.d(var1);
+                           var97 = PacketUtils.readInt(var1);
+                           var98 = PacketUtils.readInt(var1);
                         }
 
                         byte var99 = var1.getPayload().readByte();
-                        int var100 = quyen_a.d(var1);
+                        int var100 = PacketUtils.readInt(var1);
                         DownloadDataManager var101 = new DownloadDataManager();
                         DownloadData[] var102 = new DownloadData[var100];
                         String[] var103 = new String[var100];
 
                         for (int var104 = 0; var104 < var100; var104++) {
-                           var103[var104] = quyen_a.g(var1);
-                           String var105 = quyen_a.g(var1);
-                           String var321 = quyen_a.g(var1);
+                           var103[var104] = PacketUtils.readString(var1);
+                           String var105 = PacketUtils.readString(var1);
+                           String var321 = PacketUtils.readString(var1);
                            String var322 = null;
                            if (var95 == 1) {
-                              var322 = quyen_a.g(var1);
+                              var322 = PacketUtils.readString(var1);
                            }
 
                            Integer var323 = null;
                            Image var324 = null;
                            if (var96 == 2) {
-                              var323 = new Integer(quyen_a.d(var1));
+                              var323 = new Integer(PacketUtils.readInt(var1));
                            } else if (var96 == 3) {
-                              var324 = UIUtils.createImageFromBytes(quyen_a.b(var1));
+                              var324 = UIUtils.createImageFromBytes(PacketUtils.readBytes(var1));
                               if (var97 == -1) {
                                  var97 = var324.getWidth();
                                  var98 = var324.getHeight();
@@ -389,7 +389,7 @@ public class quyen_af {
                            }
 
                            String var327;
-                           if ((var327 = quyen_a.g(var1)) != null && var327.length() == 0) {
+                           if ((var327 = PacketUtils.readString(var1)) != null && var327.length() == 0) {
                               var327 = null;
                            }
 
@@ -400,7 +400,7 @@ public class quyen_af {
                            var101.addDownloadToCategory(var103[var104], var102[var104]);
                         }
 
-                        byte[] var320 = quyen_a.b(var1);
+                        byte[] var320 = PacketUtils.readBytes(var1);
                         if (var97 == -1) {
                            var97 = 10;
                            var98 = 10;
@@ -424,10 +424,10 @@ public class quyen_af {
                         var166.isScrollLocked = true;
                         break;
                      case 13:
-                        int var106 = quyen_a.d(var1);
-                        int var107 = quyen_a.d(var1);
-                        int var108 = quyen_a.d(var1);
-                        boolean var109 = quyen_a.e(var1);
+                        int var106 = PacketUtils.readInt(var1);
+                        int var107 = PacketUtils.readInt(var1);
+                        int var108 = PacketUtils.readInt(var1);
+                        boolean var109 = PacketUtils.readBoolean(var1);
                         int[] var110 = new int[var106];
                         Integer[] var111 = new Integer[var106];
                         String[] var112 = new String[var106];
@@ -437,62 +437,62 @@ public class quyen_af {
                         }
 
                         for (int var114 = 0; var114 < var106; var114++) {
-                           var112[var114] = quyen_a.g(var1);
-                           var110[var114] = quyen_a.d(var1);
-                           var111[var114] = new Integer(quyen_a.d(var1));
+                           var112[var114] = PacketUtils.readString(var1);
+                           var110[var114] = PacketUtils.readInt(var1);
+                           var111[var114] = new Integer(PacketUtils.readInt(var1));
                            if (var109) {
-                              var113[var114] = quyen_a.e(var1);
+                              var113[var114] = PacketUtils.readBoolean(var1);
                            }
                         }
 
                         GridComponent var336 = new GridComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight, var106, var112, var110, var111, var107, var108, false, 2);
                         var166.addComponent(var336);
                         UIUtils.focusComponent(var166, var336);
-                        byte[] var116 = quyen_a.b(var1);
+                        byte[] var116 = PacketUtils.readBytes(var1);
                         UIFactory var329 = new UIFactory("Chọn", new quyen_am(var109, var336, var113, var116));
                         var336.middleSoftKey = var329;
                         var180 = var336;
                         var166.isScrollLocked = true;
                         break;
                      case 14:
-                        String var190 = quyen_a.g(var1);
-                        boolean var182 = quyen_a.e(var1);
+                        String var190 = PacketUtils.readString(var1);
+                        boolean var182 = PacketUtils.readBoolean(var1);
                         var180 = UIFactory.createCheckbox(var166, var190, var182);
                         a(var166, (UIComponent)var180, var1);
                         break;
                      case 15:
                         String var69;
                         TextComponent var71;
-                        (var71 = UIFactory.createLabel(var69 = a(var1), var166, -1)).textColor = new Integer(UIUtils.validateColor(quyen_a.d(var1)));
+                        (var71 = UIFactory.createLabel(var69 = a(var1), var166, -1)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(var1)));
                         var71.isVisible = !var69.trim().equals("");
                         var71.enableScrolling = true;
                         var180 = var71;
                         a(var166, var71, var1);
                         break;
                      case 16:
-                        String var189 = quyen_a.g(var1);
+                        String var189 = PacketUtils.readString(var1);
                         byte var181 = var1.getPayload().readByte();
-                        byte[] var304 = quyen_a.b(var1);
+                        byte[] var304 = PacketUtils.readBytes(var1);
                         var180 = UIFactory.createPopupDialog(var166, var189, var181, new quyen_az(var304));
                         break;
                      case 17:
                         String var72 = a(var1);
-                        int var77 = quyen_a.d(var1);
-                        byte[] var78 = quyen_a.b(var1);
+                        int var77 = PacketUtils.readInt(var1);
+                        byte[] var78 = PacketUtils.readBytes(var1);
                         var180 = UIFactory.createButton(var166, var72, new quyen_ai(var78), var166.nextComponentY, var77);
                         a(var166, (UIComponent)var180, var1);
                   }
 
-                  int var191 = quyen_a.d(var1);
+                  int var191 = PacketUtils.readInt(var1);
                   ((UIComponent)var180).id = var191;
                   if (((UIComponent)var180).id > 1000 && var180 instanceof TextInputComponent) {
                      ((TextInputComponent)var180).useNativeInput = true;
                   }
                   break;
                case 7:
-                  int var178 = quyen_a.d(var1);
+                  int var178 = PacketUtils.readInt(var1);
                   Screen var179 = GameManager.instance.b(var178);
-                  int var64 = quyen_a.d(var1);
+                  int var64 = PacketUtils.readInt(var1);
                   UIComponent var65 = var179.findComponentByID(var64);
                   UIUtils.focusComponent(var179, var65);
                   if (var179.equals(GameManager.instance.y())) {
@@ -503,10 +503,10 @@ public class quyen_af {
                   System.gc();
                   return;
                case 12:
-                  int var164 = quyen_a.d(var1);
+                  int var164 = PacketUtils.readInt(var1);
                   DialogScreen var230 = (DialogScreen) GameManager.instance.b(var164);
                   int var250;
-                  String[] var267 = new String[var250 = quyen_a.d(var1)];
+                  String[] var267 = new String[var250 = PacketUtils.readInt(var1)];
 
                   for (int var210 = 0; var210 < var250; var210++) {
                      var267[var210] = a(var1);
@@ -515,9 +515,9 @@ public class quyen_af {
                   var230.createMenuItems(var267);
                   break;
                case 13:
-                  int var306 = quyen_a.d(var1);
+                  int var306 = PacketUtils.readInt(var1);
                   DialogScreen var67 = (DialogScreen) GameManager.instance.b(var306);
-                  int var68 = quyen_a.d(var1);
+                  int var68 = PacketUtils.readInt(var1);
                   var67.expandMenu(var68);
                   break;
                case 14:
@@ -526,10 +526,10 @@ public class quyen_af {
                   if (var160 == 0) {
                      var177 = a(var1);
                   } else {
-                     int var161 = quyen_a.d(var1);
+                     int var161 = PacketUtils.readInt(var1);
                      Screen var188 = GameManager.instance.b(var161);
-                     int var207 = quyen_a.d(var1);
-                     boolean var162 = quyen_a.e(var1);
+                     int var207 = PacketUtils.readInt(var1);
+                     boolean var162 = PacketUtils.readBoolean(var1);
                      UIComponent var208;
                      if ((var208 = var188.findComponentByID(var207)) instanceof TextInputComponent) {
                         var177 = ((TextInputComponent)var208).getText();
@@ -553,12 +553,12 @@ public class quyen_af {
                case 16:
                case 17:
                   DialogScreen var266;
-                  UIComponent var206 = (var266 = (DialogScreen) GameManager.instance.b(quyen_a.d(var1))).findComponentByID(quyen_a.d(var1));
+                  UIComponent var206 = (var266 = (DialogScreen) GameManager.instance.b(PacketUtils.readInt(var1))).findComponentByID(PacketUtils.readInt(var1));
                   UIComponent var228 = null;
                   if (var148 == 16) {
-                     var206.posX = quyen_a.d(var1);
+                     var206.posX = PacketUtils.readInt(var1);
                   } else {
-                     var228 = var266.findComponentByID(quyen_a.d(var1));
+                     var228 = var266.findComponentByID(PacketUtils.readInt(var1));
                      if (var148 == 17) {
                         var206.posX = var228.posX + var228.width + 6;
                      }
@@ -568,13 +568,13 @@ public class quyen_af {
                case 19:
                case 20:
                   DialogScreen var265;
-                  UIComponent var205 = (var265 = (DialogScreen) GameManager.instance.b(quyen_a.d(var1))).findComponentByID(quyen_a.d(var1));
+                  UIComponent var205 = (var265 = (DialogScreen) GameManager.instance.b(PacketUtils.readInt(var1))).findComponentByID(PacketUtils.readInt(var1));
                   UIComponent var226 = null;
                   if (var148 == 18) {
-                     var205.posY = quyen_a.d(var1);
+                     var205.posY = PacketUtils.readInt(var1);
                      var265.nextComponentY = var205.posY + var205.height + 2;
                   } else {
-                     var226 = var265.findComponentByID(quyen_a.d(var1));
+                     var226 = var265.findComponentByID(PacketUtils.readInt(var1));
                      if (var148 == 19) {
                         var205.posY = var226.posY + var226.height + 2;
                      } else if (var148 == 20) {
@@ -588,9 +588,9 @@ public class quyen_af {
                case 21:
                   String var176 = a(var1);
                   Packet var159 = new Packet(0, 0);
-                  quyen_a.a(0, var159);
-                  quyen_a.a(var176, var159);
-                  quyen_a.a(var159.getPayload().getBuffer());
+                  PacketUtils.writeInt(0, var159);
+                  PacketUtils.writeString(var176, var159);
+                  PacketSender.a(var159.getPayload().getBuffer());
                   break;
                case 22:
                   GameManager.instance.destroyScreen(GameManager.instance.setActiveScreen(a(var1)));
@@ -599,8 +599,8 @@ public class quyen_af {
                   GameManager.instance.closeDialog();
                   break;
                case 24:
-                  int var158 = quyen_a.d(var1);
-                  int var204 = quyen_a.d(var1);
+                  int var158 = PacketUtils.readInt(var1);
+                  int var204 = PacketUtils.readInt(var1);
                   String var225 = a(var1);
 
                   try {
@@ -610,7 +610,7 @@ public class quyen_af {
                   break;
                case 26:
                   String var203 = a(var1);
-                  long var302 = quyen_a.c(var1);
+                  long var302 = PacketUtils.readLong(var1);
                   ChatScreen var298;
                   (var298 = GameManager.getInstance().n(var203)).setChatId(var302);
                   GameManager.getInstance().f(var298.title);
@@ -630,7 +630,7 @@ public class quyen_af {
                   if (var148 == 29) {
                      var249 = a(var1);
                   } else if (var148 == 60 || var148 == 61) {
-                     var264 = quyen_a.g(var1);
+                     var264 = PacketUtils.readString(var1);
                      var279 = var1.getPayload().readByte();
                      var285 = var1.getPayload().readByte();
                      var287 = var1.getPayload().readByte();
@@ -640,7 +640,7 @@ public class quyen_af {
                         String[] var292 = new String[var285];
 
                         for (int var295 = 0; var295 < var285; var295++) {
-                           var292[var295] = quyen_a.g(var1);
+                           var292[var295] = PacketUtils.readString(var1);
                         }
 
                         var224.addElement(var292);
@@ -656,11 +656,11 @@ public class quyen_af {
                   UIFactory var296 = null;
                   if (var148 == 29 || var148 == 61) {
                      String var202 = a(var1);
-                     byte[] var301 = quyen_a.b(var1);
+                     byte[] var301 = PacketUtils.readBytes(var1);
                      String var303 = a(var1);
-                     byte[] var297 = quyen_a.b(var1);
+                     byte[] var297 = PacketUtils.readBytes(var1);
                      String var300 = a(var1);
-                     byte[] var175 = quyen_a.b(var1);
+                     byte[] var175 = PacketUtils.readBytes(var1);
                      if (var301 != null && var301.length > 1) {
                         var290 = new UIFactory(var202, new quyen_at(var301));
                      }
@@ -683,9 +683,9 @@ public class quyen_af {
                   }
                   break;
                case 30:
-                  int var157 = quyen_a.d(var1);
-                  int var263 = quyen_a.d(var1);
-                  boolean var278 = quyen_a.e(var1);
+                  int var157 = PacketUtils.readInt(var1);
+                  int var263 = PacketUtils.readInt(var1);
+                  boolean var278 = PacketUtils.readBoolean(var1);
 
                   try {
                      ((ListComponent) GameManager.instance.b(var157).findComponentByID(var263)).setMultiSelectMode(var278);
@@ -693,8 +693,8 @@ public class quyen_af {
                   }
                   break;
                case 31:
-                  int var156 = quyen_a.d(var1);
-                  int var174 = quyen_a.d(var1);
+                  int var156 = PacketUtils.readInt(var1);
+                  int var174 = PacketUtils.readInt(var1);
 
                   try {
                      ((ListComponent) GameManager.instance.b(var156).findComponentByID(var174)).toggleSelectAll();
@@ -702,14 +702,14 @@ public class quyen_af {
                   }
                   break;
                case 39:
-                  a(quyen_a.b(var1));
+                  a(PacketUtils.readBytes(var1));
                   break;
                case 47:
-                  int var126 = quyen_a.d(var1);
+                  int var126 = PacketUtils.readInt(var1);
                   DialogScreen var127;
                   if ((var127 = (DialogScreen) GameManager.instance.b(var126)) != null) {
-                     int var128 = var1 == null ? 1 : quyen_a.d(var1);
-                     int var129 = var1 == null ? 20 : quyen_a.d(var1);
+                     int var128 = var1 == null ? 1 : PacketUtils.readInt(var1);
+                     int var129 = var1 == null ? 20 : PacketUtils.readInt(var1);
                      String var130 = UIUtils.concatStrings(" / ", Integer.toString(var129), null, null);
                      int var131 = FontRenderer.getTextWidth(" 99 ") + 6;
                      int var132 = Screen.screenWidth - FontRenderer.getTextWidth(UIUtils.concatStrings("<<   >>   ", var130, null, null)) - var131 >> 1;
@@ -722,12 +722,12 @@ public class quyen_af {
                      var135.setText(Integer.toString(var128));
                      TextComponent var136 = new TextComponent(var130, var135.posX + var135.width, var135.posY + 2, FontRenderer.fontHeight + 2);
                      if (var1 != null) {
-                        var133.id = quyen_a.d(var1);
-                        byte[] var137 = quyen_a.b(var1);
-                        var134.id = quyen_a.d(var1);
-                        byte[] var138 = quyen_a.b(var1);
-                        var135.id = quyen_a.d(var1);
-                        byte[] var139 = quyen_a.b(var1);
+                        var133.id = PacketUtils.readInt(var1);
+                        byte[] var137 = PacketUtils.readBytes(var1);
+                        var134.id = PacketUtils.readInt(var1);
+                        byte[] var138 = PacketUtils.readBytes(var1);
+                        var135.id = PacketUtils.readInt(var1);
+                        byte[] var139 = PacketUtils.readBytes(var1);
                         var133.linkAction = new quyen_ao(var137);
                         var134.linkAction = new quyen_ap(var138);
                         var135.middleSoftKey = new UIFactory("Đến trang", new quyen_aq(var135, var129, var139));
@@ -752,8 +752,8 @@ public class quyen_af {
                   byte var248 = var1.getPayload().readByte();
 
                   for (int var201 = 0; var201 < var248; var201++) {
-                     String var262 = quyen_a.g(var1);
-                     byte[] var277 = quyen_a.b(var1);
+                     String var262 = PacketUtils.readString(var1);
+                     byte[] var277 = PacketUtils.readBytes(var1);
                      byte var284 = (byte)var201;
                      UIFactory var286 = new UIFactory(var262, new quyen_ar(var284, var277));
                      b.addElement(var286);
@@ -767,11 +767,11 @@ public class quyen_af {
                   break;
                case 49:
                   String var299 = a(var1);
-                  quyen_a.c(var1);
+                  PacketUtils.readLong(var1);
                   GameManager.instance.friendManager.sendFriendRequest(var299);
                   break;
                case 50:
-                  int var66 = quyen_a.d(var1);
+                  int var66 = PacketUtils.readInt(var1);
                   DialogScreen var155;
                   (var155 = (DialogScreen) GameManager.instance.b(var66)).startSlideAnimation(1);
                   GameManager.instance.e(var155);
@@ -783,23 +783,23 @@ public class quyen_af {
                   GameManager.instance.c(false);
                   break;
                case 54:
-                  int var187 = quyen_a.d(var1);
+                  int var187 = PacketUtils.readInt(var1);
                   GameManager.instance.destroyScreen(GameManager.instance.b(var187));
                   PhotoViewerScreen var200;
                   (var200 = new PhotoViewerScreen()).unused1 = var187;
-                  var200.setTitle(quyen_a.g(var1));
-                  var200.setCaption(quyen_a.g(var1));
-                  var200.photoComponent.displayMode = quyen_a.d(var1);
-                  var200.setImageData(quyen_a.b(var1));
-                  var200.photoComponent.id = quyen_a.d(var1);
+                  var200.setTitle(PacketUtils.readString(var1));
+                  var200.setCaption(PacketUtils.readString(var1));
+                  var200.photoComponent.displayMode = PacketUtils.readInt(var1);
+                  var200.setImageData(PacketUtils.readBytes(var1));
+                  var200.photoComponent.id = PacketUtils.readInt(var1);
                   var200.showSaveButton(1);
                   var200.startSlideAnimation(1);
                   GameManager.instance.addScreenToStack(var200);
                   GameManager.instance.o();
                   break;
                case 56:
-                  int var154 = quyen_a.d(var1);
-                  int var199 = quyen_a.d(var1);
+                  int var154 = PacketUtils.readInt(var1);
+                  int var199 = PacketUtils.readInt(var1);
 
                   try {
                      Screen var261;
@@ -809,16 +809,16 @@ public class quyen_af {
                   }
                   break;
                case 57:
-                  int var152 = quyen_a.d(var1);
+                  int var152 = PacketUtils.readInt(var1);
                   DialogScreen var153 = (DialogScreen) GameManager.instance.b(var152);
                   byte var173;
                   int[] var186;
-                  (var186 = new int[var173 = var1.getPayload().readByte()])[0] = quyen_a.d(var1);
+                  (var186 = new int[var173 = var1.getPayload().readByte()])[0] = PacketUtils.readInt(var1);
                   UIComponent var197;
                   int var221 = (var197 = var153.findComponentByID(var186[0])).width;
 
                   for (int var246 = 1; var246 < var173; var246++) {
-                     var186[var246] = quyen_a.d(var1);
+                     var186[var246] = PacketUtils.readInt(var1);
                      UIComponent var259;
                      (var259 = var153.findComponentByID(var186[var246])).posY = var197.posY;
                      var221 += var259.width;
@@ -837,23 +837,23 @@ public class quyen_af {
                   var153.updateLayout();
                   break;
                case 58:
-                  DialogScreen var258 = (DialogScreen) GameManager.instance.b(quyen_a.d(var1));
-                  int var151 = quyen_a.d(var1);
+                  DialogScreen var258 = (DialogScreen) GameManager.instance.b(PacketUtils.readInt(var1));
+                  int var151 = PacketUtils.readInt(var1);
                   byte var172 = var1.getPayload().readByte();
 
                   for (int var185 = 0; var185 < var172; var185++) {
-                     var258.findComponentByID(quyen_a.d(var1)).posX = var151;
+                     var258.findComponentByID(PacketUtils.readInt(var1)).posX = var151;
                   }
                   break;
                case 59:
                   DialogScreen var257;
-                  UIComponent var220 = (var257 = (DialogScreen) GameManager.instance.b(quyen_a.d(var1))).findComponentByID(quyen_a.d(var1));
+                  UIComponent var220 = (var257 = (DialogScreen) GameManager.instance.b(PacketUtils.readInt(var1))).findComponentByID(PacketUtils.readInt(var1));
                   byte var171 = var1.getPayload().readByte();
                   UIComponent var196 = null;
                   int[] var184 = new int[var171];
 
                   for (int var150 = 0; var150 < var171; var150++) {
-                     var184[var150] = quyen_a.d(var1);
+                     var184[var150] = PacketUtils.readInt(var1);
                      (var196 = var257.findComponentByID(var184[var150])).posX = var220.posX + var220.width + 6;
                      if (var150 == 0) {
                         var196.posY = var220.posY;
@@ -867,34 +867,34 @@ public class quyen_af {
                   var257.updateLayout();
                   break;
                case 62:
-                  int var149 = quyen_a.d(var1);
+                  int var149 = PacketUtils.readInt(var1);
                   byte var2 = var1.getPayload().readByte();
 
                   try {
                      for (int var3 = 0; var3 < var2; var3++) {
-                        int var4 = quyen_a.d(var1);
+                        int var4 = PacketUtils.readInt(var1);
                         int var5 = var1.getPayload().readByte();
                         Screen var6;
                         UIComponent var194 = (var6 = GameManager.instance.b(var149)).findComponentByID(var4);
                         switch (var5) {
                            case 0:
-                              String var219 = quyen_a.g(var1);
-                              String var244 = quyen_a.g(var1);
+                              String var219 = PacketUtils.readString(var1);
+                              String var244 = PacketUtils.readString(var1);
                               ((TextInputComponent)var194).textInputHandler.text = var219;
                               ((TextInputComponent)var194).setText(var244);
                               break;
                            case 1:
-                              String var243 = quyen_a.g(var1);
+                              String var243 = PacketUtils.readString(var1);
                               ((TextComponent)var194).updateText(var243);
                               break;
                            case 4:
-                              String var242 = quyen_a.g(var1);
-                              byte[] var294 = quyen_a.b(var1);
+                              String var242 = PacketUtils.readString(var1);
+                              byte[] var294 = PacketUtils.readBytes(var1);
                               ((TextLinkComponent)var194).linkText = var242;
                               ((TextLinkComponent)var194).setLinkAction(new quyen_ag(var294));
                               break;
                            case 7:
-                              short var288 = quyen_a.a(var1);
+                              short var288 = PacketUtils.readShort(var1);
                               ((DropdownComponent)var194).setSelectedIndex(var288);
                               break;
                            case 11:
@@ -904,9 +904,9 @@ public class quyen_af {
                               var5 = 0;
 
                               for (; var5 < var10; var5++) {
-                                 String var241 = quyen_a.g(var1);
-                                 int var11 = quyen_a.d(var1);
-                                 byte[] var291 = quyen_a.b(var1);
+                                 String var241 = PacketUtils.readString(var1);
+                                 int var11 = PacketUtils.readInt(var1);
+                                 byte[] var291 = PacketUtils.readBytes(var1);
                                  Integer var13 = null;
                                  Image var195 = null;
                                  if (var8.getIconType() == 2) {
@@ -915,9 +915,9 @@ public class quyen_af {
                                     var195 = UIUtils.createImageFromBytes(var291);
                                  }
 
-                                 String var20 = quyen_a.g(var1);
-                                 String var21 = quyen_a.g(var1);
-                                 String var14 = quyen_a.g(var1);
+                                 String var20 = PacketUtils.readString(var1);
+                                 String var21 = PacketUtils.readString(var1);
+                                 String var14 = PacketUtils.readString(var1);
                                  DownloadData var15 = var9.findDownload(null, var241, 0L);
                                  if (var11 != 0) {
                                     var15.priority = var13;
@@ -943,15 +943,15 @@ public class quyen_af {
                               var8.buildListItems();
                               break;
                            case 14:
-                              boolean var12 = quyen_a.e(var1);
+                              boolean var12 = PacketUtils.readBoolean(var1);
                               ((CheckboxComponent)var194).isChecked = var12;
                               break;
                            case 18:
                               PhotoViewerScreen var7;
-                              (var7 = (PhotoViewerScreen)var6).setTitle(quyen_a.g(var1));
-                              var7.setCaption(quyen_a.g(var1));
-                              var7.photoComponent.displayMode = quyen_a.d(var1);
-                              var7.setImageData(quyen_a.b(var1));
+                              (var7 = (PhotoViewerScreen)var6).setTitle(PacketUtils.readString(var1));
+                              var7.setCaption(PacketUtils.readString(var1));
+                              var7.photoComponent.displayMode = PacketUtils.readInt(var1);
+                              var7.setImageData(PacketUtils.readBytes(var1));
                         }
                      }
                   } catch (Exception var147) {
@@ -978,7 +978,7 @@ public class quyen_af {
    }
 
    private static UIFactory b(Packet var0) {
-      byte[] var1 = quyen_a.b(var0);
+      byte[] var1 = PacketUtils.readBytes(var0);
       return new UIFactory(a(var0), new quyen_as(var1));
    }
 
@@ -1041,23 +1041,23 @@ public class quyen_af {
       var0.setColor(1055519);
       var0.fillRect(0, 0, GameGraphics.screenWidth, GameGraphics.screenHeight);
       if (GameGraphics.isDebugMode) {
-         if (quyen_cp.d > -125) {
-            quyen_cp.d = quyen_cp.d - quyen_cp.b;
+         if (TextRenderer.logoCenterX > -125) {
+            TextRenderer.logoCenterX = TextRenderer.logoCenterX - TextRenderer.centerX;
          }
 
-         if (quyen_cp.c > -46) {
-            quyen_cp.c = quyen_cp.c - quyen_cp.b;
+         if (TextRenderer.centerY > -46) {
+            TextRenderer.centerY = TextRenderer.centerY - TextRenderer.centerX;
          }
 
-         if (quyen_cp.d < -70) {
+         if (TextRenderer.logoCenterX < -70) {
             g = true;
          }
 
-         quyen_cp.b++;
+         TextRenderer.centerX++;
       }
 
-      var0.drawImage(quyen_cp.c(), quyen_cp.d, (GameGraphics.screenHeight >> 1) - 15, 3);
-      GameManager.instance.drawLoading(var0, quyen_cp.d, (GameGraphics.screenHeight + quyen_cp.a >> 1) + 3);
+      var0.drawImage(TextRenderer.getLogoImage(), TextRenderer.logoCenterX, (GameGraphics.screenHeight >> 1) - 15, 3);
+      GameManager.instance.drawLoading(var0, TextRenderer.logoCenterX, (GameGraphics.screenHeight + TextRenderer.CHAR_SPACING >> 1) + 3);
       GameManager.instance.f++;
    }
 
@@ -1069,8 +1069,8 @@ public class quyen_af {
       }
 
       if (GameGraphics.isDebugMode && g) {
-         quyen_cp.d = GameGraphics.screenWidth >> 1;
-         quyen_cp.c = GameGraphics.screenHeight >> 1;
+         TextRenderer.logoCenterX = GameGraphics.screenWidth >> 1;
+         TextRenderer.centerY = GameGraphics.screenHeight >> 1;
          System.gc();
          GameGraphics.gameState = 1;
       }

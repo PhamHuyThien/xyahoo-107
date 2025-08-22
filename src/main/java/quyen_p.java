@@ -60,7 +60,7 @@ public final class quyen_p extends DialogScreen {
    public final boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
       if (var1[16]) {
          var1[16] = false;
-         this.c.setText(quyen_hs.b(this.c.getText()));
+         this.c.setText(TextValidator.filterBadWords(this.c.getText()));
          if (this.c.getText().equals("")) {
             String var5;
             int var7;
@@ -78,7 +78,7 @@ public final class quyen_p extends DialogScreen {
                return false;
             }
          } else {
-            quyen_a.a(this.a, this.c.getText());
+            PacketSender.a(this.a, this.c.getText());
             this.c.setText("");
             return false;
          }

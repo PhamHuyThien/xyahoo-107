@@ -41,7 +41,7 @@ final class quyen_je implements Action
                   GameManager.instance.d("ID đã tồn tại.");
                   return;
                }
-               quyen_a.g(lowerCase, trim);
+               PacketSender.g(lowerCase, trim);
                this.a.contactList.contactData.addDownloadToCategory(trim, new DownloadData(lowerCase, "", 0, "", new int[0], 0, 0, null));
                this.a.contactList.refreshDisplayList();
                this.a.contactList.resetAnimation();

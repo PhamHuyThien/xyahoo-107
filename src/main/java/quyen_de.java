@@ -8,6 +8,6 @@ final class quyen_de implements Action {
    }
 
    public final void action() {
-      quyen_a.i(this.a.playerComponents[this.b].playerName);
+      PacketSender.i(this.a.playerComponents[this.b].playerName);
    }
 }

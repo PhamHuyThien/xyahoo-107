@@ -12,7 +12,7 @@ final class quyen_df implements Action {
 
       if (FriendScreen.currentUserId.equals(this.a.currentPlayerTurn)) {
          this.a.cardGameComponent.gameEnded = true;
-         quyen_a.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
+         PacketSender.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
       }
    }
 }

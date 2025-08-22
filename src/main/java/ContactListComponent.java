@@ -385,7 +385,7 @@ public final class ContactListComponent extends UIComponent {
       var1.setClip(super.posX, super.posY, super.width + 1, super.height);
       if (this.isLoading) {
          FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText("Vui lòng chờ", Screen.screenWidth - FontRenderer.getTextWidth("Vui lòng chờ") >> 1, 20, var1);
-         GameManager.instance.drawLoading(var1, quyen_cp.d, FontRenderer.fontHeight + 35);
+         GameManager.instance.drawLoading(var1, TextRenderer.logoCenterX, FontRenderer.fontHeight + 35);
       } else if (this.visibleItemCount == 0) {
          int var12 = this.emptyMessageLines.length;
 
@@ -476,7 +476,7 @@ public final class ContactListComponent extends UIComponent {
                         this.requestedContacts.addElement(var17);
                         long var8 = var4.m;
                         Packet var10 = new Packet(3, 6);
-                        quyen_a.a(var8, var10);
+                        PacketUtils.writeLong(var8, var10);
                         NetworkManager.sendPacket(var10);
                      }
                   }

@@ -9,7 +9,7 @@ final class quyen_gd implements Action {
       if (this.a.b(GameScreen.getInstance()) && GameScreen.isInGame) {
          this.a.a("Bạn có muốn thoát bàn đang chơi?", new quyen_ge(this));
       } else {
-         quyen_a.e(GameManager.gameRoom.gameListComponent.getSelectedItem().c);
+         PacketSender.e(GameManager.gameRoom.gameListComponent.getSelectedItem().c);
       }
    }
 }

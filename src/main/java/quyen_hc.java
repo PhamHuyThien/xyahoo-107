@@ -3,6 +3,6 @@ final class quyen_hc implements Action {
    }
 
    public final void action() {
-      quyen_a.d();
+      PacketSender.d();
    }
 }

@@ -6,6 +6,6 @@ final class quyen_d implements Action {
    }
 
    public final void action() {
-      quyen_a.i(ContactListComponent.getSelectedItem(this.a).c);
+      PacketSender.i(ContactListComponent.getSelectedItem(this.a).c);
    }
 }

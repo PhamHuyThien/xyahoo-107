@@ -77,7 +77,7 @@ public final class ChatComponent extends UIComponent {
 
    public final void addPlayerMessage(String var1, String var2, int var3) {
       var1 = FontRenderer.truncateText(var1, 16);
-      if ((var2 = quyen_hs.b(var2)).startsWith("http")) {
+      if ((var2 = TextValidator.filterBadWords(var2)).startsWith("http")) {
          this.addPlayerMessage(var1, quyen_cr.d(), var3);
          var2 = "祼" + var2;
          this.chatMessages.addElement(var2);

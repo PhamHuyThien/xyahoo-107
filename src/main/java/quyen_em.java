@@ -12,7 +12,7 @@ final class quyen_em implements Action {
          if (this.a.a.c.getText().length() > 0) {
             GameGraphics.instance.initializeConnection();
             var1 = this.a;
-            quyen_a.f(this.a.a.c.getText());
+            PacketSender.f(this.a.a.c.getText());
          }
       }
    }

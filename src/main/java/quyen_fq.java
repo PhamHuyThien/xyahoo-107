@@ -4,6 +4,6 @@ final class quyen_fq implements Action {
 
    public final void action() {
       GameGraphics.instance.initializeConnection();
-      quyen_a.c();
+      PacketSender.c();
    }
 }

@@ -7,7 +7,7 @@ final class quyen_dd implements Action {
 
    public final void action() {
       if (this.a.centerSoftkey.text.equals("Chơi ngay!")) {
-         quyen_a.e(GameScreen.currentRoomId, FriendScreen.currentUserId);
+         PacketSender.e(GameScreen.currentRoomId, FriendScreen.currentUserId);
       } else {
          if (this.a.centerSoftkey.text.equals("Sẵn sàng")) {
             int var1 = this.a.playerComponents.length;
@@ -15,7 +15,7 @@ final class quyen_dd implements Action {
             while (--var1 >= 0) {
                if (this.a.playerComponents[var1].playerName.equals(FriendScreen.currentUserId)) {
                   this.a.centerSoftkey.text = "";
-                  quyen_a.d(GameScreen.currentRoomId, FriendScreen.currentUserId);
+                  PacketSender.d(GameScreen.currentRoomId, FriendScreen.currentUserId);
                }
             }
          }

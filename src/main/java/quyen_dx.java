@@ -8,6 +8,6 @@ final class quyen_dx implements Action {
    }
 
    public final void action() {
-      quyen_a.a(GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.playerComponents[this.b].playerName);
+      PacketSender.a(GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.playerComponents[this.b].playerName);
    }
 }

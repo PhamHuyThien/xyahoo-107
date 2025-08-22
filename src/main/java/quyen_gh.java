@@ -10,7 +10,7 @@ final class quyen_gh implements Action {
    }
 
    public final void action() {
-      quyen_a.b(this.a, this.b);
+      PacketSender.b(this.a, this.b);
       GameManager.instance.removeScreen(this.c);
    }
 }

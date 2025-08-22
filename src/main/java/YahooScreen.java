@@ -94,7 +94,7 @@ public final class YahooScreen extends Screen {
       GameManager.instance.x();
       if (this.isConnectionReady || this.isLoggedIn) {
          this.isConnectionReady = false;
-         quyen_a.d(yahooUsername, 2);
+         PacketSender.d(yahooUsername, 2);
          this.switchToMode(false);
       }
 
@@ -215,7 +215,7 @@ public final class YahooScreen extends Screen {
                }
             }
 
-            quyen_a.a(yahooUsername, var2, yahooStatus, 2, this.buddyListRequestId, (byte)0, "");
+            PacketSender.a(yahooUsername, var2, yahooStatus, 2, this.buddyListRequestId, (byte)0, "");
          }
       }
    }
@@ -347,7 +347,7 @@ public final class YahooScreen extends Screen {
    }
 
    static void updateStatusMessage(YahooScreen var0, String var1) {
-      quyen_a.c(var1, 2);
+      PacketSender.c(var1, 2);
       statusMessage = var1;
       Xuka.saveStringData(yahooUsername, var1, true);
    }

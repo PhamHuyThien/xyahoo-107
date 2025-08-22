@@ -88,7 +88,7 @@ public final class FontRenderer
          getFontInstance(FontRenderer.COLOR_WHITE);
       }
       else {
-         FontRenderer.fontHeight = quyen_cp.a();
+         FontRenderer.fontHeight = TextRenderer.getFontHeight();
       }
       FontRenderer.lineHeight = FontRenderer.fontHeight + 2;
       FontRenderer.paragraphSpacing = FontRenderer.fontHeight + 6;
@@ -138,12 +138,12 @@ public final class FontRenderer
          }
          return n;
       }
-      return quyen_cp.a(s);
+      return TextRenderer.getStringWidth(s);
    }
 
    public final void drawText(final String s, final int n, int n2, final Graphics graphics) {
       if (!FontRenderer.isCustomFontEnabled) {
-         quyen_cp.a(graphics, s, n, n2, 0);
+         TextRenderer.drawPlainString(graphics, s, n, n2, 0);
          return;
       }
       int n3 = n;

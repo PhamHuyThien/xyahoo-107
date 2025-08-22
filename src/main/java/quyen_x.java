@@ -9,7 +9,7 @@ final class quyen_x implements Action {
       quyen_q var1 = this.a;
       GameManager.instance.destroyScreen(this.a.a);
       var1 = this.a;
-      quyen_a.d(this.a.a.a);
+      PacketSender.d(this.a.a.a);
       GameManager.instance.currentChatRoom = null;
    }
 }

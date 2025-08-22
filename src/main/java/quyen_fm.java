@@ -10,7 +10,7 @@ final class quyen_fm implements Action {
    }
 
    public final void action() {
-      quyen_a.a(this.b, true);
+      PacketSender.a(this.b, true);
       this.a.removeScreen(this.c);
    }
 }

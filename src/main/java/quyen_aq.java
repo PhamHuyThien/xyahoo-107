@@ -13,7 +13,7 @@ final class quyen_aq implements Action {
       try {
          int var1;
          if ((var1 = Integer.parseInt(this.a.getText())) > 0 && var1 <= this.b) {
-            quyen_af.a(this.c);
+            MessageProcessor.a(this.c);
          }
       } catch (Exception var2) {
       }

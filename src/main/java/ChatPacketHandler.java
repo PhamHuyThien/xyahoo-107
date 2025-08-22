@@ -16,35 +16,35 @@ public final class ChatPacketHandler extends PacketHandler {
             gameManager.E();
             return;
          case 20:
-            String var17 = quyen_a.g(var1);
-            int var20 = quyen_a.d(var1);
-            String var21 = quyen_a.g(var1);
-            quyen_a.g(var1);
-            quyen_a.g(var1);
-            quyen_a.g(var1);
+            String var17 = PacketUtils.readString(var1);
+            int var20 = PacketUtils.readInt(var1);
+            String var21 = PacketUtils.readString(var1);
+            PacketUtils.readString(var1);
+            PacketUtils.readString(var1);
+            PacketUtils.readString(var1);
             gameManager.friendStatusChanged(var17, var20, 2);
             gameManager.a(var17, var21, 2);
             return;
          case 22:
-            String var14 = quyen_a.g(var1);
+            String var14 = PacketUtils.readString(var1);
             gameManager.sendBuzz(var14);
             return;
          case 24:
             DownloadDataManager var16 = new DownloadDataManager();
-            int var3 = quyen_a.d(var1);
+            int var3 = PacketUtils.readInt(var1);
 
             for (int var4 = 0; var4 < var3; var4++) {
-               String var18 = quyen_a.g(var1);
+               String var18 = PacketUtils.readString(var1);
                DownloadCategory var6 = new DownloadCategory(var18);
-               int var19 = quyen_a.d(var1);
+               int var19 = PacketUtils.readInt(var1);
 
                for (int var22 = 0; var22 < var19; var22++) {
-                  String var23 = quyen_a.g(var1);
-                  int var24 = quyen_a.d(var1);
-                  String var25 = quyen_a.g(var1);
-                  quyen_a.g(var1);
-                  String var26 = quyen_a.g(var1);
-                  quyen_a.g(var1);
+                  String var23 = PacketUtils.readString(var1);
+                  int var24 = PacketUtils.readInt(var1);
+                  String var25 = PacketUtils.readString(var1);
+                  PacketUtils.readString(var1);
+                  String var26 = PacketUtils.readString(var1);
+                  PacketUtils.readString(var1);
                   var6.addDownload(new DownloadData(var23, var26, var24, var25, new int[0], 0, 0, null));
                }
 
@@ -54,37 +54,37 @@ public final class ChatPacketHandler extends PacketHandler {
             gameManager.a(var16);
             return;
          case 25:
-            String var8 = quyen_a.g(var1);
-            quyen_a.g(var1);
-            String var9 = quyen_a.g(var1);
-            String var10 = quyen_a.g(var1);
+            String var8 = PacketUtils.readString(var1);
+            PacketUtils.readString(var1);
+            String var9 = PacketUtils.readString(var1);
+            String var10 = PacketUtils.readString(var1);
             gameManager.addChatMessage(var8, var9, var10);
             return;
          case 27:
-            if (quyen_a.d(var1) == -1) {
+            if (PacketUtils.readInt(var1) == -1) {
                gameManager.onYahooDisconnect();
                return;
             }
             break;
          case 30:
-            String var13 = quyen_a.g(var1);
+            String var13 = PacketUtils.readString(var1);
             gameManager.showAddFriendDialog(var13, 0L, true);
             return;
          case 32:
-            String var15 = quyen_a.g(var1);
+            String var15 = PacketUtils.readString(var1);
             byte var12 = var1.getPayload().readByte();
             gameManager.b(var15, var12);
             break;
          case 34:
-            String var5 = quyen_a.g(var1);
-            quyen_a.g(var1);
-            String var7 = quyen_a.g(var1);
+            String var5 = PacketUtils.readString(var1);
+            PacketUtils.readString(var1);
+            String var7 = PacketUtils.readString(var1);
             gameManager.addSimpleMessage(var5, var7);
             return;
          case 55:
             return;
          case 56:
-            int var11 = quyen_a.d(var1);
+            int var11 = PacketUtils.readInt(var1);
             GameManager.c(var11);
             return;
       }

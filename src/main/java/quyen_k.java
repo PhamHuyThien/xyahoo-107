@@ -6,7 +6,7 @@ final class quyen_k implements Action {
    }
 
    public final void action() {
-      quyen_a.a(ContactListComponent.getSelectedItem(this.a).m, false);
+      PacketSender.a(ContactListComponent.getSelectedItem(this.a).m, false);
       if (FriendScreen.instance.isRequestPending(ContactListComponent.getSelectedItem(this.a).m)) {
          FriendScreen.instance.removeFromPendingList(ContactListComponent.getSelectedItem(this.a).m);
       }

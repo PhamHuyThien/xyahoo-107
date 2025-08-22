@@ -246,7 +246,7 @@ public final class CardGameComponent extends UIComponent {
                         this.selectedCardValues[var5] = (byte) selectedCards[var5].cardValue;
                      }
 
-                     quyen_a.a(GameScreen.currentRoomId, FriendScreen.currentUserId, currentMoveType, this.selectedCardValues);
+                     PacketSender.a(GameScreen.currentRoomId, FriendScreen.currentUserId, currentMoveType, this.selectedCardValues);
                      this.moveSentThisTurn = true;
                   } else {
                      selectedCount = 0;

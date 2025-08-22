@@ -8,7 +8,7 @@ final class quyen_ar implements Action {
    }
 
    public final void action() {
-      quyen_af.a(this.a);
-      quyen_af.a(this.b);
+      MessageProcessor.a(this.a);
+      MessageProcessor.a(this.b);
    }
 }

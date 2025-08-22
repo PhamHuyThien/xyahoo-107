@@ -11,7 +11,7 @@ final class quyen_fa implements Action {
          var1 = this.a;
          if (GameManager.b(this.a.a).getText().length() > 0) {
             var1 = this.a;
-            quyen_a.f(GameManager.b(this.a.a).getText());
+            PacketSender.f(GameManager.b(this.a.a).getText());
          }
       }
    }

@@ -33,8 +33,8 @@ public final class quyen_ec extends DialogScreen {
       super.centerSoftkey = new UIFactory("Đăng nhập", new quyen_en(this));
       super.title = " X Yahoo! ";
       UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
-      super.nextComponentY = Screen.screenHeight - ((FontRenderer.paragraphSpacing << 2) + quyen_cp.a + (GameGraphics.screenHeight > 180 ? 40 : 11) + GameManager.footerHeight) >> 1;
-      UIFactory.createImageComponent(this, 0, quyen_cp.c(), quyen_cp.c().getWidth(), quyen_cp.c().getHeight(), false, false);
+      super.nextComponentY = Screen.screenHeight - ((FontRenderer.paragraphSpacing << 2) + TextRenderer.CHAR_SPACING + (GameGraphics.screenHeight > 180 ? 40 : 11) + GameManager.footerHeight) >> 1;
+      UIFactory.createImageComponent(this, 0, TextRenderer.getLogoImage(), TextRenderer.getLogoImage().getWidth(), TextRenderer.getLogoImage().getHeight(), false, false);
       super.nextComponentY += 10;
       this.a = UIFactory.createTextInputWithID(this, var4 == 0 ? "Xubi ID:" : "Yahoo! ID:", 0, -1);
       super.nextComponentY += 6;
@@ -121,9 +121,9 @@ public final class quyen_ec extends DialogScreen {
          NetworkManager.forceDisconnect = false;
          int var2 = Xuka.versionCode;
          Packet var3 = new Packet(500, 2);
-         quyen_a.a(var2, var3);
+         PacketUtils.writeInt(var2, var3);
          NetworkManager.sendPacket(var3);
-         quyen_a.e();
+         PacketSender.e();
          GameManager.getInstance().a(UIUtils.concatStrings("Đăng nhập với ", this.a.getText(), null, null), null, null, new UIFactory(quyen_cr.c(), new quyen_ej(this))).a(true);
          GameManager.getInstance().checkConnection();
          quyen_ek var1 = new quyen_ek(this);

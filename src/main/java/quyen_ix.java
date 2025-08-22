@@ -15,7 +15,7 @@ final class quyen_ix implements Action {
       } else {
          long var3;
          if ((var3 = FriendScreen.instance.getUserTimestampById(var5)) == 0L) {
-            quyen_a.c(var5);
+            PacketSender.c(var5);
             GameManager.instance.isLoading = true;
          } else {
             (var2 = new ChatScreen(var5, false, null, null)).chatTitle = var5;

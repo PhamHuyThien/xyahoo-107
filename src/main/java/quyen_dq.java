@@ -14,7 +14,7 @@ final class quyen_dq implements Action {
             try {
                 long var1 = Long.parseLong(GameScreen.getBetInputComponent(this.a).getText());
                 if (GameScreen.totalRooms == 0) {
-                    quyen_a.a(GameScreen.totalRooms, GameScreen.currentRoomId, this.a.roomOwner, var1);
+                    PacketSender.a(GameScreen.totalRooms, GameScreen.currentRoomId, this.a.roomOwner, var1);
                 }
             } catch (Exception var3) {
             }

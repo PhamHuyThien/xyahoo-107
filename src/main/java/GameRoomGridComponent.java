@@ -95,7 +95,7 @@ public final class GameRoomGridComponent extends UIComponent {
             var1.drawImage(GameManager.roomIcon, var2, var3, 3);
          }
 
-         quyen_cp.a(GameScreen.instance.getNumberString(var6 + 1), var2 + this.iconHalfWidth - 6, var3 - this.iconHalfHeight - 7, 0, var1, 1);
+         TextRenderer.drawStringWithNumbers(GameScreen.instance.getNumberString(var6 + 1), var2 + this.iconHalfWidth - 6, var3 - this.iconHalfHeight - 7, 0, var1, 1);
          FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.roomData[var6].roomName, var2 - this.iconHalfWidth + (this.iconWidth - FontRenderer.getTextWidth(this.roomData[var6].roomName) >> 1), var3 + this.iconHalfHeight + 7, var1);
       }
    }

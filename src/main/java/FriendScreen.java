@@ -116,7 +116,7 @@ public final class FriendScreen extends Screen {
    }
 
    public static void updateStatusMessage(String var0) {
-      quyen_a.c(var0, 1);
+      PacketSender.c(var0, 1);
       statusMessage = var0;
       Xuka.saveStringData(currentUserId, var0, false);
    }
@@ -205,11 +205,11 @@ public final class FriendScreen extends Screen {
       if (var1.size() > 0) {
          long[] var5 = vectorToLongArray(var1);
          Packet var2 = new Packet(5000028, 2);
-         quyen_a.a(var5.length, var2);
+         PacketUtils.writeInt(var5.length, var2);
          int var3 = 0;
 
          for (int var4 = var5.length; var3 < var4; var3++) {
-            quyen_a.a(var5[var3], var2);
+            PacketUtils.writeLong(var5[var3], var2);
          }
 
          NetworkManager.sendPacket(var2);
@@ -238,7 +238,7 @@ public final class FriendScreen extends Screen {
          this.pendingInvitations = new Hashtable();
       }
 
-      quyen_a.a(var1);
+      PacketSender.a(var1);
       this.pendingInvitations.put(new Long(var1), var3);
    }
 
@@ -497,7 +497,7 @@ public final class FriendScreen extends Screen {
       if (var1.equals("")) {
          GameManager.getInstance().d("ID không hợp lệ.");
       } else if (!this.mainContactList.hasContact(var1)) {
-         quyen_a.b(var1);
+         PacketSender.b(var1);
          this.switchToMainView();
          GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + var1, (Image) null, 1);
       } else {

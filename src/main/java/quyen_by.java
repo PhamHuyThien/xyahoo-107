@@ -173,7 +173,7 @@ public final class quyen_by {
          }
 
          if (this.e) {
-            GameManager.instance.drawLoading(var1, quyen_cp.d, this.t + this.k * FontRenderer.fontHeight + FontRenderer.fontHeight + 3);
+            GameManager.instance.drawLoading(var1, TextRenderer.logoCenterX, this.t + this.k * FontRenderer.fontHeight + FontRenderer.fontHeight + 3);
          }
       } else {
          var1.setColor(11320516);

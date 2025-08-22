@@ -18,7 +18,7 @@ final class quyen_hm implements Action {
          GameManager.instance.yahooChat.showAddFriendDialog(this.c);
       } else {
          if (!GameManager.instance.friendManager.isUserOnline(this.a.chatId) && !GameManager.instance.friendManager.isUserBlocked(this.a.chatId) && !GameManager.instance.friendManager.isRequestPending(this.a.chatId)) {
-            quyen_a.b(this.d);
+            PacketSender.b(this.d);
             GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + this.d, (Image) null, 1);
          } else {
             GameManager.getInstance().d("ID đã tồn tại trong các danh sách: bạn bè, từ chối hoặc chờ kết bạn.");

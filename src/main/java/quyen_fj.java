@@ -12,7 +12,7 @@ final class quyen_fj implements Action {
    }
 
    public final void action() {
-      quyen_a.a(this.b, this.c.getText(), (byte)0);
+      PacketSender.a(this.b, this.c.getText(), (byte)0);
       this.a.removeScreen(this.d);
    }
 }

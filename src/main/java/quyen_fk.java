@@ -14,7 +14,7 @@ final class quyen_fk implements Action {
    public final void action() {
       if (!this.b.getText().equals("")) {
          DownloadData var1 = new DownloadData(this.c, "", 0, "", new int[0], 0, 0, null);
-         quyen_a.a(this.c, this.b.getText(), (byte)1);
+         PacketSender.a(this.c, this.b.getText(), (byte)1);
          if (this.a.yahooChat.contactList.getContactData().findDownload(this.c, null, 0L) == null) {
             this.a.yahooChat.contactList.getContactData().addDownloadToCategory(this.b.getText(), var1);
             this.a.yahooChat.contactList.refreshDisplayList();

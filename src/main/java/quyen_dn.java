@@ -10,7 +10,7 @@ final class quyen_dn implements Action {
       this.a.isChatMode = false;
       UIUtils.focusComponent(this.a, GameScreen.getFocusedComponent(this.a));
       if (GameScreen.totalRooms == 0) {
-         quyen_a.a(GameScreen.totalRooms, GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.chatInputComponent.getText());
+         PacketSender.a(GameScreen.totalRooms, GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.chatInputComponent.getText());
       }
 
       GameScreen.adjustScroll(this.a);

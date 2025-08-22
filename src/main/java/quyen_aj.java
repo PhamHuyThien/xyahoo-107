@@ -6,6 +6,6 @@ final class quyen_aj implements Action {
    }
 
    public final void action() {
-      quyen_af.a(this.a);
+      MessageProcessor.a(this.a);
    }
 }

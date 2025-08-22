@@ -69,6 +69,6 @@ final class quyen_ek implements Action {
 
       System.gc();
       GameGraphics.instance.initializeConnection();
-      quyen_a.a(FriendScreen.currentUserId, this.a.b.getText(), FriendScreen.userStatus, 1, var4, GameManager.loginType, FriendScreen.statusMessage);
+      PacketSender.a(FriendScreen.currentUserId, this.a.b.getText(), FriendScreen.userStatus, 1, var4, GameManager.loginType, FriendScreen.statusMessage);
    }
 }

@@ -56,7 +56,7 @@ public final class ChatScreen extends Screen {
    public final boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
       if (var1[16]) {
          var1[16] = false;
-         this.textInputComponent.setText(quyen_hs.b(this.textInputComponent.getText()));
+         this.textInputComponent.setText(TextValidator.filterBadWords(this.textInputComponent.getText()));
          if (this.textInputComponent.getText().equals("")) {
             String var7;
             int var9;
@@ -80,9 +80,9 @@ public final class ChatScreen extends Screen {
 
             Object var5 = null;
             if (this.isYahooChat) {
-               quyen_a.a((String)(var5 = YahooScreen.yahooUsername), this.yahooContactId, this.textInputComponent.getText(), 2);
+               PacketSender.a((String)(var5 = YahooScreen.yahooUsername), this.yahooContactId, this.textInputComponent.getText(), 2);
             } else {
-               quyen_a.a(this.chatId, this.textInputComponent.getText());
+               PacketSender.a(this.chatId, this.textInputComponent.getText());
             }
 
             this.chatComponent.addPlayerMessage(this.isYahooChat ? YahooScreen.originalUsername : FriendScreen.currentUserName, this.textInputComponent.getText(), 0);

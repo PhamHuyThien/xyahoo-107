@@ -1,5 +1,5 @@
-public final class quyen_hs {
-   public static String[] a = new String[]{
+public final class TextValidator {
+   public static String[] BANNED_WORDS = new String[]{
       "dm",
       "cl",
       "vl",
@@ -42,7 +42,7 @@ public final class quyen_hs {
       "fuck"
    };
 
-   public static final int a(String var0) {
+   public static final int validateUsername(String var0) {
       if (var0.length() != 0 && var0.length() >= 6 && var0.length() <= 64) {
          for (int var1 = 0; var1 < 9; var1++) {
             String var2 = String.valueOf((char)(var1 + 48));
@@ -64,17 +64,17 @@ public final class quyen_hs {
       }
    }
 
-   public static String b(String var0) {
+   public static String filterBadWords(String var0) {
       String var1 = var0.toLowerCase();
 
-      for (int var2 = 0; var2 < a.length; var2++) {
+      for (int var2 = 0; var2 < BANNED_WORDS.length; var2++) {
          int var3;
-         if ((var3 = var1.indexOf(a[var2])) >= 0) {
+         if ((var3 = var1.indexOf(BANNED_WORDS[var2])) >= 0) {
             boolean var4 = false;
             boolean var5 = false;
 
             try {
-               if (var0.substring(var3 - 1, var3 + a[var2].length()).equals(" " + a[var2])) {
+               if (var0.substring(var3 - 1, var3 + BANNED_WORDS[var2].length()).equals(" " + BANNED_WORDS[var2])) {
                   var4 = true;
                }
             } catch (Exception var8) {
@@ -82,7 +82,7 @@ public final class quyen_hs {
             }
 
             try {
-               if (var0.substring(var3, var3 + a[var2].length() + 1).equals(a[var2] + " ")) {
+               if (var0.substring(var3, var3 + BANNED_WORDS[var2].length() + 1).equals(BANNED_WORDS[var2] + " ")) {
                   var5 = true;
                }
             } catch (Exception var7) {
@@ -90,8 +90,8 @@ public final class quyen_hs {
             }
 
             if (var4 && var5) {
-               var0 = var0.substring(0, var3) + "**" + var0.substring(var3 + a[var2].length());
-               var1 = var1.substring(0, var3) + "**" + var1.substring(var3 + a[var2].length());
+               var0 = var0.substring(0, var3) + "**" + var0.substring(var3 + BANNED_WORDS[var2].length());
+               var1 = var1.substring(0, var3) + "**" + var1.substring(var3 + BANNED_WORDS[var2].length());
             }
          }
       }

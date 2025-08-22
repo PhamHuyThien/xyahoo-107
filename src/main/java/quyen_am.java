@@ -18,7 +18,7 @@ final class quyen_am implements Action {
          GridComponent var1 = this.b;
          var10000.joinGame(var10001, this.c[this.b.selectedRowIndex * var1.columnsPerRow + var1.selectedColumnIndex]);
       } else {
-         quyen_af.a(this.d);
+         MessageProcessor.a(this.d);
       }
    }
 }

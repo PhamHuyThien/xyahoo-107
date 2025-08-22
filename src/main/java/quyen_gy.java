@@ -9,7 +9,7 @@ final class quyen_gy implements Action {
       GameGraphics.instance.initializeConnection();
       quyen_gu.a(this.a, this.a.a.getText());
       this.a.c = this.a.b.getText();
-      quyen_a.e();
-      quyen_a.h(this.a.d, this.a.b.getText());
+      PacketSender.e();
+      PacketSender.h(this.a.d, this.a.b.getText());
    }
 }

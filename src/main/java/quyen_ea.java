@@ -15,7 +15,7 @@ public final class quyen_ea {
       } else {
          object = n;
          Packet packet2 = new Packet(119, 2);
-         quyen_a.a(((Integer)object).intValue(), packet2);
+         PacketUtils.writeInt(((Integer)object).intValue(), packet2);
          NetworkManager.sendPacket(packet2);
          object = GameManager.statusIcons[2];
          a.put(n, object);
