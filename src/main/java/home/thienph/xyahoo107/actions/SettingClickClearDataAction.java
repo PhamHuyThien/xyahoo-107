@@ -6,7 +6,7 @@ import home.thienph.xyahoo107.utils.UIUtils;
 
 import javax.microedition.lcdui.Image;
 
-public final class quyen_ee implements Action {
+public final class SettingClickClearDataAction implements Action {
     public void action() {
         UIUtils.clearRecordStores(false);
         GameManager.instance.showNotification(UIUtils.concatStrings("Đã xóa", " dữ liệu cá nhân", null, null), (Image) null, 2);

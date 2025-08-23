@@ -6,7 +6,7 @@ import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.NetworkManager;
-import home.thienph.xyahoo107.messages.MessageProcessor;
+import home.thienph.xyahoo107.processors.GameProcessor;
 import home.thienph.xyahoo107.utils.FontRenderer;
 
 import javax.microedition.lcdui.Canvas;
@@ -44,18 +44,18 @@ public final class GameGraphics extends Canvas implements Runnable {
         screenHeight = this.getHeight();
         gameState = 0;
         FontRenderer.initializeFonts();
-        GamePacketHandler var1 = GamePacketHandler.getInstance();
-        NetworkManager.registerHandler(2, var1);
-        NetworkManager.registerHandler(4, ChatPacketHandler.getInstance());
-        NetworkManager.registerHandler(39, var1);
-        NetworkManager.registerHandler(5, var1);
-        NetworkManager.registerHandler(6, var1);
-        NetworkManager.registerHandler(37, var1);
-        NetworkManager.registerHandler(48, var1);
-        NetworkManager.packetHandler = var1;
-        GameManager var2 = GameManager.getInstance();
-        GamePacketHandler.gameManager = var2;
-        ChatPacketHandler.gameManager = var2;
+        GamePacketHandler gamePacketHandler = GamePacketHandler.getInstance();
+        ChatPacketHandler chatPacketHandler = ChatPacketHandler.getInstance();
+        NetworkManager.registerHandler(2, gamePacketHandler);
+        NetworkManager.registerHandler(4, chatPacketHandler);
+        NetworkManager.registerHandler(39, gamePacketHandler);
+        NetworkManager.registerHandler(5, gamePacketHandler);
+        NetworkManager.registerHandler(6, gamePacketHandler);
+        NetworkManager.registerHandler(37, gamePacketHandler);
+        NetworkManager.registerHandler(48, gamePacketHandler);
+        NetworkManager.packetHandler = gamePacketHandler;
+        GamePacketHandler.gameManager = GameManager.getInstance();
+        ChatPacketHandler.gameManager = GameManager.getInstance();
         NetworkManager.sendPacket(new Packet(2, 5));
         new Thread(this).start();
     }
@@ -87,7 +87,7 @@ public final class GameGraphics extends Canvas implements Runnable {
         try {
             switch (gameState) {
                 case 0:
-                    MessageProcessor.drawSplashScreen(var1);
+                    GameProcessor.drawSplashScreen(var1);
                 default:
                     return;
                 case 1:
@@ -107,7 +107,7 @@ public final class GameGraphics extends Canvas implements Runnable {
             try {
                 switch (gameState) {
                     case 0:
-                        MessageProcessor.updateSplashScreen();
+                        GameProcessor.updateSplashScreen();
                         break;
                     case 1:
                         GameManager.instance.handleInput(keyPressed, keyRepeated, charInput);

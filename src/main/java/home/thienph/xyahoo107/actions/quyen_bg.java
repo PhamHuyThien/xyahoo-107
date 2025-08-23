@@ -12,7 +12,7 @@ public final class quyen_bg implements Action {
 
     public void action() {
         String var1 = this.a.downloadListComponent.getSelectedItem().c;
-        this.a.downloadDataManager.removeDownload(var1, 0L);
+        this.a.contactSource.removeDownload(var1, 0L);
         this.a.downloadListComponent.buildListItems();
     }
 }

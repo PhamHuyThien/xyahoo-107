@@ -59,4 +59,8 @@ public final class ByteBuffer {
     public int getLength() {
         return this.length;
     }
+
+    public int getRemaining() {
+        return this.length - this.position;
+    }
 }

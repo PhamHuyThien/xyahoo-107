@@ -1,15 +1,15 @@
-package home.thienph.xyahoo107.messages;
+package home.thienph.xyahoo107.processors;
 
 import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.ChatScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
@@ -26,7 +26,7 @@ import javax.microedition.lcdui.Image;
 import java.io.DataInputStream;
 import java.util.Vector;
 
-public class MessageProcessor {
+public class GameProcessor {
     private static Vector contextMenuItems;
     private static ContextMenu contextMenu;
     private static byte dialogType;
@@ -35,14 +35,14 @@ public class MessageProcessor {
     public static int splashCounter;
     private static boolean splashCompleted;
 
-
-    public static void processMessage(byte[] var0) {
-        if (var0 != null && var0.length >= 2) {
+    public static void processMessage(byte[] payload) {
+        if (payload != null && payload.length >= 2) {
             Packet packet = new Packet(0, 0);
-            packet.setPayload(new ByteBuffer(var0));
+            packet.setPayload(new ByteBuffer(payload));
             while (true) {
-                int var148 = PacketUtils.readInt(packet);
-                switch (var148) {
+                int commandId = PacketUtils.readInt(packet);
+                System.out.println("[MessageProcessor.processMessage] commandId = " + commandId + ", length = " + packet.getPayload().getRemaining());
+                switch (commandId) {
                     case 0:
                         int var170 = PacketUtils.readInt(packet);
                         GameManager.instance.destroyScreen(GameManager.instance.findScreenById(var170));
@@ -186,22 +186,20 @@ public class MessageProcessor {
                         PacketSender.a(var183.getPayload().getBuffer());
                         break;
                     case 4:
-                        DialogScreen var331;
-                        (var331 = new DialogScreen()).unused2 = true;
-                        String var332 = PacketUtils.readString(packet);
-                        var331.title = var332;
-                        int var333 = PacketUtils.readInt(packet);
-                        var331.unused1 = var333;
-                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(var333));
-                        var331.startSlideAnimation(1);
-                        boolean var334 = PacketUtils.readBoolean(packet);
-                        GameManager.instance.addScreenToStack((Screen) var331);
-                        if (var334) {
+                        DialogScreen dialogScreen = new DialogScreen();
+                        dialogScreen.showInNavigation = true;
+                        dialogScreen.title = PacketUtils.readString(packet);
+                        int dialogId = PacketUtils.readInt(packet);
+                        dialogScreen.dialogId = dialogId;
+                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(dialogId));
+                        dialogScreen.startSlideAnimation(1);
+                        boolean isSwitchLastScreen = PacketUtils.readBoolean(packet);
+                        GameManager.instance.addScreenToStack((Screen) dialogScreen);
+                        if (isSwitchLastScreen) {
                             GameManager.instance.switchToLastScreen();
                         }
-
-                        if (var333 == 11111) {
-                            GameManager.instance.setupMainMenu(var331);
+                        if (dialogId == 11111) {
+                            GameManager.instance.setupMainMenu(dialogScreen);
                         }
                         break;
                     case 5:
@@ -209,13 +207,13 @@ public class MessageProcessor {
                         Screen var211 = GameManager.instance.findScreenById(var192);
                         switch (packet.getPayload().readByte()) {
                             case 0:
-                                UIFactory var231 = createUIFactory(packet);
+                                ButtonAction var231 = createUIFactory(packet);
                                 if (GameManager.isValidErrorCode(var192)) {
                                     Vector var252;
-                                    (var252 = new Vector()).addElement(new UIFactory("Biểu cảm", new quyen_ax()));
+                                    (var252 = new Vector()).addElement(new ButtonAction("Biểu cảm", new quyen_ax()));
                                     var252.addElement(var231);
                                     ContextMenu var268 = new ContextMenu(var252);
-                                    var211.leftSoftkey = new UIFactory("Menu", new quyen_ay(var268));
+                                    var211.leftSoftkey = new ButtonAction("Menu", new quyen_ay(var268));
                                 } else {
                                     var211.leftSoftkey = var231;
                                 }
@@ -240,7 +238,7 @@ public class MessageProcessor {
                                 int var307 = PacketUtils.readInt(packet);
                                 int var308 = PacketUtils.readInt(packet);
                                 TextInputComponent var309;
-                                var180 = var309 = UIFactory.createLabeledTextInput(var166, var305, var307, var308);
+                                var180 = var309 = ButtonAction.createLabeledTextInput(var166, var305, var307, var308);
                                 setComponentAlignment(var166, (UIComponent) var180, packet);
                                 var309.textInputHandler.posX = var309.posX;
                                 break;
@@ -249,14 +247,15 @@ public class MessageProcessor {
                                 int var70 = PacketUtils.readInt(packet);
                                 if (var310.equals("")) {
                                     TextComponent var311;
-                                    (var311 = UIFactory.createSpacer(var166, var70)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
+                                    (var311 = ButtonAction.createSpacer(var166, var70)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
                                     var311.isVisible = !var310.trim().equals("");
                                     var180 = var311;
                                     packet.getPayload().readByte();
                                 } else {
-                                    var180 = UIFactory.createWrappedText(var310, var166, var70, UIUtils.validateColor(PacketUtils.readInt(packet)), true, true)[0];
+                                    var180 = ButtonAction.createWrappedText(var310, var166, var70, UIUtils.validateColor(PacketUtils.readInt(packet)), true, true)[0];
                                     setComponentAlignment(var166, (UIComponent) var180, packet);
                                 }
+                                break;
                             case 2:
                             case 3:
                             case 9:
@@ -269,14 +268,14 @@ public class MessageProcessor {
                                 int var74 = UIUtils.validateColor(PacketUtils.readInt(packet));
                                 byte[] var75 = PacketUtils.readBytes(packet);
                                 TextLinkComponent var76;
-                                (var76 = UIFactory.createCustomButton(var166, var312, var73, new quyen_ah(var75), var166.dialogX, var166.nextComponentY, var166.dialogWidth)).textColor = new Integer(var74);
+                                (var76 = ButtonAction.createCustomButton(var166, var312, var73, new quyen_ah(var75), var166.dialogX, var166.nextComponentY, var166.dialogWidth)).textColor = new Integer(var74);
                                 var180 = var76;
                                 setComponentAlignment(var166, var76, packet);
                                 break;
                             case 5:
                                 String var80 = PacketUtils.readString(packet);
                                 PacketUtils.readInt(packet);
-                                var180 = UIFactory.createSimpleText(var166, var80)[0];
+                                var180 = ButtonAction.createSimpleText(var166, var80)[0];
                                 break;
                             case 6:
                             case 12:
@@ -298,7 +297,7 @@ public class MessageProcessor {
                                 boolean var317 = PacketUtils.readBoolean(packet);
                                 String var318 = PacketUtils.readString(packet);
                                 byte[] var89 = PacketUtils.readBytes(packet);
-                                ImageComponent var90 = UIFactory.createImageComponent(var166, var83, var82, var313, var314, var316, var317);
+                                ImageComponent var90 = ButtonAction.createImageComponent(var166, var83, var82, var313, var314, var316, var317);
                                 if (var89 != null && var89.length > 1) {
                                     var90.setClickAction(var318, new quyen_aj(var89));
                                 }
@@ -317,7 +316,7 @@ public class MessageProcessor {
                                 }
 
                                 byte[] var328 = PacketUtils.readBytes(packet);
-                                DropdownComponent var123 = UIFactory.createChoiceBoxWithID(var166, var118, var121, var119);
+                                DropdownComponent var123 = ButtonAction.createChoiceBoxWithID(var166, var118, var121, var119);
                                 if (var328 != null && var328.length > 1) {
                                     var123.setChangeAction(new quyen_an(var328));
                                 }
@@ -370,8 +369,8 @@ public class MessageProcessor {
 
                                 byte var99 = packet.getPayload().readByte();
                                 int var100 = PacketUtils.readInt(packet);
-                                DownloadDataManager var101 = new DownloadDataManager();
-                                DownloadData[] var102 = new DownloadData[var100];
+                                ContactSource var101 = new ContactSource();
+                                Contact[] var102 = new Contact[var100];
                                 String[] var103 = new String[var100];
 
                                 for (int var104 = 0; var104 < var100; var104++) {
@@ -411,7 +410,7 @@ public class MessageProcessor {
                                         var327 = null;
                                     }
 
-                                    var102[var104] = new DownloadData("", var321, var325, var322, null, -1, var104, var327);
+                                    var102[var104] = new Contact("", var321, var325, var322, null, -1, var104, var327);
                                     var102[var104].fileName = var105;
                                     var102[var104].priority = var323;
                                     var102[var104].thumbnailImage = var324;
@@ -467,7 +466,7 @@ public class MessageProcessor {
                                 var166.addComponent(var336);
                                 UIUtils.focusComponent(var166, var336);
                                 byte[] var116 = PacketUtils.readBytes(packet);
-                                UIFactory var329 = new UIFactory("Chọn", new quyen_am(var109, var336, var113, var116));
+                                ButtonAction var329 = new ButtonAction("Chọn", new quyen_am(var109, var336, var113, var116));
                                 var336.middleSoftKey = var329;
                                 var180 = var336;
                                 var166.isScrollLocked = true;
@@ -475,13 +474,13 @@ public class MessageProcessor {
                             case 14:
                                 String var190 = PacketUtils.readString(packet);
                                 boolean var182 = PacketUtils.readBoolean(packet);
-                                var180 = UIFactory.createCheckbox(var166, var190, var182);
+                                var180 = ButtonAction.createCheckbox(var166, var190, var182);
                                 setComponentAlignment(var166, (UIComponent) var180, packet);
                                 break;
                             case 15:
                                 String var69;
                                 TextComponent var71;
-                                (var71 = UIFactory.createLabel(var69 = PacketUtils.readString(packet), var166, -1)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
+                                (var71 = ButtonAction.createLabel(var69 = PacketUtils.readString(packet), var166, -1)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
                                 var71.isVisible = !var69.trim().equals("");
                                 var71.enableScrolling = true;
                                 var180 = var71;
@@ -491,13 +490,13 @@ public class MessageProcessor {
                                 String var189 = PacketUtils.readString(packet);
                                 byte var181 = packet.getPayload().readByte();
                                 byte[] var304 = PacketUtils.readBytes(packet);
-                                var180 = UIFactory.createPopupDialog(var166, var189, var181, new quyen_az(var304));
+                                var180 = ButtonAction.createPopupDialog(var166, var189, var181, new quyen_az(var304));
                                 break;
                             case 17:
                                 String var72 = PacketUtils.readString(packet);
                                 int var77 = PacketUtils.readInt(packet);
                                 byte[] var78 = PacketUtils.readBytes(packet);
-                                var180 = UIFactory.createButton(var166, var72, new quyen_ai(var78), var166.nextComponentY, var77);
+                                var180 = ButtonAction.createButton(var166, var72, new quyen_ai(var78), var166.nextComponentY, var77);
                                 setComponentAlignment(var166, (UIComponent) var180, packet);
                         }
 
@@ -573,11 +572,11 @@ public class MessageProcessor {
                         DialogScreen var266;
                         UIComponent var206 = (var266 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
                         UIComponent var228 = null;
-                        if (var148 == 16) {
+                        if (commandId == 16) {
                             var206.posX = PacketUtils.readInt(packet);
                         } else {
                             var228 = var266.findComponentByID(PacketUtils.readInt(packet));
-                            if (var148 == 17) {
+                            if (commandId == 17) {
                                 var206.posX = var228.posX + var228.width + 6;
                             }
                         }
@@ -588,14 +587,14 @@ public class MessageProcessor {
                         DialogScreen var265;
                         UIComponent var205 = (var265 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
                         UIComponent var226 = null;
-                        if (var148 == 18) {
+                        if (commandId == 18) {
                             var205.posY = PacketUtils.readInt(packet);
                             var265.nextComponentY = var205.posY + var205.height + 2;
                         } else {
                             var226 = var265.findComponentByID(PacketUtils.readInt(packet));
-                            if (var148 == 19) {
+                            if (commandId == 19) {
                                 var205.posY = var226.posY + var226.height + 2;
-                            } else if (var148 == 20) {
+                            } else if (commandId == 20) {
                                 var205.posY = var226.posY;
                             }
                         }
@@ -645,9 +644,9 @@ public class MessageProcessor {
                         byte var287 = 0;
                         Vector var224 = null;
                         String var249 = null;
-                        if (var148 == 29) {
+                        if (commandId == 29) {
                             var249 = PacketUtils.readString(packet);
-                        } else if (var148 == 60 || var148 == 61) {
+                        } else if (commandId == 60 || commandId == 61) {
                             var264 = PacketUtils.readString(packet);
                             var279 = packet.getPayload().readByte();
                             var285 = packet.getPayload().readByte();
@@ -669,10 +668,10 @@ public class MessageProcessor {
                             }
                         }
 
-                        UIFactory var290 = null;
-                        UIFactory var293 = null;
-                        UIFactory var296 = null;
-                        if (var148 == 29 || var148 == 61) {
+                        ButtonAction var290 = null;
+                        ButtonAction var293 = null;
+                        ButtonAction var296 = null;
+                        if (commandId == 29 || commandId == 61) {
                             String var202 = PacketUtils.readString(packet);
                             byte[] var301 = PacketUtils.readBytes(packet);
                             String var303 = PacketUtils.readString(packet);
@@ -680,23 +679,23 @@ public class MessageProcessor {
                             String var300 = PacketUtils.readString(packet);
                             byte[] var175 = PacketUtils.readBytes(packet);
                             if (var301 != null && var301.length > 1) {
-                                var290 = new UIFactory(var202, new quyen_at(var301));
+                                var290 = new ButtonAction(var202, new quyen_at(var301));
                             }
 
                             if (var297 != null && var297.length > 1) {
-                                var293 = new UIFactory(var303, new quyen_au(var297));
+                                var293 = new ButtonAction(var303, new quyen_au(var297));
                             }
 
                             if (var175 != null && var175.length > 1) {
-                                var296 = new UIFactory(var300, new quyen_av(var175));
+                                var296 = new ButtonAction(var300, new quyen_av(var175));
                             }
                         }
 
-                        if (var148 == 29) {
+                        if (commandId == 29) {
                             GameManager.instance.createSimpleDialog(var249, var290, var293, var296);
-                        } else if (var148 == 60) {
+                        } else if (commandId == 60) {
                             GameManager.instance.createDialog(var264, var287, var224, var285, GameManager.instance.getSelectButton(), GameManager.instance.createBackButton("OK"), null);
-                        } else if (var148 == 61) {
+                        } else if (commandId == 61) {
                             GameManager.instance.createDialog(var264, var287, var224, var285, var290, var293, var296);
                         }
                         break;
@@ -748,7 +747,7 @@ public class MessageProcessor {
                                 byte[] var139 = PacketUtils.readBytes(packet);
                                 var133.linkAction = new quyen_ao(var137);
                                 var134.linkAction = new quyen_ap(var138);
-                                var135.middleSoftKey = new UIFactory("Đến trang", new quyen_aq(var135, var129, var139));
+                                var135.middleSoftKey = new ButtonAction("Đến trang", new quyen_aq(var135, var129, var139));
                             }
 
                             var127.addComponent(var133);
@@ -773,7 +772,7 @@ public class MessageProcessor {
                             String var262 = PacketUtils.readString(packet);
                             byte[] var277 = PacketUtils.readBytes(packet);
                             byte var284 = (byte) var201;
-                            UIFactory var286 = new UIFactory(var262, new quyen_ar(var284, var277));
+                            ButtonAction var286 = new ButtonAction(var262, new quyen_ar(var284, var277));
                             contextMenuItems.addElement(var286);
                         }
 
@@ -804,7 +803,7 @@ public class MessageProcessor {
                         int var187 = PacketUtils.readInt(packet);
                         GameManager.instance.destroyScreen(GameManager.instance.findScreenById(var187));
                         PhotoViewerScreen var200;
-                        (var200 = new PhotoViewerScreen()).unused1 = var187;
+                        (var200 = new PhotoViewerScreen()).dialogId = var187;
                         var200.setTitle(PacketUtils.readString(packet));
                         var200.setCaption(PacketUtils.readString(packet));
                         var200.photoComponent.displayMode = PacketUtils.readInt(packet);
@@ -917,7 +916,7 @@ public class MessageProcessor {
                                         break;
                                     case 11:
                                         ListComponent var8;
-                                        DownloadDataManager var9 = (var8 = (ListComponent) var194).dataSource;
+                                        ContactSource var9 = (var8 = (ListComponent) var194).dataSource;
                                         byte var10 = packet.getPayload().readByte();
                                         var5 = 0;
 
@@ -936,7 +935,7 @@ public class MessageProcessor {
                                             String var20 = PacketUtils.readString(packet);
                                             String var21 = PacketUtils.readString(packet);
                                             String var14 = PacketUtils.readString(packet);
-                                            DownloadData var15 = var9.findDownload(null, var241, 0L);
+                                            Contact var15 = var9.findDownload(null, var241, 0L);
                                             if (var11 != 0) {
                                                 var15.priority = var13;
                                             }
@@ -995,51 +994,52 @@ public class MessageProcessor {
         return var4;
     }
 
-    private static UIFactory createUIFactory(Packet var0) {
+    private static ButtonAction createUIFactory(Packet var0) {
         byte[] var1 = PacketUtils.readBytes(var0);
-        return new UIFactory(PacketUtils.readString(var0), new quyen_as(var1));
+        return new ButtonAction(PacketUtils.readString(var0), new quyen_as(var1));
     }
 
     static void setDialogType(byte var0) {
         dialogType = var0;
     }
 
-    public static void loadImageData(int var0) {
+    public static void loadImageData(int dataImageId) {
         try {
-            String var1 = null;
+            String fileName = null;
             byte[] var2 = new byte[1];
-            if (var0 == 0) {
-                var1 = "/Data0.tak";
-            } else if (var0 == 1) {
-                var1 = "/Data1.tak";
-            } else if (var0 == 2) {
-                var1 = "/Data2.tak";
+            if (dataImageId == 0) {
+                fileName = "/Data0.tak";
+            } else if (dataImageId == 1) {
+                fileName = "/Data1.tak";
+            } else if (dataImageId == 2) {
+                fileName = "/Data2.tak";
             }
 
-            imageOffsets = new int[var0 = (imageDataStream = new DataInputStream(var2.getClass().getResourceAsStream(var1))).readInt()];
-            boolean var6 = false;
-            int var8 = (var0 << 2) + 4;
+            imageDataStream = new DataInputStream(var2.getClass().getResourceAsStream(fileName));
+            dataImageId = imageDataStream.readInt();
+            imageOffsets = new int[dataImageId];
 
-            for (int var3 = 0; var3 < var0; var3++) {
+            int var8 = (dataImageId << 2) + 4;
+            for (int i = 0; i < dataImageId; i++) {
                 int var7 = imageDataStream.readInt();
-                imageOffsets[var3] = var7 + var8;
+                imageOffsets[i] = var7 + var8;
             }
         } catch (Exception var4) {
-            System.out.println("imgex3 " + var4);
+            System.out.println("[MessageProcessor.loadImageData] error: " + var4);
+            var4.printStackTrace();
         }
     }
 
-    public static byte[] getImageBytes(int var0) {
-        byte[] var1 = new byte[1];
-
+    public static byte[] getImageBytes(int id) {
+        byte[] byteData = new byte[1];
         try {
-            var1 = new byte[imageOffsets[var0 + 1] - imageOffsets[var0]];
-            imageDataStream.read(var1);
-        } catch (Exception var2) {
-            System.out.println("imgex1 " + var2);
+            byteData = new byte[imageOffsets[id + 1] - imageOffsets[id]];
+            imageDataStream.read(byteData);
+        } catch (Exception ex) {
+            System.out.println("[MessageProcessor.getImageBytes] imgex1 error: " + ex);
+            ex.printStackTrace();
         }
-
-        return var1;
+        return byteData;
     }
 
     public static void cleanup() {

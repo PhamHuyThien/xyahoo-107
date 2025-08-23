@@ -41,7 +41,7 @@ public final class GameRoomGridComponent extends UIComponent {
         this.iconHeight = GameManager.friendListIcon.getHeight();
         this.iconHalfWidth = this.iconWidth >> 1;
         this.iconHalfHeight = this.iconHeight >> 1;
-        super.middleSoftKey = new UIFactory("Vào bàn", new quyen_cy(this));
+        super.middleSoftKey = new ButtonAction("Vào bàn", new quyen_cy(this));
     }
 
     public void setRoomData(GameRoom[] var1) {

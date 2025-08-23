@@ -5,20 +5,20 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.connections.PacketSender;
 
 final class quyen_em implements Action {
-    private final quyen_el a;
+    private final LoginSendFeedbackAction a;
 
-    quyen_em(quyen_el var1) {
+    quyen_em(LoginSendFeedbackAction var1) {
         this.a = var1;
     }
 
     public void action() {
-        quyen_el var1 = this.a;
-        if (this.a.loginScreen.c.getText() != null) {
+        LoginSendFeedbackAction var1 = this.a;
+        if (this.a.loginScreen.feedbackInput.getText() != null) {
             var1 = this.a;
-            if (this.a.loginScreen.c.getText().length() > 0) {
+            if (this.a.loginScreen.feedbackInput.getText().length() > 0) {
                 GameGraphics.instance.initializeConnection();
                 var1 = this.a;
-                PacketSender.f(this.a.loginScreen.c.getText());
+                PacketSender.f(this.a.loginScreen.feedbackInput.getText());
             }
         }
     }

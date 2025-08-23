@@ -5,11 +5,11 @@ import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.NetworkManager;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -41,7 +41,7 @@ public final class FriendScreen extends Screen {
     public Vector pendingRequests;
     private Hashtable userStorage;
     public boolean isInitialized;
-    private UIFactory offlineMessageButton;
+    private ButtonAction offlineMessageButton;
     public Hashtable offlineMessages;
     public Screen offlineMessageScreen;
     private TextInputComponent activeTextInput;
@@ -50,8 +50,8 @@ public final class FriendScreen extends Screen {
     private DialogScreen statusDialog;
     private DropdownComponent statusDropdown;
     private TextInputComponent statusMessageInput;
-    private UIFactory backButton;
-    private final UIFactory defaultRightSoftkey = new UIFactory(TextConstant.close(), new quyen_ib(this));
+    private ButtonAction backButton;
+    private final ButtonAction defaultRightSoftkey = new ButtonAction(TextConstant.close(), new quyen_ib(this));
     public Hashtable pendingInvitations;
 
     public void clearContactData() {
@@ -99,19 +99,19 @@ public final class FriendScreen extends Screen {
         UIUtils.focusComponent(this, this.mainContactList);
         this.contextMenuItems = new Vector();
         this.contextMenu = new ContextMenu(this.contextMenuItems);
-        this.contextMenuItems.addElement(new UIFactory("Trạng thái", new quyen_im(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new quyen_im(this)));
         this.contextMenuItems.addElement(this.createPendingRequestsButton());
-        this.contextMenuItems.addElement(new UIFactory("Thêm bạn", new quyen_iu(this)));
-        this.contextMenuItems.addElement(new UIFactory("Chat với..", new quyen_iw(this)));
-        this.contextMenuItems.addElement(new UIFactory("ID từ chối", new quyen_iy(this)));
-        UIFactory var1 = new UIFactory("Chức năng khác", null);
+        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new quyen_iu(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new quyen_iw(this)));
+        this.contextMenuItems.addElement(new ButtonAction("ID từ chối", new quyen_iy(this)));
+        ButtonAction var1 = new ButtonAction("Chức năng khác", null);
         Vector var2;
-        (var2 = new Vector()).addElement(new UIFactory("Mở/tắt ID ẩn", new quyen_iz(this)));
-        var2.addElement(new UIFactory("Mở/tắt avatar", new quyen_ja(this)));
-        var2.addElement(new UIFactory("Gửi tin nhóm", new quyen_ic(this)));
+        (var2 = new Vector()).addElement(new ButtonAction("Mở/tắt ID ẩn", new quyen_iz(this)));
+        var2.addElement(new ButtonAction("Mở/tắt avatar", new quyen_ja(this)));
+        var2.addElement(new ButtonAction("Gửi tin nhóm", new quyen_ic(this)));
         var1.parentContainer = new ContextMenu(var2);
         this.contextMenuItems.addElement(var1);
-        super.leftSoftkey = new UIFactory("Menu", new quyen_id(this));
+        super.leftSoftkey = new ButtonAction("Menu", new quyen_id(this));
         super.rightSoftkey = this.defaultRightSoftkey;
     }
 
@@ -129,8 +129,8 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public UIFactory createPendingRequestsButton() {
-        return new UIFactory("Chờ kết bạn" + (this.pendingRequests.size() > 0 ? " (+" + this.pendingRequests.size() + ")" : ""), new quyen_ie(this));
+    public ButtonAction createPendingRequestsButton() {
+        return new ButtonAction("Chờ kết bạn" + (this.pendingRequests.size() > 0 ? " (+" + this.pendingRequests.size() + ")" : ""), new quyen_ie(this));
     }
 
     public static void updateStatusMessage(String var0) {
@@ -146,11 +146,11 @@ public final class FriendScreen extends Screen {
             this.statusDialog.title = "Trạng Thái";
             UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
             this.statusDialog.nextComponentY += 20;
-            this.statusDropdown = UIFactory.createChoiceBox(this.statusDialog, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
-            this.statusMessageInput = UIFactory.createLabeledTextInput(this.statusDialog, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
+            this.statusDropdown = ButtonAction.createChoiceBox(this.statusDialog, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
+            this.statusMessageInput = ButtonAction.createLabeledTextInput(this.statusDialog, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
             UIUtils.focusComponent(this.statusDialog, this.statusDropdown);
-            this.statusDialog.centerSoftkey = new UIFactory("OK", new quyen_if(this));
-            this.statusDialog.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_ig(this));
+            this.statusDialog.centerSoftkey = new ButtonAction("OK", new quyen_if(this));
+            this.statusDialog.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_ig(this));
             System.gc();
         }
 
@@ -162,11 +162,11 @@ public final class FriendScreen extends Screen {
 
     public void addAllFriendsToOnline() {
         if (this.mainContactList.contactData != null) {
-            DownloadCategory var1 = this.mainContactList.contactData.findCategoryById("Ban Be");
+            ContactGroup var1 = this.mainContactList.contactData.findCategoryById("Ban Be");
             int var2 = 0;
 
-            for (int var3 = var1.downloads.size(); var2 < var3; var2++) {
-                this.addToOnlineList(((DownloadData) var1.downloads.elementAt(var2)).timestamp);
+            for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
+                this.addToOnlineList(((Contact) var1.contacts.elementAt(var2)).timestamp);
             }
         }
     }
@@ -238,13 +238,13 @@ public final class FriendScreen extends Screen {
         int var1 = this.contextMenuItems.size();
 
         while (--var1 >= 0) {
-            if (((UIFactory) this.contextMenuItems.elementAt(var1)).text.startsWith("Chờ kết bạn")) {
-                ((UIFactory) this.contextMenuItems.elementAt(var1)).text = "Chờ kết bạn";
+            if (((ButtonAction) this.contextMenuItems.elementAt(var1)).text.startsWith("Chờ kết bạn")) {
+                ((ButtonAction) this.contextMenuItems.elementAt(var1)).text = "Chờ kết bạn";
                 if (this.pendingRequests.size() > 0) {
-                    ((UIFactory) this.contextMenuItems.elementAt(var1)).text = UIUtils.concatStrings("Chờ kết bạn", " (+", Integer.toString(this.pendingRequests.size()), ")");
+                    ((ButtonAction) this.contextMenuItems.elementAt(var1)).text = UIUtils.concatStrings("Chờ kết bạn", " (+", Integer.toString(this.pendingRequests.size()), ")");
                 }
 
-                GameManager.instance.replaceMainMenuItem((UIFactory) this.contextMenuItems.elementAt(var1), var1);
+                GameManager.instance.replaceMainMenuItem((ButtonAction) this.contextMenuItems.elementAt(var1), var1);
                 var1 = 0;
                 System.gc();
             }
@@ -284,7 +284,7 @@ public final class FriendScreen extends Screen {
         this.offlineMessages.put(var1, var3);
     }
 
-    public void createOfflineMessageScreen(DownloadDataManager var1) {
+    public void createOfflineMessageScreen(ContactSource var1) {
         this.offlineMessageScreen = new Screen();
         this.offlineMessageScreen.title = "Tin Nhắn Offline";
         ListComponent var2;
@@ -293,11 +293,11 @@ public final class FriendScreen extends Screen {
         this.offlineMessageScreen.addComponent(var2);
         UIUtils.focusComponent(this.offlineMessageScreen, var2);
         Vector var3;
-        (var3 = new Vector()).addElement(new UIFactory("Xem", new quyen_ii(this, var2)));
-        var3.addElement(new UIFactory("Hồ sơ", new quyen_ij(this, var2)));
+        (var3 = new Vector()).addElement(new ButtonAction("Xem", new quyen_ii(this, var2)));
+        var3.addElement(new ButtonAction("Hồ sơ", new quyen_ij(this, var2)));
         ContextMenu var4 = new ContextMenu(var3);
         var2.itemAction = new quyen_ik(this, var4);
-        this.offlineMessageScreen.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_il(this));
+        this.offlineMessageScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_il(this));
         this.updateOfflineMessageButton();
     }
 
@@ -305,7 +305,7 @@ public final class FriendScreen extends Screen {
         if (this.offlineMessages.size() > 0) {
             String var1 = UIUtils.concatStrings("Tin nhắn offline", " (", Integer.toString(this.offlineMessages.size()), ")");
             if (this.offlineMessageButton == null) {
-                this.offlineMessageButton = new UIFactory(var1, new quyen_in(this));
+                this.offlineMessageButton = new ButtonAction(var1, new quyen_in(this));
             } else {
                 this.offlineMessageButton.text = var1;
                 this.contextMenuItems.setElementAt(this.offlineMessageButton, this.contextMenuItems.size());
@@ -338,21 +338,21 @@ public final class FriendScreen extends Screen {
             var2.selectAll();
             var1.addComponent(var2);
             UIUtils.focusComponent(var1, var2);
-            var1.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_io(this, var1));
+            var1.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_io(this, var1));
             Vector var3;
-            (var3 = new Vector()).addElement(new UIFactory("Gửi tin", new quyen_ip(this, var2, var1)));
-            var3.addElement(new UIFactory("Chọn/Bỏ chọn hết", new quyen_ir(this, var2)));
+            (var3 = new Vector()).addElement(new ButtonAction("Gửi tin", new quyen_ip(this, var2, var1)));
+            var3.addElement(new ButtonAction("Chọn/Bỏ chọn hết", new quyen_ir(this, var2)));
             ContextMenu var4 = new ContextMenu(var3);
-            var1.leftSoftkey = new UIFactory("Menu", new quyen_is(this, var4));
+            var1.leftSoftkey = new ButtonAction("Menu", new quyen_is(this, var4));
             var1.startSlideAnimation(1);
             GameManager.instance.addScreenToStack((Screen) var1);
             GameManager.instance.switchToScreen(var1);
         }
     }
 
-    public static void addContactToList(String var0, DownloadData var1, ContactListComponent var2) {
+    public static void addContactToList(String var0, Contact var1, ContactListComponent var2) {
         if (var2.contactData == null) {
-            var2.contactData = new DownloadDataManager();
+            var2.contactData = new ContactSource();
         }
 
         var2.contactData.addDownloadToCategory(var0, var1);
@@ -366,7 +366,7 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public DownloadData findContactById(String var1) {
+    public Contact findContactById(String var1) {
         return this.mainContactList.contactData == null ? null : this.mainContactList.contactData.findDownload(var1, null, 0L);
     }
 
@@ -386,13 +386,13 @@ public final class FriendScreen extends Screen {
         if (this.userStorage.containsKey(new Long(var1))) {
             return (String) this.userStorage.get(new Long(var1));
         } else {
-            DownloadData var3;
-            return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownload(null, null, var1)) != null ? var3.downloadId : null;
+            Contact var3;
+            return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownload(null, null, var1)) != null ? var3.contactId : null;
         }
     }
 
     public long getUserTimestampById(String var1) {
-        DownloadData var2;
+        Contact var2;
         return this.mainContactList != null && this.mainContactList.contactData != null && (var2 = this.mainContactList.contactData.findDownload(var1, null, 0L)) != null ? var2.timestamp : 0L;
     }
 
@@ -438,15 +438,15 @@ public final class FriendScreen extends Screen {
     public void addToFavorites(long var1) {
         if (this.mainContactList.contactData != null && !this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
             ContactListComponent var7 = this.mainContactList;
-            DownloadData var8;
+            Contact var8;
             if ((var8 = var7.contactData == null ? null : var7.contactData.findDownload(null, null, var1)) == null) {
                 return;
             }
 
             this.mainContactList.contactData.insertDownloadToCategory("Favorite", var8);
-            DownloadCategory var9;
-            if ((var9 = this.mainContactList.contactData.findCategoryById("Favorite")) != null && var9.downloads.size() > 9) {
-                var9.downloads.removeElementAt(var9.downloads.size() - 1);
+            ContactGroup var9;
+            if ((var9 = this.mainContactList.contactData.findCategoryById("Favorite")) != null && var9.contacts.size() > 9) {
+                var9.contacts.removeElementAt(var9.contacts.size() - 1);
             }
 
             GameManager.saveBuddyList(this.mainContactList.contactData, false, currentUserId);
@@ -527,7 +527,7 @@ public final class FriendScreen extends Screen {
         this.secondaryContactList = null;
         toggleOfflineFilter(this.mainContactList);
         UIUtils.focusComponent(this, this.mainContactList);
-        super.leftSoftkey = new UIFactory("Menu", new quyen_it(this));
+        super.leftSoftkey = new ButtonAction("Menu", new quyen_it(this));
         UIUtils.setScreenSubtitleText(instance, "Bạn Bè");
         currentViewMode = 1;
         System.gc();
@@ -619,9 +619,9 @@ public final class FriendScreen extends Screen {
         var0.secondaryAction = var1;
     }
 
-    public static UIFactory getBackButton(FriendScreen var0) {
+    public static ButtonAction getBackButton(FriendScreen var0) {
         if (var0.backButton == null) {
-            var0.backButton = new UIFactory(TextConstant.close(), new quyen_ih(var0));
+            var0.backButton = new ButtonAction(TextConstant.close(), new quyen_ih(var0));
         }
 
         return var0.backButton;

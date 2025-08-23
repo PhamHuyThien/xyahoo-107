@@ -9,19 +9,19 @@ import home.thienph.xyahoo107.managers.NetworkManager;
 import home.thienph.xyahoo107.screens.LoginScreen;
 import home.thienph.xyahoo107.utils.UIUtils;
 
-public final class quyen_ep implements Action {
-    private final LoginScreen a;
+public final class LoginClickForgotPasswordAction implements Action {
+    private final LoginScreen loginScreen;
 
-    public quyen_ep(LoginScreen var1) {
-        this.a = var1;
+    public LoginClickForgotPasswordAction(LoginScreen var1) {
+        this.loginScreen = var1;
     }
 
     public void action() {
-        if (this.a.usernameInput.getText().equals("")) {
+        if (this.loginScreen.usernameInput.getText().equals("")) {
             GameManager.getInstance().showWrappedTextDialog(UIUtils.concatStrings("Vui lòng nhập ID. ", "Bạn sẽ nhận mật khẩu qua tin nhắn.", null, null));
         } else {
             GameGraphics.instance.initializeConnection();
-            PacketSender.e();
+            PacketSender.sendAppInfo();
             NetworkManager.sendPacket(new Packet(269, 2));
             GameManager.instance.setLoadingState(true);
         }

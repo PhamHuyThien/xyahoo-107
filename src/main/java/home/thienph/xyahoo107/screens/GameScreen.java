@@ -55,32 +55,32 @@ public final class GameScreen extends Screen {
     public static int totalRooms;
     private UIComponent focusedComponent;
     public static String gameTypeId;
-    private UIFactory kickPlayerButton;
+    private ButtonAction kickPlayerButton;
     private Vector kickPlayerMenuItems;
     private ContextMenu kickPlayerMenu;
-    private UIFactory profileButton;
+    private ButtonAction profileButton;
     private Vector profileMenuItems;
     private ContextMenu profileMenu;
     private final Vector lobbyMenuItems;
     private final ContextMenu lobbyMenu;
-    private final UIFactory lobbyMenuButton;
+    private final ButtonAction lobbyMenuButton;
     private Vector gameMenuItems;
     private ContextMenu gameMenu;
     private int statusIconY;
-    private final UIFactory emotionButton = new UIFactory("Biểu cảm", new quyen_da(this));
-    private final UIFactory chatButton = new UIFactory("Chat", new quyen_dl(this));
-    private final UIFactory selectAllCardsButton = new UIFactory("Chọn/hủy hết bài", new quyen_dr(this));
-    private final UIFactory betButton = new UIFactory("Đặt cược", new quyen_ds(this));
+    private final ButtonAction emotionButton = new ButtonAction("Biểu cảm", new quyen_da(this));
+    private final ButtonAction chatButton = new ButtonAction("Chat", new quyen_dl(this));
+    private final ButtonAction selectAllCardsButton = new ButtonAction("Chọn/hủy hết bài", new quyen_dr(this));
+    private final ButtonAction betButton = new ButtonAction("Đặt cược", new quyen_ds(this));
     public boolean isSpecialGameMode;
     public String specialModeText;
-    private UIFactory continueButton;
-    private UIFactory chatSendButton;
-    private UIFactory chatModeButton;
-    private UIFactory betSendButton;
-    private UIFactory betModeButton;
-    private final UIFactory refreshButton = new UIFactory("Cập nhật", new quyen_dt(this));
-    private final UIFactory sendButton = new UIFactory(TextConstant.close(), new quyen_du(this));
-    private final UIFactory quickPlayButton = new UIFactory("Chơi nhanh", new quyen_dv(this));
+    private ButtonAction continueButton;
+    private ButtonAction chatSendButton;
+    private ButtonAction chatModeButton;
+    private ButtonAction betSendButton;
+    private ButtonAction betModeButton;
+    private final ButtonAction refreshButton = new ButtonAction("Cập nhật", new quyen_dt(this));
+    private final ButtonAction sendButton = new ButtonAction(TextConstant.close(), new quyen_du(this));
+    private final ButtonAction quickPlayButton = new ButtonAction("Chơi nhanh", new quyen_dv(this));
 
     public void setBetAmount(long var1) {
         this.betDisplayText = UIUtils.concatStrings("Cược", ": ", UIUtils.formatNumberWithDots(var1), UIUtils.concatStrings(" ", this.isGoldGame ? "gold" : "xu", null, null));
@@ -100,15 +100,15 @@ public final class GameScreen extends Screen {
         GameScreen var5 = this;
         byte var3 = 0;
 
-        UIFactory var10001;
+        ButtonAction var10001;
         while (true) {
             if (var3 >= var5.kickPlayerMenuItems.size()) {
                 var10001 = null;
                 break;
             }
 
-            UIFactory var4;
-            if ((var4 = (UIFactory) var5.kickPlayerMenuItems.elementAt(var3)).text.equals(var2)) {
+            ButtonAction var4;
+            if ((var4 = (ButtonAction) var5.kickPlayerMenuItems.elementAt(var3)).text.equals(var2)) {
                 var10001 = var4;
                 break;
             }
@@ -122,7 +122,7 @@ public final class GameScreen extends Screen {
     public GameScreen() {
         this.lobbyMenuItems = new Vector();
         this.lobbyMenu = new ContextMenu(this.lobbyMenuItems);
-        this.lobbyMenuButton = new UIFactory("Menu", new quyen_dw(this));
+        this.lobbyMenuButton = new ButtonAction("Menu", new quyen_dw(this));
         super.isAtBottom = true;
         GameManager.loadGameImages();
         this.isGoldGame = false;
@@ -258,7 +258,7 @@ public final class GameScreen extends Screen {
         if (this.kickPlayerButton == null) {
             this.kickPlayerMenuItems = new Vector();
             this.kickPlayerMenu = new ContextMenu(this.kickPlayerMenuItems);
-            this.kickPlayerButton = new UIFactory("Đá người chơi", null);
+            this.kickPlayerButton = new ButtonAction("Đá người chơi", null);
             this.kickPlayerButton.parentContainer = this.kickPlayerMenu;
         }
 
@@ -321,7 +321,7 @@ public final class GameScreen extends Screen {
 
             for (byte var13 = 0; var13 < this.playerComponents.length; var13++) {
                 if (!FriendScreen.currentUserId.equals(this.playerComponents[var13].playerName)) {
-                    this.kickPlayerMenuItems.addElement(new UIFactory(this.playerComponents[var13].playerName, new quyen_dx(this, var13)));
+                    this.kickPlayerMenuItems.addElement(new ButtonAction(this.playerComponents[var13].playerName, new quyen_dx(this, var13)));
                 }
             }
 
@@ -329,11 +329,11 @@ public final class GameScreen extends Screen {
         }
 
         this.initProfileMenu();
-        this.gameMenuItems.addElement(new UIFactory("Rời bàn", new quyen_db(this)));
-        super.leftSoftkey = new UIFactory("Menu", new quyen_dc(this));
+        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new quyen_db(this)));
+        super.leftSoftkey = new ButtonAction("Menu", new quyen_dc(this));
         super.rightSoftkey = null;
         if (super.centerSoftkey == null) {
-            super.centerSoftkey = new UIFactory("", new quyen_dd(this));
+            super.centerSoftkey = new ButtonAction("", new quyen_dd(this));
         }
 
         if (FriendScreen.currentUserId.equals(this.roomOwner)) {
@@ -349,13 +349,13 @@ public final class GameScreen extends Screen {
             this.betInputComponent.id = 2222;
             this.betInputComponent.leftSoftKey = GameManager.createCloseButton();
             if (this.betSendButton == null) {
-                this.betSendButton = new UIFactory(TextConstant.close(), new quyen_do(this));
+                this.betSendButton = new ButtonAction(TextConstant.close(), new quyen_do(this));
             }
 
             this.betInputComponent.rightSoftKey = this.betSendButton;
             this.betInputComponent.onCompleteAction = new quyen_dp(this);
             if (this.betModeButton == null) {
-                this.betModeButton = new UIFactory("Cược", new quyen_dq(this));
+                this.betModeButton = new ButtonAction("Cược", new quyen_dq(this));
             }
 
             this.betInputComponent.middleSoftKey = this.betModeButton;
@@ -466,7 +466,7 @@ public final class GameScreen extends Screen {
         }
 
         System.gc();
-        super.rightSoftkey = new UIFactory("Bỏ lượt", new quyen_df(this));
+        super.rightSoftkey = new ButtonAction("Bỏ lượt", new quyen_df(this));
         this.focusedComponent = this.cardGameComponent;
         this.initChatInput();
         this.initGameMenu();
@@ -475,8 +475,8 @@ public final class GameScreen extends Screen {
         this.gameMenuItems.addElement(this.selectAllCardsButton);
         this.gameMenuItems.addElement(GameLobbyScreen.buyCoinsButton);
         this.initProfileMenu();
-        this.gameMenuItems.addElement(new UIFactory("Rời bàn", new quyen_dg(this)));
-        super.leftSoftkey = new UIFactory("Menu", new quyen_di(this));
+        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new quyen_dg(this)));
+        super.leftSoftkey = new ButtonAction("Menu", new quyen_di(this));
         System.gc();
         if (this.isChatMode) {
             this.removeComponent(this.chatInputComponent);
@@ -508,7 +508,7 @@ public final class GameScreen extends Screen {
         if (this.profileButton == null) {
             this.profileMenuItems = new Vector();
             this.profileMenu = new ContextMenu(this.profileMenuItems);
-            this.profileButton = new UIFactory("Hồ sơ", null);
+            this.profileButton = new ButtonAction("Hồ sơ", null);
             this.profileButton.parentContainer = this.profileMenu;
         }
 
@@ -518,7 +518,7 @@ public final class GameScreen extends Screen {
 
             for (byte var1 = 0; var1 < this.playerComponents.length; var1++) {
                 if (!FriendScreen.currentUserId.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendManager.findContactById(this.playerComponents[var1].playerName) == null) {
-                    this.profileMenuItems.addElement(new UIFactory(this.playerComponents[var1].playerName, new quyen_de(this, var1)));
+                    this.profileMenuItems.addElement(new ButtonAction(this.playerComponents[var1].playerName, new quyen_de(this, var1)));
                 }
             }
 
@@ -646,7 +646,7 @@ public final class GameScreen extends Screen {
     public void showContinueButton() {
         super.centerSoftkey.text = "";
         if (this.continueButton == null) {
-            this.continueButton = new UIFactory("Chơi tiếp", new quyen_dj(this));
+            this.continueButton = new ButtonAction("Chơi tiếp", new quyen_dj(this));
         }
 
         super.rightSoftkey = this.continueButton;
@@ -712,13 +712,13 @@ public final class GameScreen extends Screen {
             this.chatInputComponent.id = 1111;
             this.chatInputComponent.leftSoftKey = GameManager.createCloseButton();
             if (this.chatSendButton == null) {
-                this.chatSendButton = new UIFactory(TextConstant.close(), new quyen_dk(this));
+                this.chatSendButton = new ButtonAction(TextConstant.close(), new quyen_dk(this));
             }
 
             this.chatInputComponent.rightSoftKey = this.chatSendButton;
             this.chatInputComponent.onCompleteAction = new quyen_dm(this);
             if (this.chatModeButton == null) {
-                this.chatModeButton = new UIFactory("Chat", new quyen_dn(this));
+                this.chatModeButton = new ButtonAction("Chat", new quyen_dn(this));
             }
 
             this.chatInputComponent.middleSoftKey = this.chatModeButton;
@@ -749,7 +749,7 @@ public final class GameScreen extends Screen {
         var0.adjustScroll();
     }
 
-    public static UIFactory getChatSendButton(GameScreen var0) {
+    public static ButtonAction getChatSendButton(GameScreen var0) {
         return var0.chatSendButton;
     }
 
@@ -757,7 +757,7 @@ public final class GameScreen extends Screen {
         return var0.betInputComponent;
     }
 
-    public static UIFactory getBetSendButton(GameScreen var0) {
+    public static ButtonAction getBetSendButton(GameScreen var0) {
         return var0.betSendButton;
     }
 }

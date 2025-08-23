@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.actions;
 
 
-import home.thienph.xyahoo107.messages.MessageProcessor;
+import home.thienph.xyahoo107.processors.GameProcessor;
 
 public final class quyen_ar implements Action {
     private final byte a;
@@ -13,7 +13,7 @@ public final class quyen_ar implements Action {
     }
 
     public void action() {
-        MessageProcessor.loadImageData(this.a);
-        MessageProcessor.processMessage(this.b);
+        GameProcessor.loadImageData(this.a);
+        GameProcessor.processMessage(this.b);
     }
 }

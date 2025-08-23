@@ -29,7 +29,7 @@ public final class ImageComponent extends UIComponent {
     public void setClickAction(String var1, Action var2) {
         if (var2 != null) {
             this.clickAction = var2;
-            super.middleSoftKey = new UIFactory(var1, new quyen_cd(this));
+            super.middleSoftKey = new ButtonAction(var1, new quyen_cd(this));
         }
     }
 

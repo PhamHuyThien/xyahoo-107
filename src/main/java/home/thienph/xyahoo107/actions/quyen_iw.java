@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.actions;
 
 
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.utils.UIUtils;
 
@@ -20,7 +20,7 @@ public final class quyen_iw implements Action {
         }
 
         if (FriendScreen.getActiveTextInput(this.a) == null) {
-            FriendScreen.setActiveTextInput(this.a, UIFactory.createPopupDialog(this.a, "Vui lòng nhập Xubi ID", 0, null));
+            FriendScreen.setActiveTextInput(this.a, ButtonAction.createPopupDialog(this.a, "Vui lòng nhập Xubi ID", 0, null));
         }
 
         if (FriendScreen.getSecondaryAction(this.a) == null) {

@@ -30,7 +30,7 @@ public final class PacketReader implements Runnable {
                 byte[] payload = readPayload(in, payloadLength);
 
                 // Tạo packet
-                System.out.println("[IN] command: " + packetType + " type: " + packetSubtype + " length: " + packetLength);
+                System.out.println("[ConnectionTask.run] [IN] command: " + packetType + " type: " + packetSubtype + " length: " + packetLength);
                 Packet packet = new Packet(packetType, packetSubtype, payload);
 
                 // Dispatch đến handler

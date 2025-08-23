@@ -1,9 +1,9 @@
 package home.thienph.xyahoo107.managers;
 
+import home.thienph.xyahoo107.connections.ConnectionTask;
 import home.thienph.xyahoo107.connections.PacketHandler;
 import home.thienph.xyahoo107.connections.PacketWriter;
 import home.thienph.xyahoo107.data.packet.Packet;
-import home.thienph.xyahoo107.tasks.ConnectionTask;
 
 import javax.microedition.io.SocketConnection;
 import java.io.DataOutputStream;
@@ -39,7 +39,8 @@ public final class NetworkManager {
     public static void connect(String var0, String var1, int var2, int var3) {
         if (!isConnected && !isConnecting) {
             socketConnection = null;
-            (connectThread = new Thread(new ConnectionTask(var0, var1, var2, var3))).start();
+            connectThread = new Thread(new ConnectionTask(var0, var1, var2, var3));
+            connectThread.start();
         }
     }
 
@@ -53,7 +54,7 @@ public final class NetworkManager {
                 try {
                     packetHandler.onConnectionLost();
                 } catch (Exception var1) {
-                    System.out.println("handler ex");
+                    System.err.println("[NetworkManager.disconnect] handler ex " + var1);
                     var1.printStackTrace();
                 }
             }
@@ -62,7 +63,7 @@ public final class NetworkManager {
                 cleanup();
             }
         } catch (Exception var2) {
-            System.out.println("con ex");
+            System.err.println("[NetworkManager.disconnect] con ex " + var2);
             var2.printStackTrace();
         }
     }

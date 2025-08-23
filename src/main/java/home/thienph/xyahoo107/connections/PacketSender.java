@@ -26,15 +26,15 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void a() {
+    public static void sendGetInformation() {
         b(11712001, 2);
     }
 
-    public static void b() {
+    public static void sendCallSupport() {
         b(11712002, 2);
     }
 
-    public static void c() {
+    public static void sendGetForum() {
         b(5000039, 2);
     }
 
@@ -238,7 +238,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var5);
     }
 
-    public static void e() {
+    public static void sendAppInfo() {
         Packet var0 = new Packet(324, 2);
         PacketUtils.writeInt(Xuka.partnerID, var0);
         PacketUtils.writeInt(Xuka.appID, var0);
@@ -305,27 +305,27 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void a(String var0, String var1, int var2, int var3, int var4, byte var5, String var6) {
-        Packet var8;
+    public static void sendLogin(String var0, String var1, int var2, int var3, int var4, byte var5, String var6) {
+        Packet packet;
         if (var3 == 1) {
-            var8 = new Packet(1016, 2);
-            PacketUtils.writeInt(2, var8);
-            NetworkManager.sendPacket(var8);
-            var8 = new Packet(5000007, 2);
+            packet = new Packet(1016, 2);
+            PacketUtils.writeInt(2, packet);
+            NetworkManager.sendPacket(packet);
+            packet = new Packet(5000007, 2);
         } else {
-            var8 = new Packet(21, 4);
+            packet = new Packet(21, 4);
         }
 
-        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var0), var8);
-        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var1), var8);
-        PacketUtils.writeInt(var2, var8);
-        PacketUtils.writeString(var6, var8);
-        PacketUtils.writeInt(var4, var8);
+        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var0), packet);
+        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var1), packet);
+        PacketUtils.writeInt(var2, packet);
+        PacketUtils.writeString(var6, packet);
+        PacketUtils.writeInt(var4, packet);
         if (var3 == 1) {
-            PacketUtils.writeByte(var5, var8);
+            PacketUtils.writeByte(var5, packet);
         }
 
-        NetworkManager.sendPacket(var8);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void a(String var0, String var1, String var2, int var3) {

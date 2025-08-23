@@ -57,7 +57,7 @@ public final class TextInputComponent extends UIComponent {
     public static MIDlet parentMidlet;
     private boolean isDirty;
     public static int keyboardLayout;
-    private final UIFactory clearAction = new UIFactory("Xóa", new quyen_ct(this));
+    private final ButtonAction clearAction = new ButtonAction("Xóa", new quyen_ct(this));
     public Action onCompleteAction;
     public int marginOffset = 26;
     private int textRenderX;

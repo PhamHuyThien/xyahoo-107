@@ -3,7 +3,7 @@ package home.thienph.xyahoo107.actions;
 
 import home.thienph.xyahoo107.components.GridComponent;
 import home.thienph.xyahoo107.managers.GameManager;
-import home.thienph.xyahoo107.messages.MessageProcessor;
+import home.thienph.xyahoo107.processors.GameProcessor;
 
 public final class quyen_am implements Action {
     private final boolean a;
@@ -25,7 +25,7 @@ public final class quyen_am implements Action {
             GridComponent var1 = this.b;
             var10000.joinGame(var10001, this.c[this.b.selectedRowIndex * var1.columnsPerRow + var1.selectedColumnIndex]);
         } else {
-            MessageProcessor.processMessage(this.d);
+            GameProcessor.processMessage(this.d);
         }
     }
 }

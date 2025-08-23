@@ -1,6 +1,5 @@
-package home.thienph.xyahoo107.tasks;
+package home.thienph.xyahoo107.connections;
 
-import home.thienph.xyahoo107.connections.PacketReader;
 import home.thienph.xyahoo107.managers.NetworkManager;
 
 import javax.microedition.io.Connector;
@@ -44,15 +43,15 @@ public final class ConnectionTask implements Runnable {
         }
     }
 
-    private static void connectToHost(String var0, int var1) throws IOException {
+    private static void connectToHost(String ip, int port) throws IOException {
         System.out.print("Connecting");
-        System.out.println(var0);
-        System.out.println(var1);
+        System.out.println("[ConnectionTask.connectToHost] ip = " + ip);
+        System.out.println("[ConnectionTask.connectToHost] port = " + port);
 
         try {
-            NetworkManager.setSocketConnection((SocketConnection) Connector.open("socket://" + var0 + ":" + var1));
+            NetworkManager.setSocketConnection((SocketConnection) Connector.open("socket://" + ip + ":" + port));
         } catch (Exception var3) {
-            System.out.println("soc ex1");
+            System.err.println("[ConnectionTask.connectToHost] soc ex1");
             var3.printStackTrace();
             throw new IOException();
         }
@@ -60,7 +59,7 @@ public final class ConnectionTask implements Runnable {
         try {
             NetworkManager.getSocketConnection().setSocketOption((byte) 2, 1);
         } catch (Exception var2) {
-            System.out.println("soc ex2");
+            System.err.println("[ConnectionTask.connectToHost] soc ex2");
             var2.printStackTrace();
         }
 
@@ -70,6 +69,6 @@ public final class ConnectionTask implements Runnable {
         (NetworkManager.readThread = new Thread(new PacketReader())).start();
         NetworkManager.isConnecting = false;
         NetworkManager.packetHandler.resetConnectionFlag();
-        System.out.println("Connected!");
+        System.out.println("[ConnectionTask.connectToHost] Connected!");
     }
 }

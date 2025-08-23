@@ -1,9 +1,9 @@
 package home.thienph.xyahoo107.connections;
 
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.data.packet.Packet;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.PacketUtils;
 
@@ -19,42 +19,42 @@ public final class ChatPacketHandler extends PacketHandler {
         gameManager.onConnectionLost();
     }
 
-    protected void handlePacket(Packet var1, int var2) {
-        switch (var2) {
+    protected void handlePacket(Packet packet, int commandId) {
+        switch (commandId) {
             case -5:
                 gameManager.onYahooConnected();
                 return;
             case 20:
-                String var17 = PacketUtils.readString(var1);
-                int var20 = PacketUtils.readInt(var1);
-                String var21 = PacketUtils.readString(var1);
-                PacketUtils.readString(var1);
-                PacketUtils.readString(var1);
-                PacketUtils.readString(var1);
+                String var17 = PacketUtils.readString(packet);
+                int var20 = PacketUtils.readInt(packet);
+                String var21 = PacketUtils.readString(packet);
+                PacketUtils.readString(packet);
+                PacketUtils.readString(packet);
+                PacketUtils.readString(packet);
                 gameManager.friendStatusChanged(var17, var20, 2);
                 gameManager.updateContactMessage(var17, var21, 2);
                 return;
             case 22:
-                String var14 = PacketUtils.readString(var1);
+                String var14 = PacketUtils.readString(packet);
                 gameManager.sendBuzz(var14);
                 return;
             case 24:
-                DownloadDataManager var16 = new DownloadDataManager();
-                int var3 = PacketUtils.readInt(var1);
+                ContactSource var16 = new ContactSource();
+                int var3 = PacketUtils.readInt(packet);
 
                 for (int var4 = 0; var4 < var3; var4++) {
-                    String var18 = PacketUtils.readString(var1);
-                    DownloadCategory var6 = new DownloadCategory(var18);
-                    int var19 = PacketUtils.readInt(var1);
+                    String var18 = PacketUtils.readString(packet);
+                    ContactGroup var6 = new ContactGroup(var18);
+                    int var19 = PacketUtils.readInt(packet);
 
                     for (int var22 = 0; var22 < var19; var22++) {
-                        String var23 = PacketUtils.readString(var1);
-                        int var24 = PacketUtils.readInt(var1);
-                        String var25 = PacketUtils.readString(var1);
-                        PacketUtils.readString(var1);
-                        String var26 = PacketUtils.readString(var1);
-                        PacketUtils.readString(var1);
-                        var6.addDownload(new DownloadData(var23, var26, var24, var25, new int[0], 0, 0, null));
+                        String var23 = PacketUtils.readString(packet);
+                        int var24 = PacketUtils.readInt(packet);
+                        String var25 = PacketUtils.readString(packet);
+                        PacketUtils.readString(packet);
+                        String var26 = PacketUtils.readString(packet);
+                        PacketUtils.readString(packet);
+                        var6.addContact(new Contact(var23, var26, var24, var25, new int[0], 0, 0, null));
                     }
 
                     var16.downloadCategories.addElement(var6);
@@ -63,37 +63,37 @@ public final class ChatPacketHandler extends PacketHandler {
                 gameManager.loadYahooBuddyList(var16);
                 return;
             case 25:
-                String var8 = PacketUtils.readString(var1);
-                PacketUtils.readString(var1);
-                String var9 = PacketUtils.readString(var1);
-                String var10 = PacketUtils.readString(var1);
+                String var8 = PacketUtils.readString(packet);
+                PacketUtils.readString(packet);
+                String var9 = PacketUtils.readString(packet);
+                String var10 = PacketUtils.readString(packet);
                 gameManager.addChatMessage(var8, var9, var10);
                 return;
             case 27:
-                if (PacketUtils.readInt(var1) == -1) {
+                if (PacketUtils.readInt(packet) == -1) {
                     gameManager.onYahooDisconnect();
                     return;
                 }
                 break;
             case 30:
-                String var13 = PacketUtils.readString(var1);
+                String var13 = PacketUtils.readString(packet);
                 gameManager.showAddFriendDialog(var13, 0L, true);
                 return;
             case 32:
-                String var15 = PacketUtils.readString(var1);
-                byte var12 = var1.getPayload().readByte();
+                String var15 = PacketUtils.readString(packet);
+                byte var12 = packet.getPayload().readByte();
                 gameManager.handleFriendRequestResponse(var15, var12);
                 break;
             case 34:
-                String var5 = PacketUtils.readString(var1);
-                PacketUtils.readString(var1);
-                String var7 = PacketUtils.readString(var1);
+                String var5 = PacketUtils.readString(packet);
+                PacketUtils.readString(packet);
+                String var7 = PacketUtils.readString(packet);
                 gameManager.addSimpleMessage(var5, var7);
                 return;
             case 55:
                 return;
             case 56:
-                int var11 = PacketUtils.readInt(var1);
+                int var11 = PacketUtils.readInt(packet);
                 GameManager.saveYahooContactStatus(var11);
         }
     }

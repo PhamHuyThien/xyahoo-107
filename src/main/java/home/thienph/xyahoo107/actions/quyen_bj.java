@@ -1,6 +1,6 @@
 package home.thienph.xyahoo107.actions;
 
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.Contact;
 
 import javax.microedition.lcdui.Image;
 
@@ -13,7 +13,7 @@ public final class quyen_bj {
     public String f;
     public int g;
     public boolean h;
-    public DownloadData i;
+    public Contact i;
     public String j;
     public int[] k;
     public String l;

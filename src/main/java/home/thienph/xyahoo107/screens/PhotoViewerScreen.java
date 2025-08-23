@@ -7,7 +7,7 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.ContactListComponent;
 import home.thienph.xyahoo107.components.PhotoViewComponent;
 import home.thienph.xyahoo107.components.TextComponent;
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.FontRenderer;
 import home.thienph.xyahoo107.utils.UIUtils;
@@ -35,7 +35,7 @@ public final class PhotoViewerScreen extends Screen {
     private boolean isDragging;
     private int lastPointerX;
     private int lastPointerY;
-    private UIFactory saveButton;
+    private ButtonAction saveButton;
 
     public PhotoViewerScreen() {
         this.setTitle((String) null);
@@ -46,7 +46,7 @@ public final class PhotoViewerScreen extends Screen {
         this.rightSoftkey = GameManager.createCloseButton(this, true, new quyen_gp(this));
     }
 
-    private void setSoftKey(int var1, UIFactory var2) {
+    private void setSoftKey(int var1, ButtonAction var2) {
         if (var1 == 0) {
             super.leftSoftkey = var2;
         } else if (var1 == 1) {
@@ -267,7 +267,7 @@ public final class PhotoViewerScreen extends Screen {
     }
 
     public void showSendButton(int var1) {
-        UIFactory var2 = new UIFactory("Gửi", new quyen_gq(this));
+        ButtonAction var2 = new ButtonAction("Gửi", new quyen_gq(this));
         this.setSoftKey(0, var2);
     }
 
@@ -277,7 +277,7 @@ public final class PhotoViewerScreen extends Screen {
 
     public void showSaveButton(int var1) {
         if (this.saveButton == null) {
-            this.saveButton = new UIFactory("Lưu", new quyen_gr(this));
+            this.saveButton = new ButtonAction("Lưu", new quyen_gr(this));
         }
 
         this.setSoftKey(1, this.saveButton);

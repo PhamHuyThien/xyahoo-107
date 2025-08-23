@@ -4,9 +4,9 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
 import home.thienph.xyahoo107.connections.PacketSender;
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.DialogScreen;
 import home.thienph.xyahoo107.screens.YahooScreen;
@@ -36,16 +36,16 @@ public final class quyen_je implements Action {
             UIUtils.focusComponent(this.d, (UIComponent) this.c);
             return;
         }
-        final DownloadDataManager a = GameManager.instance.yahooChat.contactList.getContactData();
+        final ContactSource a = GameManager.instance.yahooChat.contactList.getContactData();
         final String s = trim;
-        final DownloadDataManager DownloadDataManager = a;
+        final ContactSource ContactSource = a;
         int i = a.downloadCategories.size() - 1;
         while (true) {
             while (i >= 0) {
-                DownloadCategory DownloadCategory = (DownloadCategory) DownloadDataManager.downloadCategories.elementAt(i);
-                if (DownloadCategory.getCategoryId().equalsIgnoreCase(s)) {
+                ContactGroup ContactGroup = (ContactGroup) ContactSource.downloadCategories.elementAt(i);
+                if (ContactGroup.getName().equalsIgnoreCase(s)) {
                     final String a2;
-                    final String s2 = a2 = DownloadCategory.getCategoryId();
+                    final String s2 = a2 = ContactGroup.getName();
                     final String s3 = a2;
                     if (s2 != null) {
                         trim = s3;
@@ -55,7 +55,7 @@ public final class quyen_je implements Action {
                         return;
                     }
                     PacketSender.g(lowerCase, trim);
-                    this.a.contactList.contactData.addDownloadToCategory(trim, new DownloadData(lowerCase, "", 0, "", new int[0], 0, 0, null));
+                    this.a.contactList.contactData.addDownloadToCategory(trim, new Contact(lowerCase, "", 0, "", new int[0], 0, 0, null));
                     this.a.contactList.refreshDisplayList();
                     this.a.contactList.resetAnimation();
                     GameManager.instance.removeScreen(this.d);

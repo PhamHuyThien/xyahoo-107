@@ -3,9 +3,9 @@ package home.thienph.xyahoo107.components;
 import home.thienph.xyahoo107.actions.Action;
 import home.thienph.xyahoo107.actions.quyen_bj;
 import home.thienph.xyahoo107.canvas.GameGraphics;
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -30,13 +30,13 @@ public final class ListComponent extends UIComponent {
     private int firstVisibleIndex;
     private int visibleItemCount;
     private int listSelectedIndex;
-    public UIFactory selectAction;
-    private final UIFactory emptyAction;
-    private final UIFactory multiSelectAction;
+    public ButtonAction selectAction;
+    private final ButtonAction emptyAction;
+    private final ButtonAction multiSelectAction;
     private boolean isMultiSelectMode;
     private int maxTextWidth;
     private int displayMode;
-    public DownloadDataManager dataSource;
+    public ContactSource dataSource;
     public Vector listItems;
     private int totalItemCount;
     private int rightTextX;
@@ -77,7 +77,7 @@ public final class ListComponent extends UIComponent {
         this.isMultiSelectMode = var1;
     }
 
-    public void setDataSource(DownloadDataManager var1, int var2, boolean var3) {
+    public void setDataSource(ContactSource var1, int var2, boolean var3) {
         this.displayMode = var2;
         this.listSelectedIndex = 0;
         if (var3) {
@@ -113,9 +113,9 @@ public final class ListComponent extends UIComponent {
     public ListComponent(int var1, int var2, int var3, int var4) {
         super(0, 0, var3, var4, true);
         new Vector();
-        this.selectAction = new UIFactory("Chọn", null);
-        this.emptyAction = new UIFactory("", null);
-        this.multiSelectAction = new UIFactory("Chọn", null);
+        this.selectAction = new ButtonAction("Chọn", null);
+        this.emptyAction = new ButtonAction("", null);
+        this.multiSelectAction = new ButtonAction("Chọn", null);
         this.isMultiSelectMode = false;
         String[] var10000 = new String[]{"Vui lòng chờ"};
         this.textStartX = 22;
@@ -139,27 +139,27 @@ public final class ListComponent extends UIComponent {
             int var3 = 0;
 
             for (int var4 = 0; var4 < var2; var4++) {
-                DownloadCategory var9 = (DownloadCategory) var1.elementAt(var4);
+                ContactGroup var9 = (ContactGroup) var1.elementAt(var4);
                 quyen_bj var5;
-                (var5 = new quyen_bj()).c = var9.getCategoryId();
+                (var5 = new quyen_bj()).c = var9.getName();
                 if (var5.c != null && var5.c.length() > 0) {
                     var5.a = 1;
-                    var5.g = var9.categoryType;
+                    var5.g = var9.status;
                     this.listItems.addElement(var5);
                     if (var5.g == 1) {
                         continue;
                     }
                 }
 
-                Vector var11 = var9.downloads;
-                var3 = var9.downloads.size();
+                Vector var11 = var9.contacts;
+                var3 = var9.contacts.size();
 
                 for (int var6 = 0; var6 < var3; var6++) {
-                    DownloadData var7 = (DownloadData) var11.elementAt(var6);
+                    Contact var7 = (Contact) var11.elementAt(var6);
                     quyen_bj var8;
                     (var8 = new quyen_bj()).k = var7.getRawDataArray();
-                    var8.c = var7.downloadId;
-                    var8.g = var7.downloadStatus;
+                    var8.c = var7.contactId;
+                    var8.g = var7.statusCode;
                     var8.d = var7.displayName;
                     var7.getDefaultColor();
                     var8.b = null;
@@ -320,9 +320,9 @@ public final class ListComponent extends UIComponent {
                 this.itemAction.action();
             }
         } else {
-            DownloadCategory downloadCategory2 = this.dataSource.findCategoryById(this.currentItem.c);
-            if (downloadCategory2 != null) {
-                downloadCategory2.categoryType = this.currentItem.g == 0 ? 1 : 0;
+            ContactGroup contactGroup2 = this.dataSource.findCategoryById(this.currentItem.c);
+            if (contactGroup2 != null) {
+                contactGroup2.status = this.currentItem.g == 0 ? 1 : 0;
             }
             this.buildListItems();
         }

@@ -16,7 +16,7 @@ public final class quyen_gy implements Action {
         GameGraphics.instance.initializeConnection();
         RegistrationScreen.setSuggestedUsername(this.a, this.a.usernameInput.getText());
         this.a.c = this.a.passwordInput.getText();
-        PacketSender.e();
+        PacketSender.sendAppInfo();
         PacketSender.h(this.a.finalUsername, this.a.passwordInput.getText());
     }
 }

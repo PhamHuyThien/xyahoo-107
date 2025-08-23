@@ -4,11 +4,11 @@ import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.managers.NetworkManager;
@@ -39,18 +39,18 @@ public final class ContactListComponent extends UIComponent {
     private int firstVisibleIndex;
     private int visibleItemCount;
     public int contactSelectedIndex;
-    private final UIFactory selectAction = new UIFactory("Chọn", null);
-    private final UIFactory emptyAction = new UIFactory("", null);
-    private final UIFactory multiSelectAction = new UIFactory("Chọn", null);
+    private final ButtonAction selectAction = new ButtonAction("Chọn", null);
+    private final ButtonAction emptyAction = new ButtonAction("", null);
+    private final ButtonAction multiSelectAction = new ButtonAction("Chọn", null);
     private boolean isMultiSelectMode = false;
-    public DownloadDataManager contactData;
+    public ContactSource contactData;
     public Vector displayItems;
     public String[] emptyMessageLines;
     private final int avatarAreaX;
     private final int avatarAreaY;
     private int totalItemCount;
     private quyen_bj selectedItem;
-    private UIFactory chatAction;
+    private ButtonAction chatAction;
     private ContextMenu contextMenu;
     private int lastVisibleIndex;
     private int itemCountLimit;
@@ -79,11 +79,11 @@ public final class ContactListComponent extends UIComponent {
         this.isMultiSelectMode = true;
     }
 
-    public DownloadDataManager getContactData() {
+    public ContactSource getContactData() {
         return this.contactData;
     }
 
-    public void setContactData(DownloadDataManager var1, int var2) {
+    public void setContactData(ContactSource var1, int var2) {
         this.contactData = var1;
         this.contactSelectedIndex = -1;
         this.refreshDisplayList();
@@ -110,28 +110,28 @@ public final class ContactListComponent extends UIComponent {
 
     public void updateContactAvatar(final long n, final int[] k) {
         if (this.contactData != null) {
-            final DownloadDataManager e;
+            final ContactSource e;
             int i = (e = this.contactData).downloadCategories.size() - 1;
             Label_0130:
             while (i >= 0) {
-                final DownloadCategory DownloadCategory;
-                int size = (DownloadCategory = (DownloadCategory) e.downloadCategories.elementAt(i)).downloads.size();
+                final ContactGroup ContactGroup;
+                int size = (ContactGroup = (ContactGroup) e.downloadCategories.elementAt(i)).contacts.size();
                 while (true) {
                     while (--size >= 0) {
-                        final DownloadData DownloadData;
-                        if ((DownloadData = (DownloadData) DownloadCategory.downloads.elementAt(size)).timestamp == n) {
-                            final DownloadData downloadData3;
-                            final DownloadData downloadData2 = downloadData3 = DownloadData;
-                            final DownloadData downloadData4 = downloadData3;
-                            if (downloadData2 != null) {
-                                downloadData4.setRawDataArray(k);
+                        final Contact Contact;
+                        if ((Contact = (Contact) ContactGroup.contacts.elementAt(size)).timestamp == n) {
+                            final Contact contact3;
+                            final Contact contact2 = contact3 = Contact;
+                            final Contact contact4 = contact3;
+                            if (contact2 != null) {
+                                contact4.setRawDataArray(k);
                             }
                             --i;
                             continue Label_0130;
                         }
                     }
-                    DownloadData downloadData3;
-                    final DownloadData downloadData2 = downloadData3 = null;
+                    Contact contact3;
+                    final Contact contact2 = contact3 = null;
                     continue;
                 }
             }
@@ -173,24 +173,24 @@ public final class ContactListComponent extends UIComponent {
             int var4 = 0;
 
             for (int var5 = 0; var5 < var3; var5++) {
-                DownloadCategory var11 = (DownloadCategory) var1.elementAt(var5);
+                ContactGroup var11 = (ContactGroup) var1.elementAt(var5);
                 quyen_bj var6;
                 (var6 = new quyen_bj()).a = 1;
-                var6.g = var11.categoryType;
-                var6.c = var11.getCategoryId();
-                var6.d = UIUtils.concatStrings(var11.getCategoryId(), " (", String.valueOf(var11.downloads.size()), ")");
+                var6.g = var11.status;
+                var6.c = var11.getName();
+                var6.d = UIUtils.concatStrings(var11.getName(), " (", String.valueOf(var11.contacts.size()), ")");
                 this.displayItems.addElement(var6);
                 if (var6.g != 1) {
-                    Vector var13 = var11.downloads;
-                    var4 = var11.downloads.size();
+                    Vector var13 = var11.contacts;
+                    var4 = var11.contacts.size();
 
                     for (int var7 = 0; var7 < var4; var7++) {
-                        DownloadData var8 = (DownloadData) var13.elementAt(var7);
+                        Contact var8 = (Contact) var13.elementAt(var7);
                         quyen_bj var9;
                         (var9 = new quyen_bj()).m = var8.timestamp;
                         var9.k = var8.getRawDataArray();
-                        var9.c = var8.downloadId;
-                        var9.g = var8.downloadStatus;
+                        var9.c = var8.contactId;
+                        var9.g = var8.statusCode;
                         var9.d = var8.displayName;
                         var8.getDefaultColor();
                         var9.b = null;
@@ -350,7 +350,7 @@ public final class ContactListComponent extends UIComponent {
                     var8.i.isSelected = !var8.i.isSelected;
                 } else {
                     if (this.chatAction == null) {
-                        this.chatAction = new UIFactory("Chat", new quyen_c(this));
+                        this.chatAction = new ButtonAction("Chat", new quyen_c(this));
                     }
 
                     if (this.isChatMode) {
@@ -358,23 +358,23 @@ public final class ContactListComponent extends UIComponent {
                     } else {
                         if (this.contextMenu == null) {
                             Vector var7 = new Vector();
-                            UIFactory var2 = new UIFactory("Hồ sơ", new quyen_d(this));
-                            UIFactory var3 = new UIFactory("Media", new quyen_e(this));
+                            ButtonAction var2 = new ButtonAction("Hồ sơ", new quyen_d(this));
+                            ButtonAction var3 = new ButtonAction("Media", new quyen_e(this));
                             if (FriendScreen.currentViewMode == 1) {
-                                UIFactory var4 = new UIFactory("Từ chối ID", new quyen_f(this));
-                                UIFactory var5 = new UIFactory("Xóa ID", new quyen_g(this));
+                                ButtonAction var4 = new ButtonAction("Từ chối ID", new quyen_f(this));
+                                ButtonAction var5 = new ButtonAction("Xóa ID", new quyen_g(this));
                                 var7.addElement(this.chatAction);
                                 var7.addElement(var3);
                                 var7.addElement(var2);
                                 var7.addElement(var5);
                                 var7.addElement(var4);
                             } else if (FriendScreen.currentViewMode == 2) {
-                                UIFactory var9 = new UIFactory("Bỏ từ chối", new quyen_i(this));
+                                ButtonAction var9 = new ButtonAction("Bỏ từ chối", new quyen_i(this));
                                 var7.addElement(var2);
                                 var7.addElement(var9);
                             } else {
-                                UIFactory var10 = new UIFactory("Đồng ý", new quyen_j(this));
-                                UIFactory var11 = new UIFactory(TextConstant.decline(), new quyen_k(this));
+                                ButtonAction var10 = new ButtonAction("Đồng ý", new quyen_j(this));
+                                ButtonAction var11 = new ButtonAction(TextConstant.decline(), new quyen_k(this));
                                 var7.addElement(var2);
                                 var7.addElement(var10);
                                 var7.addElement(var11);
@@ -387,9 +387,9 @@ public final class ContactListComponent extends UIComponent {
                     }
                 }
             } else {
-                DownloadCategory var1;
+                ContactGroup var1;
                 if ((var1 = this.contactData.findCategoryById(this.selectedItem.c)) != null) {
-                    var1.categoryType = this.selectedItem.g == 0 ? 1 : 0;
+                    var1.status = this.selectedItem.g == 0 ? 1 : 0;
                 }
 
                 this.refreshDisplayList();
@@ -506,7 +506,7 @@ public final class ContactListComponent extends UIComponent {
                 }
 
                 int[] var11;
-                DownloadData var18;
+                Contact var18;
                 if (((quyen_bj) this.displayItems.elementAt(this.contactSelectedIndex)).a != 1
                         && (var18 = (this.contactSelectedIndex < 0 ? null : (quyen_bj) this.displayItems.elementAt(this.contactSelectedIndex)).i) != null
                         && (var11 = var18.getRawDataArray()) != null
@@ -652,12 +652,12 @@ public final class ContactListComponent extends UIComponent {
         } else {
             int var5 = var2;
             String var4 = var1;
-            DownloadDataManager var3 = this.contactData;
+            ContactSource var3 = this.contactData;
 
             for (int var6 = this.contactData.downloadCategories.size() - 1; var6 >= 0; var6--) {
-                DownloadData var7;
-                if ((var7 = ((DownloadCategory) var3.downloadCategories.elementAt(var6)).findDownloadById(var4)) != null) {
-                    var7.downloadStatus = var5;
+                Contact var7;
+                if ((var7 = ((ContactGroup) var3.downloadCategories.elementAt(var6)).findContactById(var4)) != null) {
+                    var7.statusCode = var5;
                 }
             }
 
@@ -690,19 +690,19 @@ public final class ContactListComponent extends UIComponent {
         } else {
             int var5 = var3;
             long var8 = var1;
-            DownloadDataManager var4 = this.contactData;
+            ContactSource var4 = this.contactData;
             int var6 = 0;
             int var7 = var4.downloadCategories.size();
 
             label45:
             while (--var7 >= 0) {
-                DownloadCategory var10;
-                int var11 = (var10 = (DownloadCategory) var4.downloadCategories.elementAt(var7)).downloads.size();
+                ContactGroup var10;
+                int var11 = (var10 = (ContactGroup) var4.downloadCategories.elementAt(var7)).contacts.size();
 
                 while (--var11 >= 0) {
-                    DownloadData var12;
-                    if ((var12 = (DownloadData) var10.downloads.elementAt(var11)).timestamp == var8) {
-                        var12.downloadStatus = var5;
+                    Contact var12;
+                    if ((var12 = (Contact) var10.contacts.elementAt(var11)).timestamp == var8) {
+                        var12.statusCode = var5;
                         if (++var6 > 1) {
                             break label45;
                         }
@@ -739,18 +739,18 @@ public final class ContactListComponent extends UIComponent {
         } else {
             String var5 = var3;
             long var8 = var1;
-            DownloadDataManager var4 = this.contactData;
+            ContactSource var4 = this.contactData;
             int var6 = 0;
             int var7 = var4.downloadCategories.size();
 
             label46:
             while (--var7 >= 0) {
-                DownloadCategory var10;
-                int var11 = (var10 = (DownloadCategory) var4.downloadCategories.elementAt(var7)).downloads.size();
+                ContactGroup var10;
+                int var11 = (var10 = (ContactGroup) var4.downloadCategories.elementAt(var7)).contacts.size();
 
                 while (--var11 >= 0) {
-                    DownloadData var12;
-                    if ((var12 = (DownloadData) var10.downloads.elementAt(var11)).timestamp == var8) {
+                    Contact var12;
+                    if ((var12 = (Contact) var10.contacts.elementAt(var11)).timestamp == var8) {
                         var12.filePath = var5;
                         if (++var6 > 1) {
                             break label46;
@@ -787,11 +787,11 @@ public final class ContactListComponent extends UIComponent {
         if (this.contactData != null) {
             String var5 = var2;
             String var4 = var1;
-            DownloadDataManager var10 = this.contactData;
+            ContactSource var10 = this.contactData;
 
             for (int var6 = this.contactData.downloadCategories.size() - 1; var6 >= 0; var6--) {
-                DownloadData var7;
-                if ((var7 = ((DownloadCategory) var10.downloadCategories.elementAt(var6)).findDownloadById(var4)) != null) {
+                Contact var7;
+                if ((var7 = ((ContactGroup) var10.downloadCategories.elementAt(var6)).findContactById(var4)) != null) {
                     var7.filePath = var5;
                 }
             }
@@ -818,10 +818,10 @@ public final class ContactListComponent extends UIComponent {
 
     public void removeContact(String var1) {
         String var2 = var1;
-        DownloadDataManager var4 = this.contactData;
+        ContactSource var4 = this.contactData;
 
         for (int var3 = this.contactData.downloadCategories.size() - 1; var3 >= 0; var3--) {
-            if (((DownloadCategory) var4.downloadCategories.elementAt(var3)).getCategoryId().equals(var2)) {
+            if (((ContactGroup) var4.downloadCategories.elementAt(var3)).getName().equals(var2)) {
                 var4.downloadCategories.removeElementAt(var3);
                 break;
             }
@@ -862,7 +862,7 @@ public final class ContactListComponent extends UIComponent {
         String[] var2 = new String[var1 = this.contactData.downloadCategories.size()];
 
         for (int var3 = 0; var3 < var1; var3++) {
-            var2[var3] = ((DownloadCategory) this.contactData.downloadCategories.elementAt(var3)).getCategoryId();
+            var2[var3] = ((ContactGroup) this.contactData.downloadCategories.elementAt(var3)).getName();
         }
 
         return var2;

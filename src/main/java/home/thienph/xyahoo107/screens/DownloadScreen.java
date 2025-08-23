@@ -2,10 +2,10 @@ package home.thienph.xyahoo107.screens;
 
 import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.components.ListComponent;
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.DownloadData;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.UIUtils;
 
@@ -13,7 +13,7 @@ import java.util.Vector;
 
 public final class DownloadScreen extends Screen {
     public ListComponent downloadListComponent;
-    public DownloadDataManager downloadDataManager;
+    public ContactSource contactSource;
     private final Vector contextMenuItems;
     public ContextMenu contextMenu;
 
@@ -23,14 +23,14 @@ public final class DownloadScreen extends Screen {
         this.downloadListComponent = new ListComponent(0, 0, screenWidth, screenHeight - GameManager.footerHeight);
         this.addComponent(this.downloadListComponent);
         UIUtils.focusComponent(this, this.downloadListComponent);
-        this.downloadDataManager = new DownloadDataManager();
+        this.contactSource = new ContactSource();
         this.downloadListComponent.setIconSettings(1, 10, 10);
-        this.downloadListComponent.setDataSource(this.downloadDataManager, 1, false);
+        this.downloadListComponent.setDataSource(this.contactSource, 1, false);
         super.rightSoftkey = GameManager.createCloseButton(this, false, null);
         this.contextMenuItems = new Vector();
-        this.contextMenuItems.addElement(new UIFactory("Xem", new quyen_bf(this)));
-        this.contextMenuItems.addElement(new UIFactory("Xóa", new quyen_bg(this)));
-        this.contextMenuItems.addElement(new UIFactory("Xóa tất cả", new quyen_bh(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xem", new quyen_bf(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xóa", new quyen_bg(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xóa tất cả", new quyen_bh(this)));
         this.contextMenu = new ContextMenu(this.contextMenuItems);
         this.downloadListComponent.itemAction = new quyen_bi(this);
     }
@@ -40,7 +40,7 @@ public final class DownloadScreen extends Screen {
 
         while (--var1 >= 0) {
             quyen_bj var2 = (quyen_bj) this.downloadListComponent.listItems.elementAt(var1);
-            this.downloadDataManager.removeDownload(var2.c, 0L);
+            this.contactSource.removeDownload(var2.c, 0L);
         }
 
         this.downloadListComponent.buildListItems();
@@ -51,16 +51,16 @@ public final class DownloadScreen extends Screen {
         int var3 = this.downloadListComponent.listItems.size();
 
         while (--var3 >= 0) {
-            DownloadData var4 = ((quyen_bj) this.downloadListComponent.listItems.elementAt(var3)).i;
+            Contact var4 = ((quyen_bj) this.downloadListComponent.listItems.elementAt(var3)).i;
             if (var1 == 0) {
                 if (var4.downloadType == 0) {
                     if (++var2 > 4) {
-                        this.downloadDataManager.removeDownload(var4.downloadId, 0L);
+                        this.contactSource.removeDownload(var4.contactId, 0L);
                     }
                 }
             } else if (var4.downloadType == 1) {
                 if (++var2 > 3) {
-                    this.downloadDataManager.removeDownload(var4.downloadId, 0L);
+                    this.contactSource.removeDownload(var4.contactId, 0L);
                 }
             }
         }

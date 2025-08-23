@@ -7,7 +7,7 @@ import home.thienph.xyahoo107.actions.quyen_gy;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -28,8 +28,8 @@ public final class RegistrationScreen extends DialogScreen {
 
     public RegistrationScreen() {
         super.title = "Đăng Ký";
-        super.leftSoftkey = new UIFactory(TextConstant.close(), new quyen_gv(this));
-        super.centerSoftkey = new UIFactory("Đăng ký", new quyen_gw(this));
+        super.leftSoftkey = new ButtonAction(TextConstant.close(), new quyen_gv(this));
+        super.centerSoftkey = new ButtonAction("Đăng ký", new quyen_gw(this));
     }
 
     public void initializeComponents() {
@@ -41,7 +41,7 @@ public final class RegistrationScreen extends DialogScreen {
         UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
         this.calculateDialogDimensions();
         super.nextComponentY = Screen.screenHeight - (FontRenderer.paragraphSpacing * 3 + TextRenderer.CHAR_SPACING + (GameGraphics.screenHeight > 180 ? 50 : 31) + GameManager.footerHeight) >> 1;
-        UIFactory.createImageComponent(this, 0, TextRenderer.getLogoImage(), TextRenderer.getLogoImage().getWidth(), TextRenderer.getLogoImage().getHeight(), false, false);
+        ButtonAction.createImageComponent(this, 0, TextRenderer.getLogoImage(), TextRenderer.getLogoImage().getWidth(), TextRenderer.getLogoImage().getHeight(), false, false);
         if (GameGraphics.screenHeight > 220) {
             super.nextComponentY += 15;
         } else if (GameGraphics.screenHeight > 180 && GameGraphics.screenHeight <= 220) {
@@ -50,11 +50,11 @@ public final class RegistrationScreen extends DialogScreen {
             super.nextComponentY += 5;
         }
 
-        this.usernameInput = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Xubi ID", ":", null, null), 0, -1);
+        this.usernameInput = ButtonAction.createTextInputWithID(this, UIUtils.concatStrings("Xubi ID", ":", null, null), 0, -1);
         super.nextComponentY += 5;
-        this.passwordInput = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Mật khẩu", ":", null, null), 2, -1);
+        this.passwordInput = ButtonAction.createTextInputWithID(this, UIUtils.concatStrings("Mật khẩu", ":", null, null), 2, -1);
         super.nextComponentY += 5;
-        this.confirmPasswordInput = UIFactory.createTextInputWithID(this, UIUtils.concatStrings("Nhập lại", ":", null, null), 2, -1);
+        this.confirmPasswordInput = ButtonAction.createTextInputWithID(this, UIUtils.concatStrings("Nhập lại", ":", null, null), 2, -1);
         UIUtils.focusComponent(this, (UIComponent) this.usernameInput);
     }
 
@@ -97,7 +97,7 @@ public final class RegistrationScreen extends DialogScreen {
                             this.finalUsername = this.usernameInput.getText();
                         }
 
-                        GameManager.getInstance().createSimpleDialog("Đang đăng ký..", null, new UIFactory(TextConstant.close(), new quyen_gx(this)), null).setLoadingVisible(true);
+                        GameManager.getInstance().createSimpleDialog("Đang đăng ký..", null, new ButtonAction(TextConstant.close(), new quyen_gx(this)), null).setLoadingVisible(true);
                         GameManager.getInstance().gameController = new quyen_gy(this);
                     } else {
                         GameManager.getInstance().showNotification("Nhập lại mật khẩu", (Image) null, 1);

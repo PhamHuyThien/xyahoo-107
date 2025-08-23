@@ -10,9 +10,9 @@ import javax.microedition.lcdui.Graphics;
 import java.util.Vector;
 
 public final class DialogBox {
-    public UIFactory leftSoftkey;
-    public UIFactory centerSoftkey;
-    public UIFactory rightSoftkey;
+    public ButtonAction leftSoftkey;
+    public ButtonAction centerSoftkey;
+    public ButtonAction rightSoftkey;
     private String[] textLines;
     private boolean showLoading = false;
     private Vector dataVector;
@@ -33,7 +33,7 @@ public final class DialogBox {
     private int centerSoftkeyX;
     private int rightSoftkeyX;
 
-    public DialogBox(String var1, int var2, Vector var3, int var4, UIFactory var5, UIFactory var6, UIFactory var7) {
+    public DialogBox(String var1, int var2, Vector var3, int var4, ButtonAction var5, ButtonAction var6, ButtonAction var7) {
         this.dialogTitle = var1;
         this.dataVector = var3;
         this.columnsCount = var4;
@@ -43,19 +43,19 @@ public final class DialogBox {
         this.calculateLayout();
     }
 
-    public DialogBox(String var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+    public DialogBox(String var1, ButtonAction var2, ButtonAction var3, ButtonAction var4) {
         this.textLines = FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30);
         this.setSoftkeys(var2, var3, var4);
         this.calculateLayout();
     }
 
-    public DialogBox(String[] var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+    public DialogBox(String[] var1, ButtonAction var2, ButtonAction var3, ButtonAction var4) {
         this.textLines = var1;
         this.setSoftkeys(var2, var3, var4);
         this.calculateLayout();
     }
 
-    private void setSoftkeys(UIFactory var1, UIFactory var2, UIFactory var3) {
+    private void setSoftkeys(ButtonAction var1, ButtonAction var2, ButtonAction var3) {
         this.leftSoftkey = var1;
         this.rightSoftkey = var3;
         this.centerSoftkey = var2;

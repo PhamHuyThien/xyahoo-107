@@ -4,10 +4,10 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 
 import javax.microedition.lcdui.Image;
 
-public final class DownloadData {
-    public String downloadId;
+public final class Contact {
+    public String contactId;
     public String displayName;
-    public int downloadStatus;
+    public int statusCode;
     public String description;
     public int downloadType;
     public String filePath;
@@ -38,13 +38,13 @@ public final class DownloadData {
         }
     }
 
-    public DownloadData() {
+    public Contact() {
     }
 
-    public DownloadData(String var1, String var2, int var3, String var4, int[] var5, int var6, int var7, String var8) {
-        this.downloadId = var1;
+    public Contact(String var1, String var2, int var3, String var4, int[] var5, int var6, int var7, String var8) {
+        this.contactId = var1;
         this.displayName = !var2.equals("") && var2 != null ? var2 : var1;
-        this.downloadStatus = var3;
+        this.statusCode = var3;
         this.filePath = var4;
         this.rawDataArray = var5;
         this.dataSize = var7;

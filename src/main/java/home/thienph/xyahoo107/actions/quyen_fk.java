@@ -3,7 +3,7 @@ package home.thienph.xyahoo107.actions;
 
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.connections.PacketSender;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.DialogScreen;
 
@@ -22,7 +22,7 @@ public final class quyen_fk implements Action {
 
     public void action() {
         if (!this.b.getText().equals("")) {
-            DownloadData var1 = new DownloadData(this.c, "", 0, "", new int[0], 0, 0, null);
+            Contact var1 = new Contact(this.c, "", 0, "", new int[0], 0, 0, null);
             PacketSender.a(this.c, this.b.getText(), (byte) 1);
             if (this.a.yahooChat.contactList.getContactData().findDownload(this.c, null, 0L) == null) {
                 this.a.yahooChat.contactList.getContactData().addDownloadToCategory(this.b.getText(), var1);

@@ -19,9 +19,9 @@ public class Screen {
     public String title;
     public String subtitle = "";
     public Vector components;
-    public UIFactory leftSoftkey;
-    public UIFactory rightSoftkey;
-    public UIFactory centerSoftkey;
+    public ButtonAction leftSoftkey;
+    public ButtonAction rightSoftkey;
+    public ButtonAction centerSoftkey;
     private int selectedIndex;
     public boolean needsUpdate = true;
     public boolean isAnimating;
@@ -32,8 +32,8 @@ public class Screen {
     public int currentScrollY;
     private int scrollVelocity;
     private int scrollAcceleration;
-    public int unused1;
-    public boolean unused2 = false;
+    public int dialogId;
+    public boolean showInNavigation = false;
     public int componentCount;
     public boolean isAtBottom = false;
     private String currentLeftText = "";

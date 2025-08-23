@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.actions;
 
 
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.screens.YahooScreen;
 import home.thienph.xyahoo107.utils.UIUtils;
 
@@ -21,7 +21,7 @@ public final class quyen_jm implements Action {
             }
 
             if (YahooScreen.getActiveTextInput(this.a) == null) {
-                YahooScreen.setActiveTextInput(this.a, UIFactory.createPopupDialog(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
+                YahooScreen.setActiveTextInput(this.a, ButtonAction.createPopupDialog(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
             }
 
             this.a.addComponent(YahooScreen.getActiveTextInput(this.a));

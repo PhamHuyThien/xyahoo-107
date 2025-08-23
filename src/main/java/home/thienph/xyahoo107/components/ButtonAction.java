@@ -15,12 +15,12 @@ import home.thienph.xyahoo107.utils.UIUtils;
 
 import javax.microedition.lcdui.Image;
 
-public class UIFactory {
+public class ButtonAction {
     public String text;
     public Action action;
     public ContextMenu parentContainer;
 
-    public UIFactory(String var1, Action var2) {
+    public ButtonAction(String var1, Action var2) {
         this.text = var1;
         this.action = var2;
     }
@@ -32,10 +32,10 @@ public class UIFactory {
         var5.alternateAction = var3;
         var5.isVisible = false;
         var5.leftSoftKey = GameManager.createCloseButton();
-        UIFactory var4 = new UIFactory(TextConstant.close(), new quyen_cl(var0, var5));
+        ButtonAction var4 = new ButtonAction(TextConstant.close(), new quyen_cl(var0, var5));
         var5.rightSoftKey = var4;
         var5.onCompleteAction = new quyen_cm(var5, var4);
-        var5.middleSoftKey = new UIFactory("OK", new quyen_cn(var5, var0));
+        var5.middleSoftKey = new ButtonAction("OK", new quyen_cn(var5, var0));
         var0.addComponent(var5);
         return var5;
     }

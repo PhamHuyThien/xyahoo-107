@@ -23,7 +23,7 @@ public final class ButtonComponent extends UIComponent {
         this.pressAnimationTimer = 0;
         super.width = var2;
         super.height = var3;
-        super.middleSoftKey = new UIFactory("Chọn", null);
+        super.middleSoftKey = new ButtonAction("Chọn", null);
         this.buttonText = var1;
         this.textCenterX = super.width - FontRenderer.getTextWidth(var1) >> 1;
     }

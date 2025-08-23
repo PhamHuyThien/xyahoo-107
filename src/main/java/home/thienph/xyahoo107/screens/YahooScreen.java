@@ -6,7 +6,7 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.DownloadDataManager;
+import home.thienph.xyahoo107.managers.ContactSource;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -40,16 +40,16 @@ public final class YahooScreen extends Screen {
     private final int logoX;
     private final int logoY;
     private TextInputComponent activeTextInput;
-    private UIFactory menuButton;
-    private UIFactory loginButton;
-    private UIFactory backButton;
+    private ButtonAction menuButton;
+    private ButtonAction loginButton;
+    private ButtonAction backButton;
     private int buddyListRequestId;
     private DialogScreen statusScreen;
     private DropdownComponent statusDropdown;
     private TextInputComponent statusMessageInput;
 
     public YahooScreen() {
-        super.unused1 = 11112;
+        super.dialogId = 11112;
         String var1 = Xuka.loadYahooID();
         String var2 = Xuka.loadYahooPassword();
         super.title = "Yahoo!";
@@ -96,12 +96,12 @@ public final class YahooScreen extends Screen {
         this.contactList.isChatMode = true;
         this.contactList.isFilterActive = Xuka.loadBooleanSetting("hideOffline", false);
         this.contextMenuItems = new Vector();
-        this.contextMenuItems.addElement(new UIFactory("Mở/tắt ID ẩn", new quyen_jd(this)));
-        this.contextMenuItems.addElement(new UIFactory("Trạng thái", new quyen_jl(this)));
-        this.contextMenuItems.addElement(new UIFactory("Chat với..", new quyen_jm(this)));
-        this.contextMenuItems.addElement(new UIFactory("Thêm bạn", new quyen_jo(this)));
-        this.contextMenuItems.addElement(new UIFactory("Mời bạn Yahoo!", new quyen_jp(this)));
-        this.contextMenuItems.addElement(new UIFactory("Thoát Yahoo!", new quyen_jq(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Mở/tắt ID ẩn", new quyen_jd(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new quyen_jl(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new quyen_jm(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new quyen_jo(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Mời bạn Yahoo!", new quyen_jp(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Thoát Yahoo!", new quyen_jq(this)));
     }
 
     public void logout() {
@@ -119,13 +119,13 @@ public final class YahooScreen extends Screen {
     public void showAddFriendDialog(String var1) {
         DialogScreen var2;
         (var2 = new DialogScreen()).title = "Thêm bạn";
-        TextInputComponent var3 = UIFactory.createTextInput(var2, "Thêm bạn", 0);
+        TextInputComponent var3 = ButtonAction.createTextInput(var2, "Thêm bạn", 0);
         if (var1 != null) {
             var3.setText(var1);
         }
 
-        TextInputComponent var5 = UIFactory.createTextInput(var2, "Vào nhóm mới:", 0);
-        DropdownComponent var4 = UIFactory.createChoiceBox(var2, "hoặc đã có:", this.contactList.getGroupNames());
+        TextInputComponent var5 = ButtonAction.createTextInput(var2, "Vào nhóm mới:", 0);
+        DropdownComponent var4 = ButtonAction.createChoiceBox(var2, "hoặc đã có:", this.contactList.getGroupNames());
         UIUtils.focusComponent(var2, (UIComponent) var3);
         var4.setChangeAction(new quyen_jr(this, var4, var5));
         if (var4.optionList != null && var4.optionList.length != 0) {
@@ -134,8 +134,8 @@ public final class YahooScreen extends Screen {
             var5.setText("Friends");
         }
 
-        var2.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_js(this, var2));
-        var2.centerSoftkey = new UIFactory("OK", new quyen_je(this, var3, var5, var2));
+        var2.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_js(this, var2));
+        var2.centerSoftkey = new ButtonAction("OK", new quyen_je(this, var3, var5, var2));
         var2.startSlideAnimation(1);
         GameManager.instance.addScreenToStack((Screen) var2);
         GameManager.instance.switchToLastScreen();
@@ -147,7 +147,7 @@ public final class YahooScreen extends Screen {
         if (var1) {
             if (this.contextMenu == null) {
                 this.contextMenu = new ContextMenu(this.contextMenuItems);
-                this.menuButton = new UIFactory("Menu", new quyen_jf(this));
+                this.menuButton = new ButtonAction("Menu", new quyen_jf(this));
             }
 
             super.leftSoftkey = this.menuButton;
@@ -156,8 +156,8 @@ public final class YahooScreen extends Screen {
             UIUtils.focusComponent(this, this.contactList);
         } else {
             if (this.loginButton == null) {
-                this.loginButton = new UIFactory("Đăng nhập", new quyen_jg(this));
-                this.backButton = new UIFactory(TextConstant.close(), new quyen_jh(this));
+                this.loginButton = new ButtonAction("Đăng nhập", new quyen_jg(this));
+                this.backButton = new ButtonAction(TextConstant.close(), new quyen_jh(this));
             }
 
             super.leftSoftkey = null;
@@ -221,7 +221,7 @@ public final class YahooScreen extends Screen {
                 this.switchToMode(true);
                 this.buddyListRequestId = GameManager.loadContactStatus(true);
                 if (this.buddyListRequestId != -1) {
-                    DownloadDataManager var5;
+                    ContactSource var5;
                     if ((var5 = GameManager.loadBuddyList(true, yahooUsername)) != null) {
                         GameManager.instance.yahooChat.contactList.setContactData(var5, -1);
                     } else {
@@ -229,7 +229,7 @@ public final class YahooScreen extends Screen {
                     }
                 }
 
-                PacketSender.a(yahooUsername, var2, yahooStatus, 2, this.buddyListRequestId, (byte) 0, "");
+                PacketSender.sendLogin(yahooUsername, var2, yahooStatus, 2, this.buddyListRequestId, (byte) 0, "");
             }
         }
     }
@@ -325,11 +325,11 @@ public final class YahooScreen extends Screen {
                 var0.statusScreen.title = "Trạng Thái";
                 UIUtils.calculateColumnLayout(UIUtils.layoutParam1, UIUtils.layoutParam2);
                 var0.statusScreen.nextComponentY += 20;
-                var0.statusDropdown = UIFactory.createChoiceBox(var0.statusScreen, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
-                var0.statusMessageInput = UIFactory.createLabeledTextInput(var0.statusScreen, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
+                var0.statusDropdown = ButtonAction.createChoiceBox(var0.statusScreen, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
+                var0.statusMessageInput = ButtonAction.createLabeledTextInput(var0.statusScreen, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
                 UIUtils.focusComponent(var0.statusScreen, var0.statusDropdown);
-                var0.statusScreen.centerSoftkey = new UIFactory("OK", new quyen_jj(var0));
-                var0.statusScreen.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_jk(var0));
+                var0.statusScreen.centerSoftkey = new ButtonAction("OK", new quyen_jj(var0));
+                var0.statusScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_jk(var0));
                 System.gc();
             }
 

@@ -46,7 +46,7 @@ public final class ChatComponent extends UIComponent {
         super.isVisible = false;
         this.visibleLines = var4 / FontRenderer.lineHeight + 2;
         this.chatMessages = new Vector();
-        super.middleSoftKey = new UIFactory("Chat", null);
+        super.middleSoftKey = new ButtonAction("Chat", null);
     }
 
     public void addSystemMessage(String var1, int var2) {

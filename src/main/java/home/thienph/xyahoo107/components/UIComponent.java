@@ -14,9 +14,9 @@ public abstract class UIComponent {
     public int height;
     public int id;
     public Screen parentScreen;
-    public UIFactory leftSoftKey;
-    public UIFactory rightSoftKey;
-    public UIFactory middleSoftKey;
+    public ButtonAction leftSoftKey;
+    public ButtonAction rightSoftKey;
+    public ButtonAction middleSoftKey;
     public int selectedIndex = -1;
     public boolean isPressed = false;
 

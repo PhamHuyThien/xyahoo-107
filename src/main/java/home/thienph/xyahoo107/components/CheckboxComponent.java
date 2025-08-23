@@ -17,7 +17,7 @@ public final class CheckboxComponent extends UIComponent {
         super.posY = var3;
         super.width = var4;
         super.height = var5;
-        super.leftSoftKey = new UIFactory("Chọn", null);
+        super.leftSoftKey = new ButtonAction("Chọn", null);
     }
 
     public boolean handleDirectKeyPress(int var1) {

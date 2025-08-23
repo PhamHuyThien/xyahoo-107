@@ -4,7 +4,7 @@ import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.components.ChatComponent;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
-import home.thienph.xyahoo107.components.UIFactory;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
@@ -19,7 +19,7 @@ import javax.microedition.lcdui.Graphics;
 import java.util.Vector;
 
 public final class ChatScreen extends Screen {
-    private final UIFactory sendButton = new UIFactory(TextConstant.close(), new quyen_hh(this));
+    private final ButtonAction sendButton = new ButtonAction(TextConstant.close(), new quyen_hh(this));
     public long chatId;
     private final boolean isYahooChat;
     private final String yahooContactId;
@@ -44,22 +44,22 @@ public final class ChatScreen extends Screen {
         this.addComponent(this.textInputComponent);
         UIUtils.focusComponent(this, (UIComponent) this.textInputComponent);
         this.menuItems = new Vector();
-        this.menuItems.addElement(new UIFactory("Biểu cảm", new quyen_hk(this)));
-        this.menuItems.addElement(new UIFactory("BUZZ!", new quyen_hl(this, var2)));
+        this.menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_hk(this)));
+        this.menuItems.addElement(new ButtonAction("BUZZ!", new quyen_hl(this, var2)));
         if ((var2 ? !GameManager.instance.yahooChat.contactList.hasContact(var4) : !GameManager.instance.friendManager.mainContactList.hasContact(var1)) && !var1.equals(FriendScreen.currentUserId)) {
-            this.menuItems.addElement(new UIFactory("Thêm bạn", new quyen_hm(this, var2, var4, var1)));
+            this.menuItems.addElement(new ButtonAction("Thêm bạn", new quyen_hm(this, var2, var4, var1)));
         }
 
         if (!var2) {
-            this.menuItems.addElement(new UIFactory("Media", new quyen_hn(this, var1)));
-            this.menuItems.addElement(new UIFactory("Hồ sơ", new quyen_ho(this, var1)));
+            this.menuItems.addElement(new ButtonAction("Media", new quyen_hn(this, var1)));
+            this.menuItems.addElement(new ButtonAction("Hồ sơ", new quyen_ho(this, var1)));
         }
 
-        this.menuItems.addElement(new UIFactory("Copy", new quyen_hp(this)));
-        this.menuItems.addElement(new UIFactory("Dán", new quyen_hq(this)));
+        this.menuItems.addElement(new ButtonAction("Copy", new quyen_hp(this)));
+        this.menuItems.addElement(new ButtonAction("Dán", new quyen_hq(this)));
         this.contextMenu = new ContextMenu(this.menuItems);
-        super.leftSoftkey = new UIFactory("Menu", new quyen_hi(this));
-        super.centerSoftkey = new UIFactory("Chat", null);
+        super.leftSoftkey = new ButtonAction("Menu", new quyen_hi(this));
+        super.centerSoftkey = new ButtonAction("Chat", null);
         if (GameManager.currentMessage != null) {
             this.chatComponent.addSystemMessage(GameManager.currentMessage, 2);
         }
@@ -127,7 +127,7 @@ public final class ChatScreen extends Screen {
         this.chatComponent.renderFocusIndicator(var1);
     }
 
-    public static UIFactory getSendButton(ChatScreen var0) {
+    public static ButtonAction getSendButton(ChatScreen var0) {
         return var0.sendButton;
     }
 

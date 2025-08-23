@@ -33,7 +33,7 @@ public final class TextLinkComponent extends UIComponent {
         super.posY = var3;
         super.width = this.textWidth;
         super.height = var4;
-        super.middleSoftKey = new UIFactory("Chọn", null);
+        super.middleSoftKey = new ButtonAction("Chọn", null);
     }
 
     public boolean handleKeyPress(int var1) {

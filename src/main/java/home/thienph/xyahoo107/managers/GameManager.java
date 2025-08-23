@@ -10,17 +10,18 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.game.GameRoom;
 import home.thienph.xyahoo107.data.game.Notification;
-import home.thienph.xyahoo107.data.media.DownloadCategory;
-import home.thienph.xyahoo107.data.media.DownloadData;
+import home.thienph.xyahoo107.data.media.ContactGroup;
+import home.thienph.xyahoo107.data.media.Contact;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.forms.FileBrowserList;
 import home.thienph.xyahoo107.forms.FileSystemInterface;
 import home.thienph.xyahoo107.forms.MediaPlayerForm;
 import home.thienph.xyahoo107.forms.SaveFileForm;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.messages.MessageProcessor;
+import home.thienph.xyahoo107.processors.GameProcessor;
 import home.thienph.xyahoo107.screens.*;
 import home.thienph.xyahoo107.tasks.FileOperationTask;
+import home.thienph.xyahoo107.tasks.ProcessDataTask;
 import home.thienph.xyahoo107.utils.*;
 
 import javax.microedition.lcdui.Alert;
@@ -118,8 +119,8 @@ public final class GameManager {
     public static Image roomIcon; //biểu tượng phòng, 90%
     public static Image settingsIcon;
     public boolean isLoading;
-    private UIFactory backButton;
-    private UIFactory selectButton;
+    private ButtonAction backButton;
+    private ButtonAction selectButton;
     private Action menuHandler;
     private Screen currentScreen;
     private int screenCount;
@@ -138,15 +139,15 @@ public final class GameManager {
     public static String currentMessage; //tin nhắn hiện tại, 90%
     public static byte loginType;
     public static boolean firstRun; // lần chạy đầu tiên, 95%
-    private static UIFactory closeButton;
+    private static ButtonAction closeButton;
     public DialogScreen mainMenu;
     private TextInputComponent inputHandler;
     private ContextMenu mainMenuList;
     private ContextMenu gameMenuList;
     public static boolean isConnected;
-    public static UIFactory helpButton;
-    public static UIFactory infoButton;
-    public static UIFactory forumButton;
+    public static ButtonAction helpButton;
+    public static ButtonAction infoButton;
+    public static ButtonAction forumButton;
     public PhotoViewerScreen fileManager;
     private String currentFileName;
     private int fileBufferSize;
@@ -177,13 +178,13 @@ public final class GameManager {
         }
     }
 
-    private DownloadData getResource(String var1) {
+    private Contact getResource(String var1) {
         this.initResourceCache();
-        return (DownloadData) this.resourceCache.get(var1);
+        return (Contact) this.resourceCache.get(var1);
     }
 
     public CardInfo getCardInfoResource(String var1, int var2) {
-        DownloadData var3;
+        Contact var3;
         if ((var3 = this.getResource(var1)) == null) {
             var3 = FriendScreen.instance.findContactById(var1);
         }
@@ -209,25 +210,25 @@ public final class GameManager {
             }
         }
 
-        DownloadData var7;
+        Contact var7;
         if ((var7 = this.getResource(var1)) != null && var3 == 0) {
             var7.cardInfo = var2;
         }
 
-        DownloadData var8;
+        Contact var8;
         if ((var8 = FriendScreen.instance.findContactById(var1)) != null) {
             if (var3 == 0) {
                 var8.cardInfo = var2;
             }
         } else {
-            DownloadData var9;
-            (var9 = new DownloadData()).downloadId = var1;
+            Contact var9;
+            (var9 = new Contact()).contactId = var1;
             if (var3 == 0) {
                 var9.cardInfo = var2;
             }
 
             this.initResourceCache();
-            this.resourceCache.put(var9.downloadId, var9);
+            this.resourceCache.put(var9.contactId, var9);
         }
     }
 
@@ -255,8 +256,8 @@ public final class GameManager {
 
     private void switchToCurrentScreen() {
         this.currentScreen = (Screen) this.screenStack.elementAt(this.currentScreenIndex);
-        if (this.currentScreen.unused2) {
-            this.currentScreen.unused2 = false;
+        if (this.currentScreen.showInNavigation) {
+            this.currentScreen.showInNavigation = false;
             this.leftArrowAnim = 0;
             this.rightArrowAnim = 0;
         }
@@ -400,7 +401,7 @@ public final class GameManager {
         return instance;
     }
 
-    public DialogBox createDialog(String var1, int var2, Vector var3, int var4, UIFactory var5, UIFactory var6, UIFactory var7) {
+    public DialogBox createDialog(String var1, int var2, Vector var3, int var4, ButtonAction var5, ButtonAction var6, ButtonAction var7) {
         DialogBox var8 = new DialogBox(var1, var2, var3, var4, var5, var6, var7);
         this.dialogQueue.addElement(var8);
         this.isMenuVisible = false;
@@ -408,7 +409,7 @@ public final class GameManager {
         return var8;
     }
 
-    public DialogBox createSimpleDialog(String var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+    public DialogBox createSimpleDialog(String var1, ButtonAction var2, ButtonAction var3, ButtonAction var4) {
         DialogBox var5 = new DialogBox(var1, var2, var3, var4);
         this.dialogQueue.addElement(var5);
         this.isMenuVisible = false;
@@ -416,7 +417,7 @@ public final class GameManager {
         return var5;
     }
 
-    private DialogBox createMultiTextDialog(String[] var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+    private DialogBox createMultiTextDialog(String[] var1, ButtonAction var2, ButtonAction var3, ButtonAction var4) {
         DialogBox var5 = new DialogBox(var1, var2, var3, var4);
         this.dialogQueue.addElement(var5);
         this.isMenuVisible = false;
@@ -470,9 +471,9 @@ public final class GameManager {
         this.menuStack = new Vector();
         this.notificationQueue = new Vector();
         if (helpButton == null) {
-            helpButton = new UIFactory("Gọi CSKH", new quyen_eu(this));
-            infoButton = new UIFactory("Thông tin", new quyen_ff(this));
-            forumButton = new UIFactory("Diễn đàn", new quyen_fq(this));
+            helpButton = new ButtonAction("Gọi CSKH", new CallSupportAction(this));
+            infoButton = new ButtonAction("Thông tin", new GetInfomationAction(this));
+            forumButton = new ButtonAction("Diễn đàn", new ForumAction(this));
         }
 
         menuWidth = GameGraphics.screenWidth < 130 ? 126 : 130;
@@ -494,30 +495,30 @@ public final class GameManager {
         autoLoginYahoo = Xuka.loadBooleanSetting("atlogY", false);
         statusIcons = new Image[7];
         arrowIcons = new Image[3];
-        MessageProcessor.loadImageData(0);
-        byte[] var3;
-        Image var11 = Image.createImage(var3 = MessageProcessor.getImageBytes(0), 0, var3.length);
-        byte[] var4;
-        loadingImage = Image.createImage(var4 = MessageProcessor.getImageBytes(1), 0, var4.length);
-        var4 = MessageProcessor.getImageBytes(2);
-        byte[] var5;
-        dialogBackground = Image.createImage(var5 = MessageProcessor.getImageBytes(3), 0, var5.length);
+        GameProcessor.loadImageData(0);
+        byte[] var3 = GameProcessor.getImageBytes(0);
+        Image var11 = Image.createImage(var3, 0, var3.length);
+        byte[] var4 = GameProcessor.getImageBytes(1);
+        loadingImage = Image.createImage(var4, 0, var4.length);
+        var4 = GameProcessor.getImageBytes(2);
+        byte[] var5 = GameProcessor.getImageBytes(3);
+        dialogBackground = Image.createImage(var5, 0, var5.length);
         backgroundImage = Image.createImage(var4, 0, var4.length);
-        var4 = MessageProcessor.getImageBytes(4);
-        var5 = MessageProcessor.getImageBytes(5);
-        byte[] var6 = MessageProcessor.getImageBytes(6);
+        var4 = GameProcessor.getImageBytes(4);
+        var5 = GameProcessor.getImageBytes(5);
+        byte[] var6 = GameProcessor.getImageBytes(6);
         arrowIcons[0] = Image.createImage(var4, 0, var4.length);
         arrowIcons[1] = Image.createImage(var5, 0, var5.length);
         arrowIcons[2] = Image.createImage(var6, 0, var6.length);
         System.gc();
-        gameIcons = Image.createImage(var4 = MessageProcessor.getImageBytes(7), 0, var4.length);
-        var4 = MessageProcessor.getImageBytes(8);
-        var5 = MessageProcessor.getImageBytes(9);
-        var6 = MessageProcessor.getImageBytes(10);
-        byte[] var7 = MessageProcessor.getImageBytes(11);
-        byte[] var8 = MessageProcessor.getImageBytes(12);
-        byte[] var9 = MessageProcessor.getImageBytes(13);
-        byte[] var10 = MessageProcessor.getImageBytes(14);
+        gameIcons = Image.createImage(var4 = GameProcessor.getImageBytes(7), 0, var4.length);
+        var4 = GameProcessor.getImageBytes(8);
+        var5 = GameProcessor.getImageBytes(9);
+        var6 = GameProcessor.getImageBytes(10);
+        byte[] var7 = GameProcessor.getImageBytes(11);
+        byte[] var8 = GameProcessor.getImageBytes(12);
+        byte[] var9 = GameProcessor.getImageBytes(13);
+        byte[] var10 = GameProcessor.getImageBytes(14);
         statusIcons[0] = Image.createImage(var4, 0, var4.length);
         statusIcons[1] = Image.createImage(var5, 0, var5.length);
         statusIcons[2] = Image.createImage(var6, 0, var6.length);
@@ -525,8 +526,8 @@ public final class GameManager {
         statusIcons[4] = Image.createImage(var8, 0, var8.length);
         statusIcons[5] = Image.createImage(var9, 0, var9.length);
         statusIcons[6] = Image.createImage(var10, 0, var10.length);
-        Image var17 = Image.createImage(var4 = MessageProcessor.getImageBytes(15), 0, var4.length);
-        MessageProcessor.cleanup();
+        Image var17 = Image.createImage(var4 = GameProcessor.getImageBytes(15), 0, var4.length);
+        GameProcessor.cleanup();
         int var20 = GameGraphics.screenHeight - (footerHeight << 1) + 2;
         Graphics var23 = (backgroundBuffer = Image.createImage(GameGraphics.screenWidth, var20)).getGraphics();
         int var24 = (GameGraphics.screenWidth >> 5) + 1;
@@ -585,7 +586,7 @@ public final class GameManager {
 
     public void checkConnection() {
         if (NetworkManager.isConnecting) {
-            this.createSimpleDialog("Đang kiểm tra kết nối..", null, null, new UIFactory(TextConstant.close(), new quyen_gb(this))).setLoadingVisible(true);
+            this.createSimpleDialog("Đang kiểm tra kết nối..", null, null, new ButtonAction(TextConstant.close(), new LoginCloseCheckConnectionAction(this))).setLoadingVisible(true);
         }
     }
 
@@ -603,37 +604,37 @@ public final class GameManager {
 
     public static void loadChatImages() {
         if (chatBackground == null) {
-            MessageProcessor.loadImageData(2);
+            GameProcessor.loadImageData(2);
             byte[] var0;
-            cardImage = Image.createImage(var0 = MessageProcessor.getImageBytes(0), 0, var0.length);
+            cardImage = Image.createImage(var0 = GameProcessor.getImageBytes(0), 0, var0.length);
             System.gc();
-            chatBackground = Image.createImage(var0 = MessageProcessor.getImageBytes(1), 0, var0.length);
+            chatBackground = Image.createImage(var0 = GameProcessor.getImageBytes(1), 0, var0.length);
             System.gc();
-            avatarImage = Image.createImage(var0 = MessageProcessor.getImageBytes(2), 0, var0.length);
+            avatarImage = Image.createImage(var0 = GameProcessor.getImageBytes(2), 0, var0.length);
             System.gc();
-            menuImage = Image.createImage(var0 = MessageProcessor.getImageBytes(3), 0, var0.length);
-            decorationImage = Image.createImage(var0 = MessageProcessor.getImageBytes(4), 0, var0.length);
+            menuImage = Image.createImage(var0 = GameProcessor.getImageBytes(3), 0, var0.length);
+            decorationImage = Image.createImage(var0 = GameProcessor.getImageBytes(4), 0, var0.length);
             System.gc();
-            buttonImage = Image.createImage(var0 = MessageProcessor.getImageBytes(5), 0, var0.length);
-            gameBackground = Image.createImage(var0 = MessageProcessor.getImageBytes(6), 0, var0.length);
+            buttonImage = Image.createImage(var0 = GameProcessor.getImageBytes(5), 0, var0.length);
+            gameBackground = Image.createImage(var0 = GameProcessor.getImageBytes(6), 0, var0.length);
             System.gc();
-            emojiImage = Image.createImage(var0 = MessageProcessor.getImageBytes(7), 0, var0.length);
+            emojiImage = Image.createImage(var0 = GameProcessor.getImageBytes(7), 0, var0.length);
             System.gc();
-            MessageProcessor.cleanup();
+            GameProcessor.cleanup();
         }
     }
 
     public static void loadGameImages() {
         if (splashImage == null) {
-            MessageProcessor.loadImageData(1);
+            GameProcessor.loadImageData(1);
             byte[] var0;
-            splashImage = Image.createImage(var0 = MessageProcessor.getImageBytes(0), 0, var0.length);
+            splashImage = Image.createImage(var0 = GameProcessor.getImageBytes(0), 0, var0.length);
             System.gc();
-            roomIcon = Image.createImage(var0 = MessageProcessor.getImageBytes(1), 0, var0.length);
-            settingsIcon = Image.createImage(var0 = MessageProcessor.getImageBytes(2), 0, var0.length);
-            friendListIcon = Image.createImage(var0 = MessageProcessor.getImageBytes(3), 0, var0.length);
+            roomIcon = Image.createImage(var0 = GameProcessor.getImageBytes(1), 0, var0.length);
+            settingsIcon = Image.createImage(var0 = GameProcessor.getImageBytes(2), 0, var0.length);
+            friendListIcon = Image.createImage(var0 = GameProcessor.getImageBytes(3), 0, var0.length);
             System.gc();
-            MessageProcessor.cleanup();
+            GameProcessor.cleanup();
         }
     }
 
@@ -656,7 +657,7 @@ public final class GameManager {
         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentScreen.subtitle, this.titleX, this.titleOffset, var1);
         if (this.screenCount > 1) {
             for (int var4 = 0; var4 < var2.screenCount; var4++) {
-                if (((Screen) var2.screenStack.elementAt(var4)).unused2) {
+                if (((Screen) var2.screenStack.elementAt(var4)).showInNavigation) {
                     if (var4 < var2.currentScreenIndex) {
                         if (var2.leftArrowAnim++ > 20) {
                             var2.leftArrowAnim = 0;
@@ -754,8 +755,8 @@ public final class GameManager {
 
                 for (int var27 = 0; var27 < var8; var27++) {
                     var21 = 1 + var27 * var2.itemHeight + (FontRenderer.isCustomFontEnabled ? 0 : 2);
-                    String var10 = ((UIFactory) var7.menuItems.elementAt(var27)).text;
-                    if (((UIFactory) var7.menuItems.elementAt(var27)).parentContainer != null) {
+                    String var10 = ((ButtonAction) var7.menuItems.elementAt(var27)).text;
+                    if (((ButtonAction) var7.menuItems.elementAt(var27)).parentContainer != null) {
                         var10 = var10 + " >";
                     }
 
@@ -881,18 +882,18 @@ public final class GameManager {
         return this.menuHandler;
     }
 
-    public UIFactory createBackButton(String var1) {
+    public ButtonAction createBackButton(String var1) {
         if (this.backButton == null) {
-            this.backButton = new UIFactory("", this.getMenuHandler());
+            this.backButton = new ButtonAction("", this.getMenuHandler());
         }
 
         this.backButton.text = var1;
         return this.backButton;
     }
 
-    public UIFactory getSelectButton() {
+    public ButtonAction getSelectButton() {
         if (this.selectButton == null) {
-            this.selectButton = new UIFactory("", this.getMenuHandler());
+            this.selectButton = new ButtonAction("", this.getMenuHandler());
         }
 
         return this.selectButton;
@@ -903,11 +904,11 @@ public final class GameManager {
     }
 
     public DialogBox showConfirmDialog(String var1, Action var2) {
-        return this.createMultiTextDialog(FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30), new UIFactory("OK", var2), new UIFactory("", var2), this.createBackButton(TextConstant.close()));
+        return this.createMultiTextDialog(FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30), new ButtonAction("OK", var2), new ButtonAction("", var2), this.createBackButton(TextConstant.close()));
     }
 
     public void showOKDialog(String var1, Action var2) {
-        this.createSimpleDialog(var1, null, new UIFactory("OK", var2), null);
+        this.createSimpleDialog(var1, null, new ButtonAction("OK", var2), null);
     }
 
     public void showWrappedTextDialog(String var1) {
@@ -1318,14 +1319,14 @@ public final class GameManager {
                 this.closeMenu(false);
             } else if (var20) {
                 ContextMenu var25;
-                UIFactory var29;
-                if ((var29 = (UIFactory) (var25 = (ContextMenu) this.menuStack.lastElement()).menuItems.elementAt(var25.y)).parentContainer != null) {
+                ButtonAction var29;
+                if ((var29 = (ButtonAction) (var25 = (ContextMenu) this.menuStack.lastElement()).menuItems.elementAt(var25.y)).parentContainer != null) {
                     this.showContextMenu(var29.parentContainer, -1);
                 }
             } else if (var1[16] || var1[17]) {
-                UIFactory var9;
+                ButtonAction var9;
                 ContextMenu var24;
-                if ((var9 = (UIFactory) (var24 = (ContextMenu) this.menuStack.lastElement()).menuItems.elementAt(var24.y)).parentContainer == null) {
+                if ((var9 = (ButtonAction) (var24 = (ContextMenu) this.menuStack.lastElement()).menuItems.elementAt(var24.y)).parentContainer == null) {
                     if (var9.action != null) {
                         var9.action.action();
                         this.closeMenu(true);
@@ -1353,7 +1354,7 @@ public final class GameManager {
                         }
                     }
 
-                    if (isValidErrorCode(var28.unused1)) {
+                    if (isValidErrorCode(var28.dialogId)) {
                         ((TextInputComponent) var28.findComponentByID(2)).insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
                     } else if (var28 instanceof ChatRoomScreen) {
                         ((ChatRoomScreen) var28).textInputComponent.insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
@@ -1593,15 +1594,15 @@ public final class GameManager {
         return Xuka.loadLongData("xkmyid" + var0);
     }
 
-    private static void saveContactStatus(int var0, boolean var1) {
-        Xuka.saveData(var1 ? "yahoocs" : "xubics" + FriendScreen.currentUserId, intToBytes(var0), "xkown");
+    private static void saveContactStatus(int data, boolean isYahoo) {
+        Xuka.saveData(isYahoo ? "yahoocs" : "xubics" + FriendScreen.currentUserId, intToBytes(data), "xkown");
     }
 
     public static int loadContactStatus(boolean var0) {
         return Xuka.loadIntData(var0 ? "yahoocs" : "xubics" + FriendScreen.currentUserId, "xkown");
     }
 
-    public static boolean saveBuddyList(DownloadDataManager var0, boolean var1, String var2) {
+    public static boolean saveBuddyList(ContactSource var0, boolean var1, String var2) {
         ByteArrayOutputStream var3 = new ByteArrayOutputStream();
         Vector var9 = var0.downloadCategories;
 
@@ -1609,14 +1610,14 @@ public final class GameManager {
             writeIntToStream(var3, var9.size());
 
             for (int var4 = 0; var4 < var9.size(); var4++) {
-                DownloadCategory var5 = (DownloadCategory) var9.elementAt(var4);
-                writeStringToStream(var3, var5.getCategoryId());
-                Vector var10 = var5.downloads;
+                ContactGroup var5 = (ContactGroup) var9.elementAt(var4);
+                writeStringToStream(var3, var5.getName());
+                Vector var10 = var5.contacts;
                 writeIntToStream(var3, var10.size());
 
                 for (int var6 = 0; var6 < var10.size(); var6++) {
-                    DownloadData var7 = (DownloadData) var10.elementAt(var6);
-                    writeStringToStream(var3, var7.downloadId);
+                    Contact var7 = (Contact) var10.elementAt(var6);
+                    writeStringToStream(var3, var7.contactId);
                     writeStringToStream(var3, var7.displayName);
                     writeIntToStream(var3, var7.dataSize);
                     if (!var1) {
@@ -1632,13 +1633,13 @@ public final class GameManager {
         }
     }
 
-    public static DownloadDataManager loadBuddyList(boolean var0, String var1) {
+    public static ContactSource loadBuddyList(boolean var0, String var1) {
         byte[] var10;
         if ((var10 = Xuka.loadData((var0 ? "ybuddy" : "vbuddy") + var1, "xkown")) == null) {
             return null;
         } else {
             ByteArrayInputStream var11 = new ByteArrayInputStream(var10);
-            DownloadDataManager var2 = new DownloadDataManager();
+            ContactSource var2 = new ContactSource();
 
             try {
                 var2.downloadCategories = new Vector();
@@ -1646,20 +1647,20 @@ public final class GameManager {
 
                 for (int var4 = 0; var4 < var3; var4++) {
                     String var5 = readStringFromStream(var11);
-                    DownloadCategory var12;
-                    (var12 = new DownloadCategory(var5)).downloads = new Vector();
+                    ContactGroup var12;
+                    (var12 = new ContactGroup(var5)).contacts = new Vector();
                     int var6 = readIntFromStream(var11);
 
                     for (int var7 = 0; var7 < var6; var7++) {
-                        DownloadData var8;
-                        (var8 = new DownloadData()).downloadId = readStringFromStream(var11);
+                        Contact var8;
+                        (var8 = new Contact()).contactId = readStringFromStream(var11);
                         var8.displayName = readStringFromStream(var11);
                         var8.dataSize = readIntFromStream(var11);
                         if (!var0) {
                             var8.timestamp = readLongFromStream(var11);
                         }
 
-                        var12.addDownload(var8);
+                        var12.addContact(var8);
                     }
 
                     var2.downloadCategories.addElement(var12);
@@ -1729,7 +1730,7 @@ public final class GameManager {
         if (!var5.title.equals(this.currentScreen.title)) {
             String var8 = FontRenderer.getFirstLineWrapped(var2, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
             this.showNotification(var1 + " chat: " + var8 + "...", (Image) null, 1);
-            var5.unused2 = true;
+            var5.showInNavigation = true;
             this.vibrate();
         }
 
@@ -1749,7 +1750,7 @@ public final class GameManager {
         if (!var4.title.equals(this.currentScreen.title)) {
             var3 = FontRenderer.getFirstLineWrapped(var2, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
             this.showNotification(var1 + " chat: " + var3 + "...", (Image) null, 1);
-            var4.unused2 = true;
+            var4.showInNavigation = true;
             this.vibrate();
         }
 
@@ -1839,7 +1840,7 @@ public final class GameManager {
         this.isLoading = var2;
         this.closeDialog();
         isConnected = false;
-        this.createSimpleDialog("Mất kết nối\nVui lòng thoát và đăng nhập lại", new UIFactory("Thoát", new quyen_gk(this)), null, this.createBackButton(TextConstant.close()));
+        this.createSimpleDialog("Mất kết nối\nVui lòng thoát và đăng nhập lại", new ButtonAction("Thoát", new quyen_gk(this)), null, this.createBackButton(TextConstant.close()));
     }
 
     public void onAddFriendError(String var1) {
@@ -1885,7 +1886,7 @@ public final class GameManager {
     }
 
     public void showUpdateDialog(int var1, String var2) {
-        this.createSimpleDialog("Cập nhật phiên bản mới X Yahoo!: " + Xuka.formatVersion(var1), new UIFactory("Tải về", new quyen_gl(this, var2)), null, this.createBackButton(TextConstant.close()));
+        this.createSimpleDialog("Cập nhật phiên bản mới X Yahoo!: " + Xuka.formatVersion(var1), new ButtonAction("Tải về", new quyen_gl(this, var2)), null, this.createBackButton(TextConstant.close()));
     }
 
     public String getSmsMessage() {
@@ -1903,9 +1904,9 @@ public final class GameManager {
         String var7 = var3 + Xuka.refCode;
         this.createMultiTextDialog(
                 FontRenderer.wrapTextToLines(var1 + "Gửi tin: " + var7 + "\nĐến số: " + var2.substring(6), GameGraphics.screenWidth - 30),
-                new UIFactory("OK", var5),
+                new ButtonAction("OK", var5),
                 null,
-                new UIFactory(TextConstant.close(), var4)
+                new ButtonAction(TextConstant.close(), var4)
         );
     }
 
@@ -1920,7 +1921,7 @@ public final class GameManager {
     public void initializeFriendManager() {
         if (this.friendManager == null) {
             this.friendManager = new FriendScreen();
-            this.friendManager.unused1 = 11113;
+            this.friendManager.dialogId = 11113;
         }
 
         this.friendManager.startSlideAnimation(1);
@@ -2021,7 +2022,7 @@ public final class GameManager {
 
         while (--var2 >= 0) {
             Screen var3;
-            if ((var3 = (Screen) this.screenStack.elementAt(var2)).unused1 == var1) {
+            if ((var3 = (Screen) this.screenStack.elementAt(var2)).dialogId == var1) {
                 return var3;
             }
         }
@@ -2034,16 +2035,16 @@ public final class GameManager {
         this.mainMenu = var1;
         if (this.mainMenuList == null) {
             createCloseButton();
-            UIFactory var2 = new UIFactory("Cấu hình", new quyen_ey(this));
-            UIFactory var3 = new UIFactory("Gửi góp ý", new quyen_ez(this));
-            UIFactory var4 = new UIFactory("Trạng thái", new quyen_fb(this));
-            UIFactory var5 = new UIFactory("Thoát", new quyen_fc(this));
+            ButtonAction var2 = new ButtonAction("Cấu hình", new quyen_ey(this));
+            ButtonAction var3 = new ButtonAction("Gửi góp ý", new quyen_ez(this));
+            ButtonAction var4 = new ButtonAction("Trạng thái", new quyen_fb(this));
+            ButtonAction var5 = new ButtonAction("Thoát", new quyen_fc(this));
             Vector var6;
             (var6 = new Vector()).addElement(infoButton);
             var6.addElement(var3);
             var6.addElement(helpButton);
             var6.addElement(forumButton);
-            (var3 = new UIFactory("Hỗ trợ", null)).parentContainer = new ContextMenu(var6);
+            (var3 = new ButtonAction("Hỗ trợ", null)).parentContainer = new ContextMenu(var6);
             (var6 = new Vector()).addElement(var2);
             var6.addElement(var3);
             var6.addElement(var5);
@@ -2051,12 +2052,12 @@ public final class GameManager {
             Vector var8;
             (var8 = new Vector()).addElement(var4);
             var8.addElement(this.friendManager.createPendingRequestsButton());
-            var8.addElement(new UIFactory("Tải về", new quyen_fe(this)));
+            var8.addElement(new ButtonAction("Tải về", new quyen_fe(this)));
             this.gameMenuList = new ContextMenu(var8);
         }
 
-        this.mainMenu.leftSoftkey = new UIFactory("Menu", new quyen_fg(this));
-        this.mainMenu.rightSoftkey = new UIFactory("Quản lý", new quyen_fh(this));
+        this.mainMenu.leftSoftkey = new ButtonAction("Menu", new quyen_fg(this));
+        this.mainMenu.rightSoftkey = new ButtonAction("Quản lý", new quyen_fh(this));
         this.removeScreen(this.loginScreen);
         this.loginScreen = null;
         boolean var7 = false;
@@ -2072,15 +2073,15 @@ public final class GameManager {
         TextRenderer.clearLogoCache();
     }
 
-    public static UIFactory createCloseButton() {
+    public static ButtonAction createCloseButton() {
         if (closeButton == null) {
-            closeButton = new UIFactory("", new quyen_ex());
+            closeButton = new ButtonAction("", new quyen_ex());
         }
 
         return closeButton;
     }
 
-    public void replaceMainMenuItem(UIFactory var1, int var2) {
+    public void replaceMainMenuItem(ButtonAction var1, int var2) {
         if (this.mainMenuList != null) {
             this.mainMenuList.menuItems.setElementAt(var1, var2);
         }
@@ -2119,7 +2120,7 @@ public final class GameManager {
         }
     }
 
-    public void loadYahooBuddyList(DownloadDataManager var1) {
+    public void loadYahooBuddyList(ContactSource var1) {
         saveBuddyList(var1, true, YahooScreen.yahooUsername);
         this.yahooChat.contactList.setContactData(var1, -1);
         this.yahooChat.isActive = true;
@@ -2147,27 +2148,27 @@ public final class GameManager {
         }
 
         DialogScreen var5;
-        (var5 = new DialogScreen()).unused2 = true;
+        (var5 = new DialogScreen()).showInNavigation = true;
         var5.title = "Thêm bạn";
-        UIFactory.createSimpleText(var5, UIUtils.concatStrings(var1, " thêm bạn vào danh sách. Bạn có đồng ý?", null, null));
+        ButtonAction.createSimpleText(var5, UIUtils.concatStrings(var1, " thêm bạn vào danh sách. Bạn có đồng ý?", null, null));
         if (var4) {
-            TextInputComponent var6 = UIFactory.createTextInput(var5, "Vào nhóm mới:", 0);
+            TextInputComponent var6 = ButtonAction.createTextInput(var5, "Vào nhóm mới:", 0);
             DropdownComponent var7;
-            (var7 = UIFactory.createChoiceBox(var5, "hoặc đã có:", this.yahooChat.contactList.getGroupNames())).setChangeAction(new quyen_fi(this, var7, var6));
+            (var7 = ButtonAction.createChoiceBox(var5, "hoặc đã có:", this.yahooChat.contactList.getGroupNames())).setChangeAction(new quyen_fi(this, var7, var6));
             if (var7.optionList != null && var7.optionList.length != 0) {
                 var6.setText(var7.getSelectedText());
             } else {
                 var6.setText("Friends");
             }
 
-            var5.leftSoftkey = new UIFactory(TextConstant.decline(), new quyen_fj(this, var1, var6, var5));
-            var5.centerSoftkey = new UIFactory("OK", new quyen_fk(this, var6, var1, var5));
+            var5.leftSoftkey = new ButtonAction(TextConstant.decline(), new quyen_fj(this, var1, var6, var5));
+            var5.centerSoftkey = new ButtonAction("OK", new quyen_fk(this, var6, var1, var5));
         } else {
-            var5.leftSoftkey = new UIFactory(TextConstant.decline(), new quyen_fl(this, var2, var5));
-            var5.centerSoftkey = new UIFactory("OK", new quyen_fm(this, var2, var5));
+            var5.leftSoftkey = new ButtonAction(TextConstant.decline(), new quyen_fl(this, var2, var5));
+            var5.centerSoftkey = new ButtonAction("OK", new quyen_fm(this, var2, var5));
         }
 
-        var5.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_fn(this, var4, var2, var5));
+        var5.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_fn(this, var4, var2, var5));
         UIUtils.focusComponent(var5, (UIComponent) var5.components.elementAt(0));
         this.addScreen(var5);
     }
@@ -2228,7 +2229,7 @@ public final class GameManager {
             PacketSender.a(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
         }
 
-        PacketSender.e();
+        PacketSender.sendAppInfo();
     }
 
     public void processReceivedData(byte[] var1) {
@@ -2365,9 +2366,9 @@ public final class GameManager {
     public void showFileSizeConfirmDialog(int var1, Action var2, Action var3) {
         this.createSimpleDialog(
                 UIUtils.concatStrings(FileBrowserList.getInstance().getSelectedFilePath(false), " có kích thước ", Integer.toString(var1 / 1000), " KBs. Bạn có muốn tiếp tục?"),
-                new UIFactory("Gửi", new quyen_fs(this, var3)),
-                new UIFactory("Mở", new quyen_ft(this, var2)),
-                new UIFactory(TextConstant.close(), new quyen_fu(this))
+                new ButtonAction("Gửi", new quyen_fs(this, var3)),
+                new ButtonAction("Mở", new quyen_ft(this, var2)),
+                new ButtonAction(TextConstant.close(), new quyen_fu(this))
         );
     }
 
@@ -2381,11 +2382,11 @@ public final class GameManager {
             PacketSender.a(this.uploadData.length, this.uploadType, this.uploadFileName);
             this.showNotification("Đang gửi file..", (Image) null, 2);
         } else {
-            this.createSimpleDialog("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new UIFactory("Hủy bỏ", new quyen_fz(this)), null, this.createBackButton(TextConstant.close()));
+            this.createSimpleDialog("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new ButtonAction("Hủy bỏ", new quyen_fz(this)), null, this.createBackButton(TextConstant.close()));
         }
     }
 
-    public static UIFactory createCloseButton(Screen var0, boolean var1, Action var2) {
+    public static ButtonAction createCloseButton(Screen var0, boolean var1, Action var2) {
         Object var3;
         if (var1) {
             var3 = new quyen_ga(var2, var0);
@@ -2393,7 +2394,7 @@ public final class GameManager {
             var3 = new quyen_gc(var0);
         }
 
-        return new UIFactory(TextConstant.close(), (Action) var3);
+        return new ButtonAction(TextConstant.close(), (Action) var3);
     }
 
     public void initializeMediaCapture(byte var1, byte var2) {
@@ -2439,11 +2440,11 @@ public final class GameManager {
 
             while (--var3 >= 0) {
                 quyen_bj var4;
-                DownloadData var5;
-                if ((var5 = (var4 = (quyen_bj) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).i).downloadId.equals(var1)) {
+                Contact var5;
+                if ((var5 = (var4 = (quyen_bj) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).i).contactId.equals(var1)) {
                     var5.imageBytes = var2;
                     var5.isSelected = true;
-                    var4.e = UIUtils.concatStrings(Integer.toString(var5.downloadStatus), " KBs", null, null);
+                    var4.e = UIUtils.concatStrings(Integer.toString(var5.statusCode), " KBs", null, null);
                     if (this.hasDownloaded) {
                         this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.fileName, null, null), (Image) null, 1);
                     } else {
@@ -2483,11 +2484,11 @@ public final class GameManager {
             var5 = UIUtils.concatStrings("Video", " ", var2, null);
         }
 
-        DownloadData var6;
-        (var6 = new DownloadData(var1, var5, var3, null, null, -1, -1, null)).downloadType = var4;
+        Contact var6;
+        (var6 = new Contact(var1, var5, var3, null, null, -1, -1, null)).downloadType = var4;
         var6.filePath = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
         var6.fileName = var2;
-        this.downloadManager.downloadDataManager.insertDownloadToCategory("", var6);
+        this.downloadManager.contactSource.insertDownloadToCategory("", var6);
         this.downloadManager.downloadListComponent.buildListItems();
     }
 
@@ -2766,7 +2767,7 @@ public final class GameManager {
     }
 
     private void processDataInThread(byte[] var1) {
-        new Thread(new quyen_gf(this, var1)).start();
+        new Thread(new ProcessDataTask(this, var1), "GameManager.processDataInThread").start();
     }
 
     public void loadCachedData(int var1, int var2) {
@@ -2784,7 +2785,7 @@ public final class GameManager {
         Xuka.saveData(generateCacheKey(var1, false), var3, "xkcsp");
     }
 
-    public void showGameLobby(DownloadDataManager var1) {
+    public void showGameLobby(ContactSource var1) {
         if (gameRoom == null) {
             (gameRoom = new GameLobbyScreen()).gameListComponent.itemAction = new quyen_gd(this);
             gameRoom.gameListComponent.selectAction.text = "Vào phòng";
@@ -2830,7 +2831,7 @@ public final class GameManager {
         }
     }
 
-    public void loadContactData(DownloadDataManager var1) {
+    public void loadContactData(ContactSource var1) {
         this.friendManager.mainContactList.setContactData(var1, -1);
         saveBuddyList(var1, false, FriendScreen.currentUserId);
         this.friendManager.mainContactList.isLoading = false;
@@ -2881,7 +2882,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode3(DownloadDataManager var1) {
+    public void loadSecondaryContactsMode3(ContactSource var1) {
         if (FriendScreen.currentViewMode == 3) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2894,7 +2895,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode2(DownloadDataManager var1) {
+    public void loadSecondaryContactsMode2(ContactSource var1) {
         if (FriendScreen.currentViewMode == 2) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2926,8 +2927,8 @@ public final class GameManager {
                 this.showNotification(UIUtils.concatStrings(var3, " đồng ý kết bạn với bạn.", null, null), (Image) null, 1);
             }
 
-            DownloadData var10;
-            (var10 = new DownloadData(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
+            Contact var10;
+            (var10 = new Contact(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
             FriendScreen.addContactToList("Ban Be", var10, this.friendManager.mainContactList);
             saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
             this.friendManager.addToOnlineList(var1);
@@ -2989,7 +2990,7 @@ public final class GameManager {
                 if (!var5.title.equals(this.currentScreen.title)) {
                     String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
                     this.showNotification(UIUtils.concatStrings(var4, ": ", var6, ".."), (Image) null, 1);
-                    var5.unused2 = true;
+                    var5.showInNavigation = true;
                     this.vibrate();
                     System.gc();
                 }
@@ -3009,7 +3010,7 @@ public final class GameManager {
         ChatScreen var2;
         if ((var2 = (ChatScreen) this.setActiveScreen(var1)) == null) {
             (var2 = new ChatScreen(var1, false, null, null)).chatTitle = var1;
-            var2.unused2 = true;
+            var2.showInNavigation = true;
             this.addScreenToStack(var2);
         }
 
@@ -3026,14 +3027,14 @@ public final class GameManager {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactStatus(var1, var3)) {
             this.friendManager.updateFavoriteStatus(var1, var3);
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            DownloadData var6;
+            Contact var6;
             if ((var6 = this.friendManager.mainContactList.contactData.findDownload(null, null, var1)) != null) {
-                String var2 = UIUtils.concatStrings(var6.downloadId, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
+                String var2 = UIUtils.concatStrings(var6.contactId, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
                 this.showNotification(var2, var3 == 1 ? statusIcons[1] : statusIcons[0], var4);
 
                 try {
                     ChatScreen var7;
-                    if ((var7 = (ChatScreen) this.setActiveScreen(var6.downloadId)) != null) {
+                    if ((var7 = (ChatScreen) this.setActiveScreen(var6.contactId)) != null) {
                         var7.chatComponent.addSystemMessage(var2, var3 == 1 ? 1 : 2);
                         var7.chatComponent.scrollToBottom();
                     }
@@ -3046,9 +3047,9 @@ public final class GameManager {
     public void updateUserStatusMessage(long var1, String var3) {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactSubtext(var1, var3)) {
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            DownloadData var5 = this.friendManager.mainContactList.contactData.findDownload(null, null, var1);
+            Contact var5 = this.friendManager.mainContactList.contactData.findDownload(null, null, var1);
             String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
-            this.showNotification(UIUtils.concatStrings(var5.downloadId, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
+            this.showNotification(UIUtils.concatStrings(var5.contactId, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
             if (var1 == FriendScreen.currentUserTimestamp) {
                 FriendScreen.statusMessage = var3;
                 Xuka.saveStringData(FriendScreen.currentUserId, var3, false);
@@ -3060,7 +3061,7 @@ public final class GameManager {
         this.friendManager.addOfflineMessage(var1, var2);
     }
 
-    public void showOfflineMessages(DownloadDataManager var1) {
+    public void showOfflineMessages(ContactSource var1) {
         this.friendManager.createOfflineMessageScreen(var1);
         this.friendManager.offlineMessageScreen.startSlideAnimation(1);
         this.addScreenToStack(this.friendManager.offlineMessageScreen);
@@ -3109,16 +3110,16 @@ public final class GameManager {
     public void showChatRoomInviteDialog(String var1, String var2, String var3, String var4) {
         String var5 = UIUtils.concatStrings(var1, " mời bạn", null, null);
         if (this.hasScreen(var5)) {
-            this.setActiveScreen(var5).unused2 = true;
+            this.setActiveScreen(var5).showInNavigation = true;
         } else {
             DialogScreen var6;
             (var6 = new DialogScreen()).title = var5;
-            var6.unused2 = true;
+            var6.showInNavigation = true;
             var1 = UIUtils.concatStrings(var1, " mời bạn tham gia phòng chat ", var2, null);
-            UIFactory.createSimpleText(var6, var1);
+            ButtonAction.createSimpleText(var6, var1);
             this.showNotification(var1, (Image) null, 1);
-            var6.leftSoftkey = new UIFactory("Đồng ý", new quyen_gh(this, var3, var4, var6));
-            var6.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_gi(this, var6));
+            var6.leftSoftkey = new ButtonAction("Đồng ý", new quyen_gh(this, var3, var4, var6));
+            var6.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_gi(this, var6));
             UIUtils.focusComponent(var6, (UIComponent) var6.components.elementAt(0));
             this.addScreen(var6);
         }
@@ -3132,7 +3133,7 @@ public final class GameManager {
                     if (!var4.title.equals(this.currentScreen.title)) {
                         String var5 = FontRenderer.getFirstLineWrapped(var2, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
                         this.showNotification(UIUtils.concatStrings(var1, ": ", var5, ".."), (Image) null, 1);
-                        var4.unused2 = true;
+                        var4.showInNavigation = true;
                         this.vibrate();
                         System.gc();
                     }

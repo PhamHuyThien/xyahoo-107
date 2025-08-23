@@ -2,7 +2,7 @@ package home.thienph.xyahoo107.actions;
 
 
 import home.thienph.xyahoo107.components.TextInputComponent;
-import home.thienph.xyahoo107.messages.MessageProcessor;
+import home.thienph.xyahoo107.processors.GameProcessor;
 
 public final class quyen_aq implements Action {
     private final TextInputComponent a;
@@ -19,7 +19,7 @@ public final class quyen_aq implements Action {
         try {
             int var1;
             if ((var1 = Integer.parseInt(this.a.getText())) > 0 && var1 <= this.b) {
-                MessageProcessor.processMessage(this.c);
+                GameProcessor.processMessage(this.c);
             }
         } catch (Exception var2) {
         }
