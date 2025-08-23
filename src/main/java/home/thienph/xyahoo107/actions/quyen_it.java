@@ -5,13 +5,13 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.FriendScreen;
 
 public final class quyen_it implements Action {
-   private FriendScreen a;
+    private final FriendScreen a;
 
-   public quyen_it(FriendScreen var1) {
-      this.a = var1;
-   }
+    public quyen_it(FriendScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      GameManager.getInstance().showContextMenu(this.a.contextMenu, 0);
-   }
+    public void action() {
+        GameManager.getInstance().showContextMenu(this.a.contextMenu, 0);
+    }
 }

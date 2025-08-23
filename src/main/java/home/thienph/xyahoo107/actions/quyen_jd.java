@@ -5,13 +5,13 @@ import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.YahooScreen;
 
 public final class quyen_jd implements Action {
-   private YahooScreen a;
+    private final YahooScreen a;
 
-   public quyen_jd(YahooScreen var1) {
-      this.a = var1;
-   }
+    public quyen_jd(YahooScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      FriendScreen.toggleOfflineFilter(this.a.contactList);
-   }
+    public void action() {
+        FriendScreen.toggleOfflineFilter(this.a.contactList);
+    }
 }

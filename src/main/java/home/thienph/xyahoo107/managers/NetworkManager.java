@@ -1,14 +1,14 @@
 package home.thienph.xyahoo107.managers;
 
 import home.thienph.xyahoo107.connections.PacketHandler;
-import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.connections.PacketWriter;
+import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.tasks.ConnectionTask;
 
+import javax.microedition.io.SocketConnection;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.util.Hashtable;
-import javax.microedition.io.SocketConnection;
 
 public final class NetworkManager {
     private static DataOutputStream outputStream;
@@ -17,14 +17,14 @@ public final class NetworkManager {
     private static SocketConnection socketConnection;
     public static boolean isConnected;
     public static boolean isConnecting;
-    private static PacketWriter packetWriter = new PacketWriter();
+    private static final PacketWriter packetWriter = new PacketWriter();
     private static Thread connectThread;
     public static Thread readThread;
     public static Thread writeThread;
     public static int bytesSent;
     public static int bytesReceived;
-    private static int packetHeaderSize = 4;
-    private static Hashtable handlerMap = new Hashtable();
+    private static final int packetHeaderSize = 4;
+    private static final Hashtable handlerMap = new Hashtable();
     public static boolean forceDisconnect;
 
     public static boolean isConnected() {
@@ -60,7 +60,6 @@ public final class NetworkManager {
 
             if (socketConnection != null) {
                 cleanup();
-                return;
             }
         } catch (Exception var2) {
             System.out.println("con ex");

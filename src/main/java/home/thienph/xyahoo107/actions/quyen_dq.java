@@ -6,13 +6,13 @@ import home.thienph.xyahoo107.screens.GameScreen;
 import home.thienph.xyahoo107.utils.UIUtils;
 
 public final class quyen_dq implements Action {
-    private GameScreen a;
+    private final GameScreen a;
 
     public quyen_dq(GameScreen var1) {
         this.a = var1;
     }
 
-    public final void action() {
+    public void action() {
         if (GameScreen.getBetInputComponent(this.a).getText().length() > 0) {
             this.a.removeComponent(GameScreen.getBetInputComponent(this.a));
             this.a.isBettingMode = false;

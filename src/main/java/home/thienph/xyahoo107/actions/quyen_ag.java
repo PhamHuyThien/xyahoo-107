@@ -10,7 +10,7 @@ public final class quyen_ag implements Action {
         this.a = var1;
     }
 
-    public final void action() {
-        MessageProcessor.a(this.a);
+    public void action() {
+        MessageProcessor.processMessage(this.a);
     }
 }

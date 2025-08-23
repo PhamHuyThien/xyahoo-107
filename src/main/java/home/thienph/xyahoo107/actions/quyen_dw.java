@@ -5,13 +5,13 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.GameScreen;
 
 public final class quyen_dw implements Action {
-   private GameScreen a;
+    private final GameScreen a;
 
-   public quyen_dw(GameScreen var1) {
-      this.a = var1;
-   }
+    public quyen_dw(GameScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      GameManager.getInstance().showContextMenu(GameScreen.getLobbyMenu(this.a), 0);
-   }
+    public void action() {
+        GameManager.getInstance().showContextMenu(GameScreen.getLobbyMenu(this.a), 0);
+    }
 }

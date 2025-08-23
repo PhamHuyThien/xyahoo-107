@@ -7,18 +7,18 @@ import home.thienph.xyahoo107.screens.DownloadScreen;
 import home.thienph.xyahoo107.screens.PhotoViewerScreen;
 
 public final class quyen_bf implements Action {
-   private DownloadScreen a;
+    private final DownloadScreen a;
 
-   public quyen_bf(DownloadScreen var1) {
-      this.a = var1;
-   }
+    public quyen_bf(DownloadScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      DownloadData var1;
-      if ((var1 = this.a.downloadListComponent.getSelectedItem().i).downloadType == 0) {
-         GameManager.instance.showPhotoViewer(var1.imageBytes, var1.fileName, true, new PhotoViewerScreen());
-      } else {
-         GameManager.playMediaFile(var1.imageBytes, var1.fileName, true, 2);
-      }
-   }
+    public void action() {
+        DownloadData var1;
+        if ((var1 = this.a.downloadListComponent.getSelectedItem().i).downloadType == 0) {
+            GameManager.instance.showPhotoViewer(var1.imageBytes, var1.fileName, true, new PhotoViewerScreen());
+        } else {
+            GameManager.playMediaFile(var1.imageBytes, var1.fileName, true, 2);
+        }
+    }
 }

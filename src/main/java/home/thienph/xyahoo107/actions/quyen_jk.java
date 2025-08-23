@@ -5,13 +5,13 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.YahooScreen;
 
 public final class quyen_jk implements Action {
-   private YahooScreen a;
+    private final YahooScreen a;
 
-   public quyen_jk(YahooScreen var1) {
-      this.a = var1;
-   }
+    public quyen_jk(YahooScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      GameManager.getInstance().removeScreen(YahooScreen.getStatusScreen(this.a));
-   }
+    public void action() {
+        GameManager.getInstance().removeScreen(YahooScreen.getStatusScreen(this.a));
+    }
 }

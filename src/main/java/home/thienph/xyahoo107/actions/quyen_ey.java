@@ -5,10 +5,10 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.LoginScreen;
 
 public final class quyen_ey implements Action {
-   public quyen_ey(GameManager var1) {
-   }
+    public quyen_ey(GameManager var1) {
+    }
 
-   public final void action() {
-      LoginScreen.showSettingsScreen();
-   }
+    public void action() {
+        LoginScreen.showSettingsScreen();
+    }
 }

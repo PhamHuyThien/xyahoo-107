@@ -19,21 +19,21 @@ public final class DownloadData {
     public int dataSize;
     public long timestamp;
     public Integer priority;
-    private int defaultColor = 16777215;
+    private final int defaultColor = 16777215;
     public Image thumbnailImage;
     public CardInfo cardInfo;
 
-    public final int[] getRawDataArray() {
+    public int[] getRawDataArray() {
         return this.rawDataArray;
     }
 
-    public final void setRawDataArray(int[] var1) {
+    public void setRawDataArray(int[] var1) {
         this.rawDataArray = var1;
         if (var1 != null && var1.length > 0) {
             this.processedDataArray = new Integer[var1.length];
 
             for (int var2 = 0; var2 < var1.length; var2++) {
-                this.processedDataArray[var2] = new Integer((short)((short)var1[var2]));
+                this.processedDataArray[var2] = new Integer((short) ((short) var1[var2]));
             }
         }
     }
@@ -51,7 +51,7 @@ public final class DownloadData {
         this.description = var8;
     }
 
-    public final int getDefaultColor() {
+    public int getDefaultColor() {
         return this.defaultColor;
     }
 }

@@ -4,13 +4,13 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.messages.MessageProcessor;
 
 public final class quyen_au implements Action {
-   private final byte[] a;
+    private final byte[] a;
 
-   public quyen_au(byte[] var1) {
-      this.a = var1;
-   }
+    public quyen_au(byte[] var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      MessageProcessor.a(this.a);
-   }
+    public void action() {
+        MessageProcessor.processMessage(this.a);
+    }
 }

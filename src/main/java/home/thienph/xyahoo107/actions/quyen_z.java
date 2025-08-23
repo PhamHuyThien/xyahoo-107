@@ -5,10 +5,10 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.ChatRoomScreen;
 
 public final class quyen_z implements Action {
-   public quyen_z(ChatRoomScreen var1) {
-   }
+    public quyen_z(ChatRoomScreen var1) {
+    }
 
-   public final void action() {
-      GameManager.instance.showEmojiPicker(0);
-   }
+    public void action() {
+        GameManager.instance.showEmojiPicker(0);
+    }
 }

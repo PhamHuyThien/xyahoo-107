@@ -4,7 +4,7 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.managers.GameManager;
 
 public final class quyen_ft implements Action {
-    private GameManager a;
+    private final GameManager a;
     private final Action b;
 
     public quyen_ft(GameManager var1, Action var2) {
@@ -12,7 +12,7 @@ public final class quyen_ft implements Action {
         this.b = var2;
     }
 
-    public final void action() {
+    public void action() {
         this.a.closeDialog();
         if (this.b != null) {
             this.b.action();

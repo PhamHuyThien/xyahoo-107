@@ -6,14 +6,14 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemStateListener;
 
 final class VolumeChangeListener implements ItemStateListener {
-   private MediaPlayerForm mediaPlayerForm;
+    private final MediaPlayerForm mediaPlayerForm;
 
-   VolumeChangeListener(MediaPlayerForm var1) {
-      this.mediaPlayerForm = var1;
-   }
+    VolumeChangeListener(MediaPlayerForm var1) {
+        this.mediaPlayerForm = var1;
+    }
 
-   public final void itemStateChanged(Item var1) {
-      MediaPlayerForm.getVolumeControl(this.mediaPlayerForm).setLevel(MediaPlayerForm.getVolumeGauge(this.mediaPlayerForm).getValue());
-      MediaPlayerForm.getVolumeGauge(this.mediaPlayerForm).setLabel(UIUtils.concatStrings("Âm lượng", " : ", Integer.toString(MediaPlayerForm.getVolumeControl(this.mediaPlayerForm).getLevel()), null));
-   }
+    public void itemStateChanged(Item var1) {
+        MediaPlayerForm.getVolumeControl(this.mediaPlayerForm).setLevel(MediaPlayerForm.getVolumeGauge(this.mediaPlayerForm).getValue());
+        MediaPlayerForm.getVolumeGauge(this.mediaPlayerForm).setLabel(UIUtils.concatStrings("Âm lượng", " : ", Integer.toString(MediaPlayerForm.getVolumeControl(this.mediaPlayerForm).getLevel()), null));
+    }
 }

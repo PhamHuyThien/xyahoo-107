@@ -5,17 +5,17 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.managers.GameManager;
 
 final class quyen_x implements Action {
-   private quyen_q a;
+    private final quyen_q a;
 
-   quyen_x(quyen_q var1) {
-      this.a = var1;
-   }
+    quyen_x(quyen_q var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      quyen_q var1 = this.a;
-      GameManager.instance.destroyScreen(this.a.a);
-      var1 = this.a;
-      PacketSender.d(this.a.a.roomId);
-      GameManager.instance.currentChatRoom = null;
-   }
+    public void action() {
+        quyen_q var1 = this.a;
+        GameManager.instance.destroyScreen(this.a.a);
+        var1 = this.a;
+        PacketSender.d(this.a.a.roomId);
+        GameManager.instance.currentChatRoom = null;
+    }
 }

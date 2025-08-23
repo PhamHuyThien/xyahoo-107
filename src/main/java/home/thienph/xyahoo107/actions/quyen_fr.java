@@ -6,19 +6,19 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.UIUtils;
 
 public final class quyen_fr implements Action {
-   private GameManager a;
+    private final GameManager a;
 
-   public quyen_fr(GameManager var1) {
-      this.a = var1;
-   }
+    public quyen_fr(GameManager var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      byte[] var1;
-      if ((var1 = CameraCanvas.getInstance().capturePhoto()) == null) {
-         this.a.closeDialog();
-         this.a.showWrappedTextDialog("Lỗi camera");
-      } else {
-         this.a.showPhotoViewer(var1, UIUtils.generateTimestampString(".png"), true, this.a.fileManager);
-      }
-   }
+    public void action() {
+        byte[] var1;
+        if ((var1 = CameraCanvas.getInstance().capturePhoto()) == null) {
+            this.a.closeDialog();
+            this.a.showWrappedTextDialog("Lỗi camera");
+        } else {
+            this.a.showPhotoViewer(var1, UIUtils.generateTimestampString(".png"), true, this.a.fileManager);
+        }
+    }
 }

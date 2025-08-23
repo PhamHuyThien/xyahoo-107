@@ -6,20 +6,20 @@ import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.GameScreen;
 
 public final class quyen_df implements Action {
-   private GameScreen a;
+    private final GameScreen a;
 
-   public quyen_df(GameScreen var1) {
-      this.a = var1;
-   }
+    public quyen_df(GameScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      if (this.a.cardGameComponent.isFirstMove) {
-         this.a.cardGameComponent.isFirstMove = false;
-      }
+    public void action() {
+        if (this.a.cardGameComponent.isFirstMove) {
+            this.a.cardGameComponent.isFirstMove = false;
+        }
 
-      if (FriendScreen.currentUserId.equals(this.a.currentPlayerTurn)) {
-         this.a.cardGameComponent.gameEnded = true;
-         PacketSender.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
-      }
-   }
+        if (FriendScreen.currentUserId.equals(this.a.currentPlayerTurn)) {
+            this.a.cardGameComponent.gameEnded = true;
+            PacketSender.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
+        }
+    }
 }

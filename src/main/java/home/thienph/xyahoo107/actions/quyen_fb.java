@@ -4,13 +4,13 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.managers.GameManager;
 
 public final class quyen_fb implements Action {
-   private GameManager a;
+    private final GameManager a;
 
-   public quyen_fb(GameManager var1) {
-      this.a = var1;
-   }
+    public quyen_fb(GameManager var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      this.a.friendManager.showStatusDialog();
-   }
+    public void action() {
+        this.a.friendManager.showStatusDialog();
+    }
 }

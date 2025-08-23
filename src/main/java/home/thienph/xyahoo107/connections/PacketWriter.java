@@ -12,7 +12,7 @@ public final class PacketWriter implements Runnable {
     public PacketWriter() {
     }
 
-    public final void addQueue(Packet var1) {
+    public void addQueue(Packet var1) {
         this.packetQueue.addElement(var1);
     }
 
@@ -27,7 +27,7 @@ public final class PacketWriter implements Runnable {
         return var1;
     }
 
-    public final void run() {
+    public void run() {
         while (NetworkManager.isConnected()) {
             try {
                 while (this.packetQueue.size() > 0) {

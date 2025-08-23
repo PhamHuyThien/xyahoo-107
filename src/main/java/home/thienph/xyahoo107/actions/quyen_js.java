@@ -12,7 +12,7 @@ public final class quyen_js implements Action {
         this.a = var2;
     }
 
-    public final void action() {
+    public void action() {
         GameManager.instance.removeScreen(this.a);
     }
 }

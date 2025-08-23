@@ -5,13 +5,13 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.screens.ChatRoomScreen;
 
 public final class quyen_t implements Action {
-   private ChatRoomScreen a;
+    private final ChatRoomScreen a;
 
-   public quyen_t(ChatRoomScreen var1) {
-      this.a = var1;
-   }
+    public quyen_t(ChatRoomScreen var1) {
+        this.a = var1;
+    }
 
-   public final void action() {
-      PacketSender.b(this.a.roomId, 4809);
-   }
+    public void action() {
+        PacketSender.b(this.a.roomId, 4809);
+    }
 }

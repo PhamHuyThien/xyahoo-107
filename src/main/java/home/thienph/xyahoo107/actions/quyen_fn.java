@@ -5,7 +5,7 @@ import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.DialogScreen;
 
 public final class quyen_fn implements Action {
-    private GameManager a;
+    private final GameManager a;
     private final boolean b;
     private final long c;
     private final DialogScreen d;
@@ -17,7 +17,7 @@ public final class quyen_fn implements Action {
         this.d = var5;
     }
 
-    public final void action() {
+    public void action() {
         if (!this.b) {
             this.a.friendManager.addToPendingList(this.c);
         }

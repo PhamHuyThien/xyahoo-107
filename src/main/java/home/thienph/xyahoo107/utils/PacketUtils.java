@@ -9,7 +9,7 @@ public class PacketUtils {
 
         for (int var2 = 0; var2 < 2; var2++) {
             short var3;
-            var1 = (short)((var3 = (short)(var1 << 8)) | 255 & var0.getPayload().readByte());
+            var1 = (short) ((var3 = (short) (var1 << 8)) | 255 & var0.getPayload().readByte());
         }
 
         return var1;
@@ -25,7 +25,7 @@ public class PacketUtils {
 
         for (int var3 = 0; var3 < 8; var3++) {
             long var4;
-            var1 = (var4 = var1 << 8) | (long)(255 & var0.getPayload().readByte());
+            var1 = (var4 = var1 << 8) | (long) (255 & var0.getPayload().readByte());
         }
 
         return var1;
@@ -63,7 +63,7 @@ public class PacketUtils {
 
     private static void writeLength(int var0, Packet var1) {
         for (int var2 = 3; var2 >= 0; var2--) {
-            var1.getPayload().writeByte((byte)(var0 >> (var2 << 3)));
+            var1.getPayload().writeByte((byte) (var0 >> (var2 << 3)));
         }
     }
 
@@ -81,9 +81,9 @@ public class PacketUtils {
     public static void writeBoolean(boolean var0, Packet var1) {
         var1.getPayload().ensureCapacity(1);
         if (var0) {
-            var1.getPayload().writeByte((byte)1);
+            var1.getPayload().writeByte((byte) 1);
         } else {
-            var1.getPayload().writeByte((byte)0);
+            var1.getPayload().writeByte((byte) 0);
         }
     }
 
@@ -91,7 +91,7 @@ public class PacketUtils {
         var1.getPayload().ensureCapacity(4);
 
         for (int var2 = 3; var2 >= 0; var2--) {
-            var1.getPayload().writeByte((byte)(var0 >> (var2 << 3)));
+            var1.getPayload().writeByte((byte) (var0 >> (var2 << 3)));
         }
     }
 
@@ -99,7 +99,7 @@ public class PacketUtils {
         var2.getPayload().ensureCapacity(8);
 
         for (int var3 = 7; var3 >= 0; var3--) {
-            var2.getPayload().writeByte((byte)((int)(var0 >> (var3 << 3))));
+            var2.getPayload().writeByte((byte) ((int) (var0 >> (var3 << 3))));
         }
     }
 
@@ -110,12 +110,12 @@ public class PacketUtils {
         writeLength(var3, var1);
 
         for (int var7 = 0; var7 < var3; var7++) {
-            short var10000 = (short)var0.charAt(var7);
+            short var10000 = (short) var0.charAt(var7);
             Packet var5 = var1;
             short var4 = var10000;
 
             for (int var6 = 1; var6 >= 0; var6--) {
-                var5.getPayload().writeByte((byte)(var4 >> (var6 << 3)));
+                var5.getPayload().writeByte((byte) (var4 >> (var6 << 3)));
             }
         }
     }
