@@ -17,7 +17,7 @@ public class UIFactory {
       var5.alternateAction = var3;
       var5.isVisible = false;
       var5.leftSoftKey = GameManager.createCloseButton();
-      UIFactory var4 = new UIFactory(quyen_cr.c(), new quyen_cl(var0, var5));
+      UIFactory var4 = new UIFactory(TextConstant.close(), new quyen_cl(var0, var5));
       var5.rightSoftKey = var4;
       var5.onCompleteAction = new quyen_cm(var5, var4);
       var5.middleSoftKey = new UIFactory("OK", new quyen_cn(var5, var0));

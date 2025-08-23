@@ -1,7 +1,7 @@
 final class quyen_el implements Action {
-   final quyen_ec a;
+   final LoginScreen a;
 
-   quyen_el(quyen_ec var1) {
+   quyen_el(LoginScreen var1) {
       this.a = var1;
    }
 

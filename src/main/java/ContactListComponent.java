@@ -82,7 +82,7 @@ public final class ContactListComponent extends UIComponent {
 
       this.avatarAreaX = var3 - 4 - 35;
       this.avatarAreaY = 54;
-      this.emptyMessageLines = FontRenderer.wrapTextToLines(quyen_cr.a, GameGraphics.screenWidth - 30);
+      this.emptyMessageLines = FontRenderer.wrapTextToLines(TextConstant.BAN_CHUA_CO_TRONG_DANH_SACH, GameGraphics.screenWidth - 30);
       this.maxTextWidth = super.width - 23 - 5;
       this.requestedContacts = new Vector();
    }
@@ -284,7 +284,7 @@ public final class ContactListComponent extends UIComponent {
 
             this.resetAnimation();
             GameGraphics.clearKeyStates();
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             this.resetTextAnimation();
             UIUtils.markScreenForUpdate(this);
          }
@@ -352,7 +352,7 @@ public final class ContactListComponent extends UIComponent {
                         var7.addElement(var9);
                      } else {
                         UIFactory var10 = new UIFactory("Đồng ý", new quyen_j(this));
-                        UIFactory var11 = new UIFactory(quyen_cr.e(), new quyen_k(this));
+                        UIFactory var11 = new UIFactory(TextConstant.decline(), new quyen_k(this));
                         var7.addElement(var2);
                         var7.addElement(var10);
                         var7.addElement(var11);
@@ -492,7 +492,7 @@ public final class ContactListComponent extends UIComponent {
                this.lastVisibleIndex = var11.length;
 
                for (int var14 = 0; var14 < this.lastVisibleIndex; var14++) {
-                  var1.drawImage(quyen_ea.a(var18.processedDataArray[var14]), this.avatarAreaX + (var11[var14] >> 24), this.avatarAreaY + (var11[var14] << 8 >> 24), 0);
+                  var1.drawImage(ImageCache.getImage(var18.processedDataArray[var14]), this.avatarAreaX + (var11[var14] >> 24), this.avatarAreaY + (var11[var14] << 8 >> 24), 0);
                }
             }
          }
@@ -528,16 +528,16 @@ public final class ContactListComponent extends UIComponent {
    public final void onFocusGained() {
       if (this.displayItems != null) {
          if (super.posY + this.totalItemCount * this.itemHeight >= super.height) {
-            quyen_cq.a = true;
-            quyen_cq.a(this.totalItemCount);
+            ScrollBar.isVisible = true;
+            ScrollBar.initialize(this.totalItemCount);
          } else {
-            quyen_cq.a = false;
+            ScrollBar.isVisible = false;
          }
       }
    }
 
    public final void renderFocusIndicator(Graphics var1) {
-      quyen_cq.a(var1, this.contactSelectedIndex);
+      ScrollBar.render(var1, this.contactSelectedIndex);
    }
 
    public final void handlePointerRelease(int var1, int var2) {
@@ -594,7 +594,7 @@ public final class ContactListComponent extends UIComponent {
          UIUtils.markScreenForUpdate(this);
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void handlePointerDrag(int var1, int var2) {
@@ -617,7 +617,7 @@ public final class ContactListComponent extends UIComponent {
          this.lastPointerY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public static int abs(int var0) {

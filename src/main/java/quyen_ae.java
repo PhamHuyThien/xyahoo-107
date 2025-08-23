@@ -1,11 +1,11 @@
 final class quyen_ae implements Action {
-   private quyen_p a;
+   private ChatRoomScreen a;
 
-   quyen_ae(quyen_p var1) {
+   quyen_ae(ChatRoomScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
-      PacketSender.b(this.a.a, 4805);
+      PacketSender.b(this.a.roomId, 4805);
    }
 }

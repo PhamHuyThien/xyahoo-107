@@ -33,7 +33,7 @@ public final class FriendScreen extends Screen {
    private DropdownComponent statusDropdown;
    private TextInputComponent statusMessageInput;
    private UIFactory backButton;
-   private UIFactory defaultRightSoftkey = new UIFactory(quyen_cr.c(), new quyen_ib(this));
+   private UIFactory defaultRightSoftkey = new UIFactory(TextConstant.close(), new quyen_ib(this));
    public Hashtable pendingInvitations;
 
    public final void clearContactData() {
@@ -132,7 +132,7 @@ public final class FriendScreen extends Screen {
          this.statusMessageInput = UIFactory.createLabeledTextInput(this.statusDialog, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
          UIUtils.focusComponent(this.statusDialog, this.statusDropdown);
          this.statusDialog.centerSoftkey = new UIFactory("OK", new quyen_if(this));
-         this.statusDialog.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_ig(this));
+         this.statusDialog.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_ig(this));
          System.gc();
       }
 
@@ -279,7 +279,7 @@ public final class FriendScreen extends Screen {
       var3.addElement(new UIFactory("Hồ sơ", new quyen_ij(this, var2)));
       ContextMenu var4 = new ContextMenu(var3);
       var2.itemAction = new quyen_ik(this, var4);
-      this.offlineMessageScreen.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_il(this));
+      this.offlineMessageScreen.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_il(this));
       this.updateOfflineMessageButton();
    }
 
@@ -321,7 +321,7 @@ public final class FriendScreen extends Screen {
          var2.selectAll();
          var1.addComponent(var2);
          UIUtils.focusComponent(var1, var2);
-         var1.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_io(this, var1));
+         var1.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_io(this, var1));
          Vector var3;
          (var3 = new Vector()).addElement(new UIFactory("Gửi tin", new quyen_ip(this, var2, var1)));
          var3.addElement(new UIFactory("Chọn/Bỏ chọn hết", new quyen_ir(this, var2)));
@@ -604,7 +604,7 @@ public final class FriendScreen extends Screen {
 
    static UIFactory getBackButton(FriendScreen var0) {
       if (var0.backButton == null) {
-         var0.backButton = new UIFactory(quyen_cr.c(), new quyen_ih(var0));
+         var0.backButton = new UIFactory(TextConstant.close(), new quyen_ih(var0));
       }
 
       return var0.backButton;

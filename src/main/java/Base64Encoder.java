@@ -1,7 +1,7 @@
 import java.io.UnsupportedEncodingException;
 
-public final class quyen_kb {
-   private static final byte[] a = new byte[]{
+public final class Base64Encoder {
+   private static final byte[] STANDARD_ENCODE_ALPHABET = new byte[]{
       65,
       66,
       67,
@@ -67,7 +67,7 @@ public final class quyen_kb {
       43,
       47
    };
-   private static final byte[] b = new byte[]{
+   private static final byte[] STANDARD_DECODE_ALPHABET = new byte[]{
       -9,
       -9,
       -9,
@@ -196,7 +196,7 @@ public final class quyen_kb {
       -9,
       -9
    };
-   private static final byte[] c = new byte[]{
+   private static final byte[] URL_SAFE_ENCODE_ALPHABET = new byte[]{
       65,
       66,
       67,
@@ -262,7 +262,7 @@ public final class quyen_kb {
       45,
       95
    };
-   private static final byte[] d = new byte[]{
+   private static final byte[] URL_SAFE_DECODE_ALPHABET = new byte[]{
       -9,
       -9,
       -9,
@@ -391,7 +391,7 @@ public final class quyen_kb {
       -9,
       -9
    };
-   private static final byte[] e = new byte[]{
+   private static final byte[] ORDERED_ENCODE_ALPHABET = new byte[]{
       45,
       48,
       49,
@@ -457,7 +457,7 @@ public final class quyen_kb {
       121,
       122
    };
-   private static final byte[] f = new byte[]{
+   private static final byte[] ORDERED_DECODE_ALPHABET = new byte[]{
       -9,
       -9,
       -9,
@@ -587,16 +587,16 @@ public final class quyen_kb {
       -9
    };
 
-   private static final byte[] a(int var0) {
+   private static final byte[] getDecodeLookupTable(int var0) {
       if ((var0 & 16) == 16) {
-         return d;
+         return URL_SAFE_DECODE_ALPHABET;
       } else {
-         return (var0 & 32) == 32 ? f : b;
+         return (var0 & 32) == 32 ? ORDERED_DECODE_ALPHABET : STANDARD_DECODE_ALPHABET;
       }
    }
 
-   private static byte[] a(byte[] var0, int var1, int var2, byte[] var3, int var4, int var5) {
-      byte[] var7 = (var5 & 16) == 16 ? c : ((var5 & 32) == 32 ? e : a);
+   private static byte[] encodeGroup(byte[] var0, int var1, int var2, byte[] var3, int var4, int var5) {
+      byte[] var7 = (var5 & 16) == 16 ? URL_SAFE_ENCODE_ALPHABET : ((var5 & 32) == 32 ? ORDERED_ENCODE_ALPHABET : STANDARD_ENCODE_ALPHABET);
       int var6 = (var2 > 0 ? var0[var1] << 24 >>> 8 : 0) | (var2 > 1 ? var0[var1 + 1] << 24 >>> 16 : 0) | (var2 > 2 ? var0[var1 + 2] << 24 >>> 24 : 0);
       switch (var2) {
          case 1:
@@ -622,14 +622,14 @@ public final class quyen_kb {
       }
    }
 
-   private static String a(byte[] var0, int var1, int var2, int var3) {
+   private static String encodeToString(byte[] var0, int var1, int var2, int var3) {
       byte[] var9 = new byte[(var1 = (var2 << 2) / 3) + (var2 % 3 > 0 ? 4 : 0) + var1 / 76];
       byte var10 = 0;
       int var4 = 0;
       int var5 = var2 - 2;
 
       for (byte var6 = 0; var10 < var5; var4 += 4) {
-         a(var0, var10, 3, var9, var4, 0);
+         encodeGroup(var0, var10, 3, var9, var4, 0);
          var6 += 4;
          if (var6 == 76) {
             var9[var4 + 4] = 10;
@@ -641,7 +641,7 @@ public final class quyen_kb {
       }
 
       if (var10 < var2) {
-         a(var0, var10, var2 - var10, var9, var4, 0);
+         encodeGroup(var0, var10, var2 - var10, var9, var4, 0);
          var4 += 4;
       }
 
@@ -652,8 +652,8 @@ public final class quyen_kb {
       }
    }
 
-   private static int a(byte[] var0, int var1, byte[] var2, int var3, int var4) {
-      byte[] var6 = a(var4);
+   private static int decodeGroup(byte[] var0, int var1, byte[] var2, int var3, int var4) {
+      byte[] var6 = getDecodeLookupTable(var4);
       if (var0[2] == 61) {
          var4 = (var6[var0[0]] & 255) << 18 | (var6[var0[1]] & 255) << 12;
          var2[var3] = (byte)(var4 >>> 16);
@@ -680,7 +680,7 @@ public final class quyen_kb {
       }
    }
 
-   private static byte[] a(final String s, int n) {
+   private static byte[] decodeFromString(final String s, int n) {
       byte[] array;
       try {
          array = s.getBytes("UTF-8");
@@ -693,7 +693,7 @@ public final class quyen_kb {
       final int n2 = 0;
       n = length;
       final byte[] array3 = array2;
-      final byte[] a = a(n2);
+      final byte[] a = getDecodeLookupTable(n2);
       final byte[] array4 = new byte[n * 3 / 4];
       int n3 = 0;
       final byte[] array5 = new byte[4];
@@ -709,7 +709,7 @@ public final class quyen_kb {
          if (b2 >= -1) {
             array5[n4++] = b;
             if (n4 > 3) {
-               n3 += a(array5, 0, array4, n3, n2);
+               n3 += decodeGroup(array5, 0, array4, n3, n2);
                n4 = 0;
                if (b == 61) {
                   break;
@@ -723,12 +723,12 @@ public final class quyen_kb {
       return array7 = array8;
    }
 
-   public static String a(String var0) {
+   public static String encodeWithReverse(String var0) {
       byte[] var1;
-      return c(a(var1 = var0.getBytes(), 0, var1.length, 0));
+      return reverseString(encodeToString(var1 = var0.getBytes(), 0, var1.length, 0));
    }
 
-   private static String c(String var0) {
+   private static String reverseString(String var0) {
       char[] var1 = var0.toCharArray();
       int var2 = var0.length() - 1;
       int var5 = var0.length() / 2;
@@ -742,8 +742,8 @@ public final class quyen_kb {
       return new String(var1);
    }
 
-   public static String b(String var0) {
-      byte[] var1 = a(c(var0), 0);
+   public static String decodeWithReverse(String var0) {
+      byte[] var1 = decodeFromString(reverseString(var0), 0);
       return new String(var1);
    }
 }

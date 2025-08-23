@@ -1,11 +1,11 @@
 final class quyen_gw implements Action {
-   private quyen_gu a;
+   private RegistrationScreen a;
 
-   quyen_gw(quyen_gu var1) {
+   quyen_gw(RegistrationScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
-      this.a.i();
+      this.a.performRegistration();
    }
 }

@@ -6,7 +6,7 @@ final class quyen_g implements Action {
    }
 
    public final void action() {
-      GameManager.getInstance().a(UIUtils.concatStrings("Bạn có muốn xóa ", ContactListComponent.getSelectedItem(this.a).c, "?", null), null, new UIFactory("OK", new quyen_h(this)), GameManager.instance.b(quyen_cr.c()));
+      GameManager.getInstance().a(UIUtils.concatStrings("Bạn có muốn xóa ", ContactListComponent.getSelectedItem(this.a).c, "?", null), null, new UIFactory("OK", new quyen_h(this)), GameManager.instance.b(TextConstant.close()));
       System.gc();
    }
 }

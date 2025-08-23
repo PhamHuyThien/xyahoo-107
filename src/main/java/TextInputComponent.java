@@ -62,8 +62,8 @@ public final class TextInputComponent extends UIComponent {
    public final void openNativeTextBox() {
       TextBox var1;
       (var1 = new TextBox("", "", 500, 0)).addCommand(new Command("OK", 4, 0));
-      var1.addCommand(new Command(quyen_cr.c(), 3, 0));
-      var1.setCommandListener(new quyen_cu(this, var1));
+      var1.addCommand(new Command(TextConstant.close(), 3, 0));
+      var1.setCommandListener(new TextBoxCommandListener(this, var1));
 
       try {
          if (this.useNativeInput) {

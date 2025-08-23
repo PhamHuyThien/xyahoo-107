@@ -24,7 +24,7 @@ final class quyen_ef implements Action {
    }
 
    public final void action() {
-      GameManager.instance.removeScreen(quyen_ec.j());
+      GameManager.instance.removeScreen(LoginScreen.getSettingsScreen());
       this.a.isChecked = this.b;
       this.c.isChecked = this.d;
       this.e.isChecked = this.f;

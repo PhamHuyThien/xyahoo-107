@@ -78,7 +78,7 @@ public final class ChatComponent extends UIComponent {
    public final void addPlayerMessage(String var1, String var2, int var3) {
       var1 = FontRenderer.truncateText(var1, 16);
       if ((var2 = TextValidator.filterBadWords(var2)).startsWith("http")) {
-         this.addPlayerMessage(var1, quyen_cr.d(), var3);
+         this.addPlayerMessage(var1, TextConstant.clickHere(), var3);
          var2 = "祼" + var2;
          this.chatMessages.addElement(var2);
          this.updateScrollBounds();
@@ -117,7 +117,7 @@ public final class ChatComponent extends UIComponent {
             this.targetScrollY = -FontRenderer.lineHeight;
          }
 
-         quyen_cq.a(true);
+         ScrollBar.setScrolling(true);
       } else if (var1 == 13) {
          if (this.selectedLine < this.totalLines - 1) {
             this.selectedLine++;
@@ -128,7 +128,7 @@ public final class ChatComponent extends UIComponent {
             this.targetScrollY = this.maxScrollY;
          }
 
-         quyen_cq.a(true);
+         ScrollBar.setScrolling(true);
       }
 
       return true;
@@ -232,15 +232,15 @@ public final class ChatComponent extends UIComponent {
 
    public final void onFocusGained() {
       if (super.posY + this.totalLines * (FontRenderer.lineHeight + 2) >= super.height) {
-         quyen_cq.a = true;
-         quyen_cq.a(this.totalLines);
+         ScrollBar.isVisible = true;
+         ScrollBar.initialize(this.totalLines);
       } else {
-         quyen_cq.a = false;
+         ScrollBar.isVisible = false;
       }
    }
 
    public final void renderFocusIndicator(Graphics var1) {
-      quyen_cq.a(var1, this.selectedLine);
+      ScrollBar.render(var1, this.selectedLine);
    }
 
    public final void handlePointerRelease(int var1, int var2) {
@@ -259,7 +259,7 @@ public final class ChatComponent extends UIComponent {
          }
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void handlePointerDrag(int var1, int var2) {
@@ -282,7 +282,7 @@ public final class ChatComponent extends UIComponent {
          this.lastTouchY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void scrollToBottom() {

@@ -13,9 +13,9 @@ final class quyen_fo implements Action
    public final void action() {
       GameGraphics.clearKeyStates();
       this.a.closeDialog();
-      final quyen_hy a;
-      (a = quyen_hy.a()).a(UIUtils.generateTimestampString((String)null));
-      a.b = quyen_l.a().c.toByteArray();
+      final SaveFileForm a;
+      (a = SaveFileForm.getInstance()).setFileName(UIUtils.generateTimestampString((String)null));
+      a.fileData = CameraCanvas.getInstance().recordOutputStream.toByteArray();
       Display.getDisplay((MIDlet)Xuka.instance).setCurrent((Displayable)a);
    }
 }

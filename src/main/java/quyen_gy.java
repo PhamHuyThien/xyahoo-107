@@ -1,15 +1,15 @@
 final class quyen_gy implements Action {
-   private quyen_gu a;
+   private RegistrationScreen a;
 
-   quyen_gy(quyen_gu var1) {
+   quyen_gy(RegistrationScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
       GameGraphics.instance.initializeConnection();
-      quyen_gu.a(this.a, this.a.a.getText());
-      this.a.c = this.a.b.getText();
+      RegistrationScreen.setSuggestedUsername(this.a, this.a.usernameInput.getText());
+      this.a.c = this.a.passwordInput.getText();
       PacketSender.e();
-      PacketSender.h(this.a.d, this.a.b.getText());
+      PacketSender.h(this.a.finalUsername, this.a.passwordInput.getText());
    }
 }

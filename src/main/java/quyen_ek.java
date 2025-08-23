@@ -1,18 +1,18 @@
 final class quyen_ek implements Action {
-   private quyen_ec a;
+   private LoginScreen a;
 
-   quyen_ek(quyen_ec var1) {
+   quyen_ek(LoginScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
       System.gc();
-      this.a.a.setText(this.a.a.getText().toLowerCase());
-      FriendScreen.currentUserId = this.a.a.getText();
-      FriendScreen.userStatus = this.a.d.isChecked ? 0 : 1;
-      if ((GameManager.loginType = (byte)this.a.D.getSelectedIndex()) == 1) {
+      this.a.usernameInput.setText(this.a.usernameInput.getText().toLowerCase());
+      FriendScreen.currentUserId = this.a.usernameInput.getText();
+      FriendScreen.userStatus = this.a.invisibleLoginCheckbox.isChecked ? 0 : 1;
+      if ((GameManager.loginType = (byte)this.a.accountTypeDropdown.getSelectedIndex()) == 1) {
          String var1;
-         if ((var1 = this.a.a.getText()).indexOf("@") == -1) {
+         if ((var1 = this.a.usernameInput.getText()).indexOf("@") == -1) {
             StringBuffer var2;
             (var2 = new StringBuffer(FriendScreen.currentUserId)).append("@yahoo.com");
             FriendScreen.currentUserId = var2.toString();
@@ -31,21 +31,21 @@ final class quyen_ek implements Action {
          }
 
          Xuka.saveYahooID(var5);
-         Xuka.saveYahooPassword(this.a.b.getText());
-         Xuka.saveBooleanSetting("statusYahoo", this.a.d.isChecked);
+         Xuka.saveYahooPassword(this.a.passwordInput.getText());
+         Xuka.saveBooleanSetting("statusYahoo", this.a.invisibleLoginCheckbox.isChecked);
          Xuka.saveYahooDomain(var3);
          if (GameManager.instance.yahooChat != null) {
             GameManager.instance.yahooChat.usernameInput.setText(var5);
-            GameManager.instance.yahooChat.passwordInput.setText(this.a.b.getText());
-            GameManager.instance.yahooChat.invisibleCheckbox.isChecked = this.a.d.isChecked;
+            GameManager.instance.yahooChat.passwordInput.setText(this.a.passwordInput.getText());
+            GameManager.instance.yahooChat.invisibleCheckbox.isChecked = this.a.invisibleLoginCheckbox.isChecked;
             GameManager.instance.yahooChat.domainDropdown.setSelectedIndex(var3);
          }
       }
 
-      Xuka.saveUserID(this.a.a.getText());
-      Xuka.savePassword(this.a.b.getText());
-      Xuka.saveIDType(this.a.D.getSelectedIndex());
-      Xuka.saveBooleanSetting("status", this.a.d.isChecked);
+      Xuka.saveUserID(this.a.usernameInput.getText());
+      Xuka.savePassword(this.a.passwordInput.getText());
+      Xuka.saveIDType(this.a.accountTypeDropdown.getSelectedIndex());
+      Xuka.saveBooleanSetting("status", this.a.invisibleLoginCheckbox.isChecked);
       FriendScreen.currentUserName = FriendScreen.currentUserId;
       GameManager.getInstance().B();
       int var4;
@@ -69,6 +69,6 @@ final class quyen_ek implements Action {
 
       System.gc();
       GameGraphics.instance.initializeConnection();
-      PacketSender.a(FriendScreen.currentUserId, this.a.b.getText(), FriendScreen.userStatus, 1, var4, GameManager.loginType, FriendScreen.statusMessage);
+      PacketSender.a(FriendScreen.currentUserId, this.a.passwordInput.getText(), FriendScreen.userStatus, 1, var4, GameManager.loginType, FriendScreen.statusMessage);
    }
 }

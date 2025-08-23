@@ -1,11 +1,11 @@
 final class quyen_y implements Action {
-   private quyen_p a;
+   private ChatRoomScreen a;
 
-   quyen_y(quyen_p var1) {
+   quyen_y(ChatRoomScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
-      this.a.c.rightSoftKey = quyen_p.a(this.a);
+      this.a.textInputComponent.rightSoftKey = ChatRoomScreen.getBackSoftkey(this.a);
    }
 }

@@ -274,7 +274,7 @@ public final class ListComponent extends UIComponent {
             this.updateSoftKeys();
             this.updateScrollPosition();
             GameGraphics.clearKeyStates();
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             this.resetTextScrolling();
             UIUtils.markScreenForUpdate(this);
          }
@@ -427,7 +427,7 @@ public final class ListComponent extends UIComponent {
             if (this.iconType != 0) {
                if (this.iconType != 1) {
                   var1.setClip(var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, this.currentDrawY < this.currentScrollY ? this.currentScrollY : this.currentDrawY + 2, this.iconWidth, var3 - 1);
-                  var1.drawImage(var5.o == null ? quyen_ea.a(var5.n) : var5.o, var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, var2, 6);
+                  var1.drawImage(var5.o == null ? ImageCache.getImage(var5.n) : var5.o, var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, var2, 6);
                   var1.setClip(super.posX, super.posY + this.currentScrollY, super.width, super.height);
                } else {
                   var1.drawImage(GameManager.statusIcons[5], var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, var2, 6);
@@ -478,16 +478,16 @@ public final class ListComponent extends UIComponent {
    public final void onFocusGained() {
       if (this.listItems != null) {
          if (super.posY + this.totalItemCount * this.rowHeight >= super.height) {
-            quyen_cq.a = true;
-            quyen_cq.a(this.totalItemCount);
+            ScrollBar.isVisible = true;
+            ScrollBar.initialize(this.totalItemCount);
          } else {
-            quyen_cq.a = false;
+            ScrollBar.isVisible = false;
          }
       }
    }
 
    public final void renderFocusIndicator(Graphics var1) {
-      quyen_cq.a(var1, this.listSelectedIndex);
+      ScrollBar.render(var1, this.listSelectedIndex);
    }
 
    public final void handlePointerRelease(int var1, int var2) {
@@ -530,7 +530,7 @@ public final class ListComponent extends UIComponent {
          UIUtils.markScreenForUpdate(this);
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void handlePointerDrag(int var1, int var2) {
@@ -555,7 +555,7 @@ public final class ListComponent extends UIComponent {
          this.lastTouchY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final quyen_bj getSelectedItem() {

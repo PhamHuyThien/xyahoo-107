@@ -271,8 +271,8 @@ public class PacketSender {
 
    public static void h(String var0, String var1) {
       Packet var2 = new Packet(5000010, 2);
-      PacketUtils.writeString(quyen_kb.a(var0), var2);
-      PacketUtils.writeString(quyen_kb.a(var1), var2);
+      PacketUtils.writeString(Base64Encoder.encodeWithReverse(var0), var2);
+      PacketUtils.writeString(Base64Encoder.encodeWithReverse(var1), var2);
       PacketUtils.writeInt(Xuka.partnerID, var2);
       PacketUtils.writeInt(Xuka.appID, var2);
       NetworkManager.sendPacket(var2);
@@ -306,8 +306,8 @@ public class PacketSender {
          var8 = new Packet(21, 4);
       }
 
-      PacketUtils.writeString(quyen_kb.a(var0), var8);
-      PacketUtils.writeString(quyen_kb.a(var1), var8);
+      PacketUtils.writeString(Base64Encoder.encodeWithReverse(var0), var8);
+      PacketUtils.writeString(Base64Encoder.encodeWithReverse(var1), var8);
       PacketUtils.writeInt(var2, var8);
       PacketUtils.writeString(var6, var8);
       PacketUtils.writeInt(var4, var8);

@@ -7,7 +7,7 @@ final class quyen_fr implements Action {
 
    public final void action() {
       byte[] var1;
-      if ((var1 = quyen_l.a().b()) == null) {
+      if ((var1 = CameraCanvas.getInstance().capturePhoto()) == null) {
          this.a.closeDialog();
          this.a.d("Lỗi camera");
       } else {

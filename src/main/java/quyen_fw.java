@@ -1,9 +1,9 @@
 final class quyen_fw implements Action {
    private quyen_fv a;
-   private final quyen_bn b;
+   private final FileBrowserList b;
    private final String c;
 
-   quyen_fw(quyen_fv var1, quyen_bn var2, String var3) {
+   quyen_fw(quyen_fv var1, FileBrowserList var2, String var3) {
       this.a = var1;
       this.b = var2;
       this.c = var3;
@@ -12,10 +12,10 @@ final class quyen_fw implements Action {
    public final void action() {
       quyen_fv var1 = this.a;
       GameManager.a(this.a.a, (byte)-1);
-      if (this.b.d(this.c)) {
+      if (this.b.isPngFile(this.c)) {
          var1 = this.a;
          GameManager.a(this.a.a, (byte)0);
-      } else if (this.b.e(this.c)) {
+      } else if (this.b.isSupportedVideoFile(this.c)) {
          var1 = this.a;
          GameManager.a(this.a.a, (byte)1);
       }

@@ -3,7 +3,7 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Graphics;
 
 public final class ChatScreen extends Screen {
-   private UIFactory sendButton = new UIFactory(quyen_cr.c(), new quyen_hh(this));
+   private UIFactory sendButton = new UIFactory(TextConstant.close(), new quyen_hh(this));
    public long chatId;
    private boolean isYahooChat;
    private String yahooContactId;

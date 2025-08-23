@@ -3,6 +3,6 @@ final class quyen_ey implements Action {
    }
 
    public final void action() {
-      quyen_ec.a();
+      LoginScreen.showSettingsScreen();
    }
 }

@@ -1,8 +1,8 @@
 final class quyen_eq implements Action {
-   quyen_eq(quyen_ec var1) {
+   quyen_eq(LoginScreen var1) {
    }
 
    public final void action() {
-      quyen_ec.a();
+      LoginScreen.showSettingsScreen();
    }
 }

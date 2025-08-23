@@ -148,7 +148,7 @@ public final class GridComponent extends UIComponent {
             }
             this.calculateBounceOffset();
             b = false;
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             break;
          }
          case 13: {
@@ -176,7 +176,7 @@ public final class GridComponent extends UIComponent {
             }
             this.calculateBounceOffset();
             b = false;
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             break;
          }
       }
@@ -213,7 +213,7 @@ public final class GridComponent extends UIComponent {
          var11.isCurrentlySelected = var11.isSelected(var11.currentRow, var11.currentColumn);
          var11.hasSecondLine = var11.displayMode == 2 && var4.length > 1 && var4[1] != null;
          if (var11.currentItemY + var11.itemImageHeight + 10 > var11.posY && var11.currentItemY < Screen.screenHeight) {
-            Image var10002 = var11.hideImages ? null : quyen_ea.a(var11.itemImageIds[var3]);
+            Image var10002 = var11.hideImages ? null : ImageCache.getImage(var11.itemImageIds[var3]);
             boolean var10 = var11.isCurrentlySelected;
             int var9 = var11.currentItemY;
             int var8 = var11.currentItemX;
@@ -236,15 +236,15 @@ public final class GridComponent extends UIComponent {
 
    public final void onFocusGained() {
       if (this.gridStartY + this.totalRows * this.itemFullHeight > Screen.screenHeight) {
-         quyen_cq.a = true;
-         quyen_cq.a(this.totalRows);
+         ScrollBar.isVisible = true;
+         ScrollBar.initialize(this.totalRows);
       } else {
-         quyen_cq.a = false;
+         ScrollBar.isVisible = false;
       }
    }
 
    public final void renderFocusIndicator(Graphics var1) {
-      quyen_cq.a(var1, this.selectedRowIndex);
+      ScrollBar.render(var1, this.selectedRowIndex);
    }
 
    public final void handlePointerRelease(int var1, int var2) {
@@ -274,7 +274,7 @@ public final class GridComponent extends UIComponent {
          }
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void handlePointerDrag(int var1, int var2) {
@@ -294,7 +294,7 @@ public final class GridComponent extends UIComponent {
          this.lastPointerY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public final void update() {

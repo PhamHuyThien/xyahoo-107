@@ -36,8 +36,8 @@ public final class GameManager {
    private int currentScreenIndex;
    public FriendScreen friendManager;
    public YahooScreen yahooChat;
-   public quyen_ec loginScreen;
-   private quyen_gu am;
+   public LoginScreen loginScreen;
+   private RegistrationScreen am;
    private boolean an;
    private Vector ao = new Vector();
    private int[] notificationStates = new int[3];
@@ -236,7 +236,7 @@ public final class GameManager {
          this.rightArrowAnim = 0;
       }
 
-      quyen_cq.a = false;
+      ScrollBar.isVisible = false;
       this.currentScreen.focusFirstComponent();
       this.updateTitlePosition();
       this.currentScreen.needsUpdate = true;
@@ -309,7 +309,7 @@ public final class GameManager {
          var1.setClip(-1000, -1000, 2000, 2000);
          Screen.renderHeader(var1);
          FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText("Chọn", 4, Screen.softkeyY, var1);
-         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(quyen_cr.c(), this.menuRightX, Screen.softkeyY, var1);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(TextConstant.close(), this.menuRightX, Screen.softkeyY, var1);
       }
    }
 
@@ -375,24 +375,24 @@ public final class GameManager {
       return instance;
    }
 
-   public final quyen_by a(String var1, int var2, Vector var3, int var4, UIFactory var5, UIFactory var6, UIFactory var7) {
-      quyen_by var8 = new quyen_by(var1, var2, var3, var4, var5, var6, var7);
+   public final DialogBox a(String var1, int var2, Vector var3, int var4, UIFactory var5, UIFactory var6, UIFactory var7) {
+      DialogBox var8 = new DialogBox(var1, var2, var3, var4, var5, var6, var7);
       this.ao.addElement(var8);
       this.isMenuVisible = false;
       this.an = true;
       return var8;
    }
 
-   public final quyen_by a(String var1, UIFactory var2, UIFactory var3, UIFactory var4) {
-      quyen_by var5 = new quyen_by(var1, var2, var3, var4);
+   public final DialogBox a(String var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+      DialogBox var5 = new DialogBox(var1, var2, var3, var4);
       this.ao.addElement(var5);
       this.isMenuVisible = false;
       this.an = true;
       return var5;
    }
 
-   private quyen_by a(String[] var1, UIFactory var2, UIFactory var3, UIFactory var4) {
-      quyen_by var5 = new quyen_by(var1, var2, var3, var4);
+   private DialogBox a(String[] var1, UIFactory var2, UIFactory var3, UIFactory var4) {
+      DialogBox var5 = new DialogBox(var1, var2, var3, var4);
       this.ao.addElement(var5);
       this.isMenuVisible = false;
       this.an = true;
@@ -401,11 +401,11 @@ public final class GameManager {
 
    public final void closeDialog() {
       if (this.ao.size() > 0) {
-         quyen_by var1 = (quyen_by)this.ao.elementAt(0);
+         DialogBox var1 = (DialogBox)this.ao.elementAt(0);
          this.ao.removeElementAt(0);
-         var1.b = null;
-         var1.a = null;
-         var1.c = null;
+         var1.centerSoftkey = null;
+         var1.leftSoftkey = null;
+         var1.rightSoftkey = null;
          System.gc();
       }
 
@@ -539,8 +539,8 @@ public final class GameManager {
       Screen.screenWidth = var1;
       Screen.screenHeight = var2 - defaultHeight;
       Screen.softkeyY = defaultHeight + Screen.screenHeight - (footerHeight >> 1) - (FontRenderer.fontHeight >> 1) + (FontRenderer.isCustomFontEnabled ? 0 : 1);
-      this.menuRightX = Screen.screenWidth - FontRenderer.getTextWidth(quyen_cr.c()) - 4;
-      this.loginScreen = new quyen_ec();
+      this.menuRightX = Screen.screenWidth - FontRenderer.getTextWidth(TextConstant.close()) - 4;
+      this.loginScreen = new LoginScreen();
       this.loginScreen.startSlideAnimation(1);
       this.addScreenToStack((Screen)this.loginScreen);
       this.switchToCurrentScreen();
@@ -560,16 +560,16 @@ public final class GameManager {
 
    public final void checkConnection() {
       if (NetworkManager.isConnecting) {
-         this.a("Đang kiểm tra kết nối..", null, null, new UIFactory(quyen_cr.c(), new quyen_gb(this))).a(true);
+         this.a("Đang kiểm tra kết nối..", null, null, new UIFactory(TextConstant.close(), new quyen_gb(this))).setLoadingVisible(true);
       }
    }
 
    public final void showRegisterScreen() {
       if (this.am == null) {
-         this.am = new quyen_gu();
+         this.am = new RegistrationScreen();
       }
 
-      this.am.a();
+      this.am.initializeComponents();
       this.addScreenToStack((Screen)this.am);
       this.e(this.am);
       this.removeScreen(this.loginScreen);
@@ -692,7 +692,7 @@ public final class GameManager {
 
       var1.setClip(-1000, -1000, 2000, 2000);
       if (this.an) {
-         ((quyen_by)this.ao.elementAt(0)).a(var1);
+         ((DialogBox)this.ao.elementAt(0)).render(var1);
       } else if (this.isMenuVisible) {
          var16 = var1;
          var2 = this;
@@ -748,7 +748,7 @@ public final class GameManager {
          var16.setClip(-1000, -1000, 5000, 5000);
          Screen.renderHeader(var16);
          FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText("Chọn", 4, Screen.softkeyY, var16);
-         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(quyen_cr.c(), var2.menuRightX, Screen.softkeyY, var16);
+         FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(TextConstant.close(), var2.menuRightX, Screen.softkeyY, var16);
       } else if (this.isEmojiVisible) {
          this.drawEmojiPicker(var1);
       }
@@ -799,7 +799,7 @@ public final class GameManager {
 
       System.gc();
       if (this.loginScreen == null) {
-         this.loginScreen = new quyen_ec();
+         this.loginScreen = new LoginScreen();
       }
 
       this.addScreenToStack((Screen)this.loginScreen);
@@ -873,12 +873,12 @@ public final class GameManager {
       return this.selectButton;
    }
 
-   public final quyen_by c(String var1) {
-      return this.a(var1, null, this.b(quyen_cr.c()), null);
+   public final DialogBox c(String var1) {
+      return this.a(var1, null, this.b(TextConstant.close()), null);
    }
 
-   public final quyen_by a(String var1, Action var2) {
-      return this.a(FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30), new UIFactory("OK", var2), new UIFactory("", var2), this.b(quyen_cr.c()));
+   public final DialogBox a(String var1, Action var2) {
+      return this.a(FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30), new UIFactory("OK", var2), new UIFactory("", var2), this.b(TextConstant.close()));
    }
 
    public final void b(String var1, Action var2) {
@@ -1257,19 +1257,19 @@ public final class GameManager {
       }
 
       if (this.an) {
-         quyen_by var8 = (quyen_by)this.ao.elementAt(0);
-         if (var1[17] && var8.a != null) {
-            var8.a.action.action();
+         DialogBox var8 = (DialogBox)this.ao.elementAt(0);
+         if (var1[17] && var8.leftSoftkey != null) {
+            var8.leftSoftkey.action.action();
             this.closeDialog();
          }
 
-         if (var1[18] && var8.c != null) {
-            var8.c.action.action();
+         if (var1[18] && var8.rightSoftkey != null) {
+            var8.rightSoftkey.action.action();
             this.closeDialog();
          }
 
-         if (var1[16] && var8.b != null) {
-            var8.b.action.action();
+         if (var1[16] && var8.centerSoftkey != null) {
+            var8.centerSoftkey.action.action();
             this.closeDialog();
          }
 
@@ -1330,8 +1330,8 @@ public final class GameManager {
 
                if (d(var28.unused1)) {
                   ((TextInputComponent)var28.findComponentByID(2)).insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
-               } else if (var28 instanceof quyen_p) {
-                  ((quyen_p)var28).c.insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
+               } else if (var28 instanceof ChatRoomScreen) {
+                  ((ChatRoomScreen)var28).textInputComponent.insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
                } else {
                   ChatScreen var31;
                   (var31 = (ChatScreen)this.currentScreen).textInputComponent.insertText(FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX]);
@@ -1745,12 +1745,12 @@ public final class GameManager {
    public final void onRegisterSuccess() {
       this.closeDialog();
       this.showNotification("Đăng ký thành công", (Image) null, 0);
-      this.loginScreen.a.setText(this.am.d);
-      this.loginScreen.b.setText(this.am.c);
-      Xuka.saveUserID(this.am.d);
+      this.loginScreen.usernameInput.setText(this.am.finalUsername);
+      this.loginScreen.passwordInput.setText(this.am.c);
+      Xuka.saveUserID(this.am.finalUsername);
       Xuka.savePassword(this.am.c);
       this.addScreenToStack((Screen)this.loginScreen);
-      UIUtils.focusComponent(this.loginScreen, (UIComponent)this.loginScreen.a);
+      UIUtils.focusComponent(this.loginScreen, (UIComponent)this.loginScreen.usernameInput);
       this.removeScreen(this.am);
       this.am = null;
       System.gc();
@@ -1770,7 +1770,7 @@ public final class GameManager {
          isConnected = false;
       } else {
          if (GameGraphics.gameState == 1) {
-            this.a("Lỗi kết nối\nVui lòng kiểm tra kết nối internet", null, null, this.b(quyen_cr.c()));
+            this.a("Lỗi kết nối\nVui lòng kiểm tra kết nối internet", null, null, this.b(TextConstant.close()));
          }
       }
    }
@@ -1815,7 +1815,7 @@ public final class GameManager {
       this.isLoading = var2;
       this.closeDialog();
       isConnected = false;
-      this.a("Mất kết nối\nVui lòng thoát và đăng nhập lại", new UIFactory("Thoát", new quyen_gk(this)), null, this.b(quyen_cr.c()));
+      this.a("Mất kết nối\nVui lòng thoát và đăng nhập lại", new UIFactory("Thoát", new quyen_gk(this)), null, this.b(TextConstant.close()));
    }
 
    public final void onAddFriendError(String var1) {
@@ -1861,7 +1861,7 @@ public final class GameManager {
    }
 
    public final void a(int var1, String var2) {
-      this.a("Cập nhật phiên bản mới X Yahoo!: " + Xuka.formatVersion(var1), new UIFactory("Tải về", new quyen_gl(this, var2)), null, this.b(quyen_cr.c()));
+      this.a("Cập nhật phiên bản mới X Yahoo!: " + Xuka.formatVersion(var1), new UIFactory("Tải về", new quyen_gl(this, var2)), null, this.b(TextConstant.close()));
    }
 
    public final String getSmsMessage() {
@@ -1881,7 +1881,7 @@ public final class GameManager {
               FontRenderer.wrapTextToLines(var1 + "Gửi tin: " + var7 + "\nĐến số: " + var2.substring(6), GameGraphics.screenWidth - 30),
               new UIFactory("OK", var5),
               null,
-              new UIFactory(quyen_cr.c(), var4)
+              new UIFactory(TextConstant.close(), var4)
       );
    }
 
@@ -1889,7 +1889,7 @@ public final class GameManager {
       this.smsNumber = var1;
       smsContent = var2;
       if (this.loginScreen != null) {
-         this.loginScreen.h();
+         this.loginScreen.showForgotPasswordSMS();
       }
    }
 
@@ -2136,14 +2136,14 @@ public final class GameManager {
             var6.setText("Friends");
          }
 
-         var5.leftSoftkey = new UIFactory(quyen_cr.e(), new quyen_fj(this, var1, var6, var5));
+         var5.leftSoftkey = new UIFactory(TextConstant.decline(), new quyen_fj(this, var1, var6, var5));
          var5.centerSoftkey = new UIFactory("OK", new quyen_fk(this, var6, var1, var5));
       } else {
-         var5.leftSoftkey = new UIFactory(quyen_cr.e(), new quyen_fl(this, var2, var5));
+         var5.leftSoftkey = new UIFactory(TextConstant.decline(), new quyen_fl(this, var2, var5));
          var5.centerSoftkey = new UIFactory("OK", new quyen_fm(this, var2, var5));
       }
 
-      var5.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_fn(this, var4, var2, var5));
+      var5.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_fn(this, var4, var2, var5));
       UIUtils.focusComponent(var5, (UIComponent)var5.components.elementAt(0));
       this.addScreen(var5);
    }
@@ -2222,7 +2222,7 @@ public final class GameManager {
    }
 
    public static void a(Integer var0, byte[] var1) {
-      quyen_ea.a(var0, var1);
+      ImageCache.cacheImage(var0, var1);
    }
 
    public final void a(long var1, int[] var3) {
@@ -2269,15 +2269,15 @@ public final class GameManager {
    }
 
    public static void a(byte[] var0, String var1, boolean var2, int var3) {
-      quyen_ht var4 = quyen_ht.a();
+      MediaPlayerForm var4 = MediaPlayerForm.getInstance();
       if (var2) {
-         var4.c();
+         var4.addSaveCommand();
       } else {
-         var4.b();
+         var4.removeSaveCommand();
       }
 
-      var4.a(var3);
-      var4.a(var0, var1);
+      var4.setReturnMode(var3);
+      var4.playMedia(var0, var1);
    }
 
    public final void a(byte[] var1, String var2, boolean var3, PhotoViewerScreen var4) {
@@ -2310,7 +2310,7 @@ public final class GameManager {
                this.fileProgress = 100;
             }
 
-            this.showNotification(UIUtils.concatStrings(quyen_cr.a(), Integer.toString(this.fileProgress), "%", null), (Image) null, 0);
+            this.showNotification(UIUtils.concatStrings(TextConstant.sending(), Integer.toString(this.fileProgress), "%", null), (Image) null, 0);
             this.notificationTargetY[2] = instance.notificationY[2];
             return;
          }
@@ -2326,7 +2326,7 @@ public final class GameManager {
 
    public final void completeFileSend() {
       this.cancelFileSend();
-      quyen_bn.a = null;
+      FileBrowserList.instance = null;
       this.uploadFileName = null;
       this.uploadData = null;
       if (this.uploadType == 0) {
@@ -2334,8 +2334,8 @@ public final class GameManager {
             this.fileManager.imageBytes = null;
             this.destroyScreen(this.fileManager);
          }
-      } else if (this.uploadType == 1 && quyen_hy.a != null) {
-         quyen_hy.a.b();
+      } else if (this.uploadType == 1 && SaveFileForm.instance != null) {
+         SaveFileForm.instance.cleanup();
       }
 
       System.gc();
@@ -2343,15 +2343,15 @@ public final class GameManager {
 
    public final void a(int var1, Action var2, Action var3) {
       this.a(
-              UIUtils.concatStrings(quyen_bn.a().a(false), " có kích thước ", Integer.toString(var1 / 1000), " KBs. Bạn có muốn tiếp tục?"),
+              UIUtils.concatStrings(FileBrowserList.getInstance().getSelectedFilePath(false), " có kích thước ", Integer.toString(var1 / 1000), " KBs. Bạn có muốn tiếp tục?"),
               new UIFactory("Gửi", new quyen_fs(this, var3)),
               new UIFactory("Mở", new quyen_ft(this, var2)),
-              new UIFactory(quyen_cr.c(), new quyen_fu(this))
+              new UIFactory(TextConstant.close(), new quyen_fu(this))
       );
    }
 
    public final void e(boolean var1) {
-      new Thread(new quyen_fy(this, var1)).start();
+      new Thread(new FileOperationTask(this, var1)).start();
    }
 
    public final void startFileSend() {
@@ -2360,7 +2360,7 @@ public final class GameManager {
          PacketSender.a(this.uploadData.length, this.uploadType, this.uploadFileName);
          this.showNotification("Đang gửi file..", (Image) null, 2);
       } else {
-         this.a("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new UIFactory("Hủy bỏ", new quyen_fz(this)), null, this.b(quyen_cr.c()));
+         this.a("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new UIFactory("Hủy bỏ", new quyen_fz(this)), null, this.b(TextConstant.close()));
       }
    }
 
@@ -2372,7 +2372,7 @@ public final class GameManager {
          var3 = new quyen_gc(var0);
       }
 
-      return new UIFactory(quyen_cr.c(), (Action)var3);
+      return new UIFactory(TextConstant.close(), (Action)var3);
    }
 
    public final void a(byte var1, byte var2) {
@@ -2387,10 +2387,10 @@ public final class GameManager {
 
          try {
             FileSystemInterface var7 = FileSystemInterface.getInstance();
-            quyen_bn var3;
-            (var3 = quyen_bn.a()).a(2);
-            var3.c = new quyen_fv(var6, var3, var7);
-            var3.a("Chọn file", -1);
+            FileBrowserList var3;
+            (var3 = FileBrowserList.getInstance()).setReturnScreen(2);
+            var3.selectedAction = new quyen_fv(var6, var3, var7);
+            var3.showBrowser("Chọn file", -1);
          } catch (ClassNotFoundException var4) {
             showMainScreen();
             instance.d("Điện thoại không hỗ trợ chức năng này");
@@ -2400,15 +2400,15 @@ public final class GameManager {
          }
       } else if (var1 == 0) {
          if (var2 == 0) {
-            quyen_l.a().a = new quyen_fr(this);
-            quyen_l.a().a(0);
+            CameraCanvas.getInstance().completionAction = new quyen_fr(this);
+            CameraCanvas.getInstance().initializeCamera(0);
             return;
          }
 
          if (var2 == 1) {
-            quyen_l.a().a = new quyen_fo(this);
-            quyen_l.a().b = new quyen_fp(this);
-            quyen_l.a().a(1);
+            CameraCanvas.getInstance().completionAction = new quyen_fo(this);
+            CameraCanvas.getInstance().cancelAction = new quyen_fp(this);
+            CameraCanvas.getInstance().initializeCamera(1);
          }
       }
    }
@@ -3076,8 +3076,8 @@ public final class GameManager {
    }
 
    public final void b(String var1, String var2, long var3) {
-      if ((quyen_p)this.setActiveScreen(var1) == null) {
-         quyen_p var5 = new quyen_p(var1, var2, var3 == FriendScreen.currentUserTimestamp);
+      if ((ChatRoomScreen)this.setActiveScreen(var1) == null) {
+         ChatRoomScreen var5 = new ChatRoomScreen(var1, var2, var3 == FriendScreen.currentUserTimestamp);
          this.currentChatRoom = var1;
          var5.startSlideAnimation(1);
          this.addScreenToStack((Screen)var5);
@@ -3100,7 +3100,7 @@ public final class GameManager {
          UIFactory.createSimpleText(var6, var1);
          this.showNotification(var1, (Image) null, 1);
          var6.leftSoftkey = new UIFactory("Đồng ý", new quyen_gh(this, var3, var4, var6));
-         var6.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_gi(this, var6));
+         var6.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_gi(this, var6));
          UIUtils.focusComponent(var6, (UIComponent)var6.components.elementAt(0));
          this.addScreen(var6);
       }
@@ -3109,8 +3109,8 @@ public final class GameManager {
    public final void b(String var1, String var2, int var3) {
       if (this.currentChatRoom != null) {
          try {
-            quyen_p var4;
-            if ((var4 = (quyen_p)this.setActiveScreen(this.currentChatRoom)) != null) {
+            ChatRoomScreen var4;
+            if ((var4 = (ChatRoomScreen)this.setActiveScreen(this.currentChatRoom)) != null) {
                if (!var4.title.equals(this.currentScreen.title)) {
                   String var5 = FontRenderer.getFirstLineWrapped(var2, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
                   this.showNotification(UIUtils.concatStrings(var1, ": ", var5, ".."), (Image) null, 1);
@@ -3119,14 +3119,14 @@ public final class GameManager {
                   System.gc();
                }
 
-               if (var4.d) {
-                  var4.a();
+               if (var4.showWelcomeMessage) {
+                  var4.hideWelcomeAndShowChat();
                }
 
-               boolean var7 = var4.b.isNearBottom();
-               var4.b.addPlayerMessage(var1, var2, var3 != 3 ? (var1.equals(FriendScreen.currentUserId) ? 0 : 1) : var3);
+               boolean var7 = var4.chatComponent.isNearBottom();
+               var4.chatComponent.addPlayerMessage(var1, var2, var3 != 3 ? (var1.equals(FriendScreen.currentUserId) ? 0 : 1) : var3);
                if (var7) {
-                  var4.b.scrollToBottom();
+                  var4.chatComponent.scrollToBottom();
                }
 
                var4.isActive = true;

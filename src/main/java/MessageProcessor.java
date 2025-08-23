@@ -32,7 +32,7 @@ public class MessageProcessor {
                case 1:
                   boolean var217 = PacketUtils.readBoolean(var1);
                   String var169 = a(var1);
-                  GameManager.instance.c(var169).a(var217);
+                  GameManager.instance.c(var169).setLoadingVisible(var217);
                   break;
                case 2:
                case 9:

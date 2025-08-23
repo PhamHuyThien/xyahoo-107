@@ -130,7 +130,7 @@ public final class PlayerComponent extends UIComponent {
 
    public final void render(Graphics var1) {
       if (this.playerName != null && !this.isHidden) {
-         this.avatarImage = quyen_ea.a(this.avatarId);
+         this.avatarImage = ImageCache.getImage(this.avatarId);
          var1.drawImage(this.avatarImage, this.position == 1 ? this.baseX - this.avatarImage.getWidth() : this.avatarX, this.avatarY, 20);
          if (!GameScreen.instance.isGameStarted && this.statusText != null) {
             if (this.isVerticalLayout) {
@@ -180,7 +180,7 @@ public final class PlayerComponent extends UIComponent {
          }
 
          if (this.cardInfo != null && this.cardInfo.cardId.intValue() != -1) {
-            var1.drawImage(quyen_ea.a(this.cardInfo.cardId), this.cardImageX, this.cardImageY, 3);
+            var1.drawImage(ImageCache.getImage(this.cardInfo.cardId), this.cardImageX, this.cardImageY, 3);
          }
 
          if (this.showCountdown) {

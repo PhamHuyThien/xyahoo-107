@@ -7,6 +7,6 @@ final class quyen_v implements Action {
 
    public final void action() {
       quyen_u var1 = this.a;
-      PacketSender.b(this.a.a.a, 4812);
+      PacketSender.b(this.a.a.roomId, 4812);
    }
 }

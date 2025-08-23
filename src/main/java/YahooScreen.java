@@ -120,7 +120,7 @@ public final class YahooScreen extends Screen {
          var5.setText("Friends");
       }
 
-      var2.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_js(this, var2));
+      var2.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_js(this, var2));
       var2.centerSoftkey = new UIFactory("OK", new quyen_je(this, var3, var5, var2));
       var2.startSlideAnimation(1);
       GameManager.instance.addScreenToStack((Screen)var2);
@@ -143,7 +143,7 @@ public final class YahooScreen extends Screen {
       } else {
          if (this.loginButton == null) {
             this.loginButton = new UIFactory("Đăng nhập", new quyen_jg(this));
-            this.backButton = new UIFactory(quyen_cr.c(), new quyen_jh(this));
+            this.backButton = new UIFactory(TextConstant.close(), new quyen_jh(this));
          }
 
          super.leftSoftkey = null;
@@ -171,7 +171,7 @@ public final class YahooScreen extends Screen {
 
    public final void renderBackground(Graphics var1) {
       if (!this.isLoggedIn) {
-         var1.drawImage(quyen_ea.a(YAHOO_LOGO_INDEX), this.logoX, this.logoY, 0);
+         var1.drawImage(ImageCache.getImage(YAHOO_LOGO_INDEX), this.logoX, this.logoY, 0);
       }
 
       super.renderBackground(var1);
@@ -315,7 +315,7 @@ public final class YahooScreen extends Screen {
             var0.statusMessageInput = UIFactory.createLabeledTextInput(var0.statusScreen, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
             UIUtils.focusComponent(var0.statusScreen, var0.statusDropdown);
             var0.statusScreen.centerSoftkey = new UIFactory("OK", new quyen_jj(var0));
-            var0.statusScreen.rightSoftkey = new UIFactory(quyen_cr.c(), new quyen_jk(var0));
+            var0.statusScreen.rightSoftkey = new UIFactory(TextConstant.close(), new quyen_jk(var0));
             System.gc();
          }
 

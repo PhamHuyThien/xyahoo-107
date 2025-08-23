@@ -1,5 +1,5 @@
 final class quyen_z implements Action {
-   quyen_z(quyen_p var1) {
+   quyen_z(ChatRoomScreen var1) {
    }
 
    public final void action() {

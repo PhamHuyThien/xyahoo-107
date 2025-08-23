@@ -20,7 +20,7 @@ final class quyen_eg implements Action {
          GameManager.instance.mainMenu.startSlideAnimation(1);
       }
 
-      GameManager.instance.removeScreen(quyen_ec.j());
+      GameManager.instance.removeScreen(LoginScreen.getSettingsScreen());
       if (GameManager.autoLogin != this.a.isChecked) {
          GameManager.autoLogin = this.a.isChecked;
          Xuka.saveBooleanSetting("atlog", GameManager.autoLogin);

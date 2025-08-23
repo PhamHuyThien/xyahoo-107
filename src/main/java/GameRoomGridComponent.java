@@ -121,7 +121,7 @@ public final class GameRoomGridComponent extends UIComponent {
             }
 
             var2 = false;
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             break;
          case 13:
             for (var1 = this.selectedColumn; var1 >= 0; var1--) {
@@ -143,7 +143,7 @@ public final class GameRoomGridComponent extends UIComponent {
             }
 
             var2 = false;
-            quyen_cq.a(true);
+            ScrollBar.setScrolling(true);
             break;
          case 14:
             if (this.selectedColumn > 0) {
@@ -174,12 +174,12 @@ public final class GameRoomGridComponent extends UIComponent {
    }
 
    public final void onFocusGained() {
-      quyen_cq.a = true;
-      quyen_cq.a(this.totalRows);
+      ScrollBar.isVisible = true;
+      ScrollBar.initialize(this.totalRows);
    }
 
    public final void renderFocusIndicator(Graphics var1) {
-      quyen_cq.a(var1, this.selectedRow);
+      ScrollBar.render(var1, this.selectedRow);
    }
 
    public final void handlePointerRelease(int var1, int var2) {
@@ -212,7 +212,7 @@ public final class GameRoomGridComponent extends UIComponent {
             }
          }
 
-         quyen_cq.a(true);
+         ScrollBar.setScrolling(true);
       }
    }
 
@@ -234,7 +234,7 @@ public final class GameRoomGridComponent extends UIComponent {
          this.lastTouchY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    static GameRoom[] getRoomData(GameRoomGridComponent var0) {

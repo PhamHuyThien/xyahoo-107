@@ -1,8 +1,8 @@
-final class quyen_bo implements Runnable {
-   private quyen_bn a;
+final class FileBrowserInitializer implements Runnable {
+   private FileBrowserList fileBrowserList;
 
-   quyen_bo(quyen_bn var1) {
-      this.a = var1;
+   FileBrowserInitializer(FileBrowserList var1) {
+      this.fileBrowserList = var1;
    }
 
    public final void run() {
@@ -10,8 +10,8 @@ final class quyen_bo implements Runnable {
          Thread.sleep(150L);
 
          try {
-            quyen_bn.g("/");
-            this.a.c();
+            FileBrowserList.setCurrentPath("/");
+            this.fileBrowserList.refreshFileList();
          } catch (Exception var1) {
             GameManager.getInstance();
             GameManager.showAlert("Xubi", "Điện thoại không hỗ trợ chức năng này", true);

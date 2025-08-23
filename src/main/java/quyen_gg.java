@@ -12,8 +12,8 @@ final class quyen_gg implements Action {
    }
 
    public final void action() {
-      quyen_p var1;
-      PacketSender.d((var1 = (quyen_p)this.a.setActiveScreen(this.a.currentChatRoom)).a);
+      ChatRoomScreen var1;
+      PacketSender.d((var1 = (ChatRoomScreen)this.a.setActiveScreen(this.a.currentChatRoom)).roomId);
       this.a.removeScreen(var1);
       this.a.b(this.b, this.c, this.d);
    }

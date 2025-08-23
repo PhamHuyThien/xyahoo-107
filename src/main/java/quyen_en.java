@@ -1,11 +1,11 @@
 final class quyen_en implements Action {
-   private quyen_ec a;
+   private LoginScreen a;
 
-   quyen_en(quyen_ec var1) {
+   quyen_en(LoginScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
-      this.a.i();
+      this.a.performLogin();
    }
 }

@@ -1,11 +1,11 @@
 final class quyen_w implements Action {
-   private quyen_p a;
+   private ChatRoomScreen a;
 
-   quyen_w(quyen_p var1) {
+   quyen_w(ChatRoomScreen var1) {
       this.a = var1;
    }
 
    public final void action() {
-      GameManager.getInstance().showContextMenu(quyen_p.b(this.a), 0);
+      GameManager.getInstance().showContextMenu(ChatRoomScreen.getContextMenu(this.a), 0);
    }
 }

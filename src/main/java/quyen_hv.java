@@ -1,23 +1,23 @@
 import javax.microedition.lcdui.Display;
 
 final class quyen_hv implements Action {
-   final quyen_ht a;
+   final MediaPlayerForm a;
 
-   quyen_hv(quyen_ht var1) {
+   quyen_hv(MediaPlayerForm var1) {
       this.a = var1;
    }
 
    public final void action() {
       GameManager.getInstance().closeDialog();
-      quyen_bn var1;
-      (var1 = quyen_bn.a()).a(1);
-      quyen_eb var2 = quyen_eb.a();
+      FileBrowserList var1;
+      (var1 = FileBrowserList.getInstance()).setReturnScreen(1);
+      TextInputForm var2 = TextInputForm.getInstance();
 
       try {
          FileSystemInterface var3 = FileSystemInterface.getInstance();
-         var2.a("Tên file", "Tên file", quyen_ht.c(this.a), 0);
-         var2.c = new quyen_hw(this, var2, var1, var3);
-         Display.getDisplay(Xuka.instance).setCurrent(quyen_eb.a);
+         var2.setupForm("Tên file", "Tên file", MediaPlayerForm.getFileName(this.a), 0);
+         var2.completionAction = new quyen_hw(this, var2, var1, var3);
+         Display.getDisplay(Xuka.instance).setCurrent(TextInputForm.instance);
       } catch (ClassNotFoundException var4) {
          GameManager.getInstance();
          GameManager.showAlert("Xubi", "Điện thoại không hỗ trợ chức năng này", true);

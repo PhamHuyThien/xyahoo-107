@@ -151,11 +151,11 @@ public class Screen {
       }
 
       if (var2 > screenHeight) {
-         quyen_cq.a = true;
-         quyen_cq.a(this.componentCount);
+         ScrollBar.isVisible = true;
+         ScrollBar.initialize(this.componentCount);
          this.maxScrollY = var2 - screenHeight;
       } else {
-         quyen_cq.a = false;
+         ScrollBar.isVisible = false;
       }
    }
 
@@ -229,7 +229,7 @@ public class Screen {
    private void selectAndScrollTo(int var1) {
       this.setSelectedIndex(var1);
       this.scrollToComponent(var1);
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
@@ -342,7 +342,7 @@ public class Screen {
             }
          }
 
-         quyen_cq.a(true);
+         ScrollBar.setScrolling(true);
       }
    }
 
@@ -370,7 +370,7 @@ public class Screen {
          this.dragStartY = var2;
       }
 
-      quyen_cq.a(true);
+      ScrollBar.setScrolling(true);
    }
 
    public void onPointerReleased(int var1, int var2) {
@@ -424,7 +424,7 @@ public class Screen {
       if (this.componentCount > 0 && this.hasSpecialComponent && ((UIComponent)this.components.elementAt(0)).isPressed) {
          ((UIComponent)this.components.elementAt(0)).renderFocusIndicator(var1);
       } else {
-         quyen_cq.a(var1, this.selectedIndex);
+         ScrollBar.render(var1, this.selectedIndex);
       }
    }
 }

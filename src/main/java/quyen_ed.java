@@ -1,5 +1,5 @@
 final class quyen_ed implements Action {
-   quyen_ed(quyen_ec var1) {
+   quyen_ed(LoginScreen var1) {
    }
 
    public final void action() {

@@ -179,7 +179,7 @@ public class Xuka extends MIDlet
       x = x;
       System.out.println(string);
       System.out.println(x);
-      new Thread(new quyen_jb(x, string, Action, b, action2)).start();
+      new Thread(new SMSSenderTask(x, string, Action, b, action2)).start();
    }
 
    public static byte[] loadData(final String str, final String str2) {
@@ -217,7 +217,7 @@ public class Xuka extends MIDlet
    }
 
    public static void savePassword(final String s) {
-      saveData("xkPW", quyen_kb.a(s).getBytes(), "xkown");
+      saveData("xkPW", Base64Encoder.encodeWithReverse(s).getBytes(), "xkown");
    }
 
    public static void saveYahooID(final String s) {
@@ -225,7 +225,7 @@ public class Xuka extends MIDlet
    }
 
    public static void saveYahooPassword(final String s) {
-      saveData("YahooPW", quyen_kb.a(s).getBytes(), "xkown");
+      saveData("YahooPW", Base64Encoder.encodeWithReverse(s).getBytes(), "xkown");
    }
 
    public static void saveBooleanSetting(final String s, final boolean b) {
@@ -272,7 +272,7 @@ public class Xuka extends MIDlet
       if ((a = loadData("xkPW", "xkown")) == null) {
          return null;
       }
-      return quyen_kb.b(new String(a));
+      return Base64Encoder.decodeWithReverse(new String(a));
    }
 
    public static String loadYahooID() {
@@ -288,7 +288,7 @@ public class Xuka extends MIDlet
       if ((a = loadData("YahooPW", "xkown")) == null) {
          return "";
       }
-      return quyen_kb.b(new String(a));
+      return Base64Encoder.decodeWithReverse(new String(a));
    }
 
    public static void saveYahooDomain(final int n) {
