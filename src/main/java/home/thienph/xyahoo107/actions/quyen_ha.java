@@ -1,0 +1,10 @@
+package home.thienph.xyahoo107.actions;
+
+
+import home.thienph.xyahoo107.managers.GameManager;
+
+public final class quyen_ha implements Action {
+   public final void action() {
+      GameManager.instance.joinGame(11115, false);
+   }
+}
