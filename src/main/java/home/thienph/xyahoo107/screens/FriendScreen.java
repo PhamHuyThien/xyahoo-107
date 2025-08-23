@@ -5,11 +5,11 @@ import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.ContactGroup;
-import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.data.media.BuddyGroup;
+import home.thienph.xyahoo107.data.media.BuddyContact;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.NetworkManager;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -162,11 +162,11 @@ public final class FriendScreen extends Screen {
 
     public void addAllFriendsToOnline() {
         if (this.mainContactList.contactData != null) {
-            ContactGroup var1 = this.mainContactList.contactData.findCategoryById("Ban Be");
+            BuddyGroup var1 = this.mainContactList.contactData.findBuddyContactByName("Ban Be");
             int var2 = 0;
 
             for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
-                this.addToOnlineList(((Contact) var1.contacts.elementAt(var2)).timestamp);
+                this.addToOnlineList(((BuddyContact) var1.contacts.elementAt(var2)).timestamp);
             }
         }
     }
@@ -284,7 +284,7 @@ public final class FriendScreen extends Screen {
         this.offlineMessages.put(var1, var3);
     }
 
-    public void createOfflineMessageScreen(ContactSource var1) {
+    public void createOfflineMessageScreen(BuddyListManager var1) {
         this.offlineMessageScreen = new Screen();
         this.offlineMessageScreen.title = "Tin Nhắn Offline";
         ListComponent var2;
@@ -350,24 +350,24 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public static void addContactToList(String var0, Contact var1, ContactListComponent var2) {
+    public static void addContactToList(String var0, BuddyContact var1, ContactListComponent var2) {
         if (var2.contactData == null) {
-            var2.contactData = new ContactSource();
+            var2.contactData = new BuddyListManager();
         }
 
-        var2.contactData.addDownloadToCategory(var0, var1);
+        var2.contactData.addContactToGroup(var0, var1);
         var2.refreshDisplayList();
     }
 
     public static void removeContactFromList(long var0, ContactListComponent var2) {
         if (var2.contactData != null) {
-            var2.contactData.removeDownload(null, var0);
+            var2.contactData.removeContact(null, var0);
             var2.refreshDisplayList();
         }
     }
 
-    public Contact findContactById(String var1) {
-        return this.mainContactList.contactData == null ? null : this.mainContactList.contactData.findDownload(var1, null, 0L);
+    public BuddyContact findContactById(String var1) {
+        return this.mainContactList.contactData == null ? null : this.mainContactList.contactData.findDownloadFile(var1, null, 0L);
     }
 
     public boolean isUserBlocked(long var1) {
@@ -386,14 +386,14 @@ public final class FriendScreen extends Screen {
         if (this.userStorage.containsKey(new Long(var1))) {
             return (String) this.userStorage.get(new Long(var1));
         } else {
-            Contact var3;
-            return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownload(null, null, var1)) != null ? var3.contactId : null;
+            BuddyContact var3;
+            return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownloadFile(null, null, var1)) != null ? var3.username : null;
         }
     }
 
     public long getUserTimestampById(String var1) {
-        Contact var2;
-        return this.mainContactList != null && this.mainContactList.contactData != null && (var2 = this.mainContactList.contactData.findDownload(var1, null, 0L)) != null ? var2.timestamp : 0L;
+        BuddyContact var2;
+        return this.mainContactList != null && this.mainContactList.contactData != null && (var2 = this.mainContactList.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.timestamp : 0L;
     }
 
     public void addToOnlineList(long var1) {
@@ -421,7 +421,7 @@ public final class FriendScreen extends Screen {
         removeFromVector(var1, this.pendingRequests);
         this.updatePendingRequestsButton();
         if (currentViewMode == 3) {
-            this.secondaryContactList.contactData.removeDownload(null, var1);
+            this.secondaryContactList.contactData.removeContact(null, var1);
             this.secondaryContactList.refreshDisplayList();
         }
     }
@@ -429,7 +429,7 @@ public final class FriendScreen extends Screen {
     public void removeFromBlockedAndRefresh(long var1) {
         removeFromVector(var1, this.blockedUsers);
         if (currentViewMode == 2) {
-            this.secondaryContactList.contactData.removeDownload(null, var1);
+            this.secondaryContactList.contactData.removeContact(null, var1);
             this.secondaryContactList.refreshDisplayList();
             GameManager.instance.showWrappedTextDialog("Xóa ID thành công");
         }
@@ -438,14 +438,14 @@ public final class FriendScreen extends Screen {
     public void addToFavorites(long var1) {
         if (this.mainContactList.contactData != null && !this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
             ContactListComponent var7 = this.mainContactList;
-            Contact var8;
-            if ((var8 = var7.contactData == null ? null : var7.contactData.findDownload(null, null, var1)) == null) {
+            BuddyContact var8;
+            if ((var8 = var7.contactData == null ? null : var7.contactData.findDownloadFile(null, null, var1)) == null) {
                 return;
             }
 
-            this.mainContactList.contactData.insertDownloadToCategory("Favorite", var8);
-            ContactGroup var9;
-            if ((var9 = this.mainContactList.contactData.findCategoryById("Favorite")) != null && var9.contacts.size() > 9) {
+            this.mainContactList.contactData.insertContactToGroup("Favorite", var8);
+            BuddyGroup var9;
+            if ((var9 = this.mainContactList.contactData.findBuddyContactByName("Favorite")) != null && var9.contacts.size() > 9) {
                 var9.contacts.removeElementAt(var9.contacts.size() - 1);
             }
 
@@ -455,7 +455,7 @@ public final class FriendScreen extends Screen {
     }
 
     public void updateFavoriteStatus(long var1, int var3) {
-        if (this.mainContactList.contactData.findCategoryById("Favorite") != null && this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
+        if (this.mainContactList.contactData.findBuddyContactByName("Favorite") != null && this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
             int var4 = 0;
 
             for (int var5 = this.mainContactList.displayItems.size(); var4 < var5; var4++) {
@@ -476,7 +476,7 @@ public final class FriendScreen extends Screen {
                 String[] var3 = var2;
                 long[] var9 = var1;
                 FriendScreen var8 = this;
-                if (this.mainContactList.contactData.findCategoryById("Favorite") != null) {
+                if (this.mainContactList.contactData.findBuddyContactByName("Favorite") != null) {
                     int var4 = var1.length;
 
                     while (--var4 >= 0) {

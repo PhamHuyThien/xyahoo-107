@@ -1,9 +1,9 @@
 package home.thienph.xyahoo107.connections;
 
-import home.thienph.xyahoo107.data.media.ContactGroup;
-import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.data.media.BuddyGroup;
+import home.thienph.xyahoo107.data.media.BuddyContact;
 import home.thienph.xyahoo107.data.packet.Packet;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.PacketUtils;
 
@@ -39,12 +39,12 @@ public final class ChatPacketHandler extends PacketHandler {
                 gameManager.sendBuzz(var14);
                 return;
             case 24:
-                ContactSource var16 = new ContactSource();
+                BuddyListManager var16 = new BuddyListManager();
                 int var3 = PacketUtils.readInt(packet);
 
                 for (int var4 = 0; var4 < var3; var4++) {
                     String var18 = PacketUtils.readString(packet);
-                    ContactGroup var6 = new ContactGroup(var18);
+                    BuddyGroup var6 = new BuddyGroup(var18);
                     int var19 = PacketUtils.readInt(packet);
 
                     for (int var22 = 0; var22 < var19; var22++) {
@@ -54,10 +54,10 @@ public final class ChatPacketHandler extends PacketHandler {
                         PacketUtils.readString(packet);
                         String var26 = PacketUtils.readString(packet);
                         PacketUtils.readString(packet);
-                        var6.addContact(new Contact(var23, var26, var24, var25, new int[0], 0, 0, null));
+                        var6.addContact(new BuddyContact(var23, var26, var24, var25, new int[0], 0, 0, null));
                     }
 
-                    var16.downloadCategories.addElement(var6);
+                    var16.contactGroups.addElement(var6);
                 }
 
                 gameManager.loadYahooBuddyList(var16);

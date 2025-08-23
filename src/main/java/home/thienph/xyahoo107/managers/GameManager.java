@@ -10,8 +10,9 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.game.GameRoom;
 import home.thienph.xyahoo107.data.game.Notification;
-import home.thienph.xyahoo107.data.media.ContactGroup;
-import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.data.media.BuddyGroup;
+import home.thienph.xyahoo107.data.media.BuddyContact;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.forms.FileBrowserList;
 import home.thienph.xyahoo107.forms.FileSystemInterface;
@@ -178,13 +179,13 @@ public final class GameManager {
         }
     }
 
-    private Contact getResource(String var1) {
+    private BuddyContact getResource(String var1) {
         this.initResourceCache();
-        return (Contact) this.resourceCache.get(var1);
+        return (BuddyContact) this.resourceCache.get(var1);
     }
 
     public CardInfo getCardInfoResource(String var1, int var2) {
-        Contact var3;
+        BuddyContact var3;
         if ((var3 = this.getResource(var1)) == null) {
             var3 = FriendScreen.instance.findContactById(var1);
         }
@@ -210,25 +211,25 @@ public final class GameManager {
             }
         }
 
-        Contact var7;
+        BuddyContact var7;
         if ((var7 = this.getResource(var1)) != null && var3 == 0) {
             var7.cardInfo = var2;
         }
 
-        Contact var8;
+        BuddyContact var8;
         if ((var8 = FriendScreen.instance.findContactById(var1)) != null) {
             if (var3 == 0) {
                 var8.cardInfo = var2;
             }
         } else {
-            Contact var9;
-            (var9 = new Contact()).contactId = var1;
+            BuddyContact var9;
+            (var9 = new BuddyContact()).username = var1;
             if (var3 == 0) {
                 var9.cardInfo = var2;
             }
 
             this.initResourceCache();
-            this.resourceCache.put(var9.contactId, var9);
+            this.resourceCache.put(var9.username, var9);
         }
     }
 
@@ -1602,22 +1603,22 @@ public final class GameManager {
         return Xuka.loadIntData(var0 ? "yahoocs" : "xubics" + FriendScreen.currentUserId, "xkown");
     }
 
-    public static boolean saveBuddyList(ContactSource var0, boolean var1, String var2) {
+    public static boolean saveBuddyList(BuddyListManager var0, boolean var1, String var2) {
         ByteArrayOutputStream var3 = new ByteArrayOutputStream();
-        Vector var9 = var0.downloadCategories;
+        Vector var9 = var0.contactGroups;
 
         try {
             writeIntToStream(var3, var9.size());
 
             for (int var4 = 0; var4 < var9.size(); var4++) {
-                ContactGroup var5 = (ContactGroup) var9.elementAt(var4);
-                writeStringToStream(var3, var5.getName());
+                BuddyGroup var5 = (BuddyGroup) var9.elementAt(var4);
+                writeStringToStream(var3, var5.getGroupName());
                 Vector var10 = var5.contacts;
                 writeIntToStream(var3, var10.size());
 
                 for (int var6 = 0; var6 < var10.size(); var6++) {
-                    Contact var7 = (Contact) var10.elementAt(var6);
-                    writeStringToStream(var3, var7.contactId);
+                    BuddyContact var7 = (BuddyContact) var10.elementAt(var6);
+                    writeStringToStream(var3, var7.username);
                     writeStringToStream(var3, var7.displayName);
                     writeIntToStream(var3, var7.dataSize);
                     if (!var1) {
@@ -1633,27 +1634,27 @@ public final class GameManager {
         }
     }
 
-    public static ContactSource loadBuddyList(boolean var0, String var1) {
+    public static BuddyListManager loadBuddyList(boolean var0, String var1) {
         byte[] var10;
         if ((var10 = Xuka.loadData((var0 ? "ybuddy" : "vbuddy") + var1, "xkown")) == null) {
             return null;
         } else {
             ByteArrayInputStream var11 = new ByteArrayInputStream(var10);
-            ContactSource var2 = new ContactSource();
+            BuddyListManager var2 = new BuddyListManager();
 
             try {
-                var2.downloadCategories = new Vector();
+                var2.contactGroups = new Vector();
                 int var3 = readIntFromStream(var11);
 
                 for (int var4 = 0; var4 < var3; var4++) {
                     String var5 = readStringFromStream(var11);
-                    ContactGroup var12;
-                    (var12 = new ContactGroup(var5)).contacts = new Vector();
+                    BuddyGroup var12;
+                    (var12 = new BuddyGroup(var5)).contacts = new Vector();
                     int var6 = readIntFromStream(var11);
 
                     for (int var7 = 0; var7 < var6; var7++) {
-                        Contact var8;
-                        (var8 = new Contact()).contactId = readStringFromStream(var11);
+                        BuddyContact var8;
+                        (var8 = new BuddyContact()).username = readStringFromStream(var11);
                         var8.displayName = readStringFromStream(var11);
                         var8.dataSize = readIntFromStream(var11);
                         if (!var0) {
@@ -1663,7 +1664,7 @@ public final class GameManager {
                         var12.addContact(var8);
                     }
 
-                    var2.downloadCategories.addElement(var12);
+                    var2.contactGroups.addElement(var12);
                 }
 
                 return var2;
@@ -2120,7 +2121,7 @@ public final class GameManager {
         }
     }
 
-    public void loadYahooBuddyList(ContactSource var1) {
+    public void loadYahooBuddyList(BuddyListManager var1) {
         saveBuddyList(var1, true, YahooScreen.yahooUsername);
         this.yahooChat.contactList.setContactData(var1, -1);
         this.yahooChat.isActive = true;
@@ -2440,8 +2441,8 @@ public final class GameManager {
 
             while (--var3 >= 0) {
                 quyen_bj var4;
-                Contact var5;
-                if ((var5 = (var4 = (quyen_bj) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).i).contactId.equals(var1)) {
+                BuddyContact var5;
+                if ((var5 = (var4 = (quyen_bj) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).i).username.equals(var1)) {
                     var5.imageBytes = var2;
                     var5.isSelected = true;
                     var4.e = UIUtils.concatStrings(Integer.toString(var5.statusCode), " KBs", null, null);
@@ -2484,11 +2485,11 @@ public final class GameManager {
             var5 = UIUtils.concatStrings("Video", " ", var2, null);
         }
 
-        Contact var6;
-        (var6 = new Contact(var1, var5, var3, null, null, -1, -1, null)).downloadType = var4;
-        var6.filePath = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
+        BuddyContact var6 = new BuddyContact(var1, var5, var3, null, null, -1, -1, null);
+        var6.downloadType = var4;
+        var6.downloadText = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
         var6.fileName = var2;
-        this.downloadManager.contactSource.insertDownloadToCategory("", var6);
+        this.downloadManager.buddyListManager.insertContactToGroup("", var6);
         this.downloadManager.downloadListComponent.buildListItems();
     }
 
@@ -2785,7 +2786,7 @@ public final class GameManager {
         Xuka.saveData(generateCacheKey(var1, false), var3, "xkcsp");
     }
 
-    public void showGameLobby(ContactSource var1) {
+    public void showGameLobby(BuddyListManager var1) {
         if (gameRoom == null) {
             (gameRoom = new GameLobbyScreen()).gameListComponent.itemAction = new quyen_gd(this);
             gameRoom.gameListComponent.selectAction.text = "Vào phòng";
@@ -2831,7 +2832,7 @@ public final class GameManager {
         }
     }
 
-    public void loadContactData(ContactSource var1) {
+    public void loadContactData(BuddyListManager var1) {
         this.friendManager.mainContactList.setContactData(var1, -1);
         saveBuddyList(var1, false, FriendScreen.currentUserId);
         this.friendManager.mainContactList.isLoading = false;
@@ -2882,7 +2883,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode3(ContactSource var1) {
+    public void loadSecondaryContactsMode3(BuddyListManager var1) {
         if (FriendScreen.currentViewMode == 3) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2895,7 +2896,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode2(ContactSource var1) {
+    public void loadSecondaryContactsMode2(BuddyListManager var1) {
         if (FriendScreen.currentViewMode == 2) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2927,8 +2928,8 @@ public final class GameManager {
                 this.showNotification(UIUtils.concatStrings(var3, " đồng ý kết bạn với bạn.", null, null), (Image) null, 1);
             }
 
-            Contact var10;
-            (var10 = new Contact(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
+            BuddyContact var10;
+            (var10 = new BuddyContact(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
             FriendScreen.addContactToList("Ban Be", var10, this.friendManager.mainContactList);
             saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
             this.friendManager.addToOnlineList(var1);
@@ -3027,14 +3028,14 @@ public final class GameManager {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactStatus(var1, var3)) {
             this.friendManager.updateFavoriteStatus(var1, var3);
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            Contact var6;
-            if ((var6 = this.friendManager.mainContactList.contactData.findDownload(null, null, var1)) != null) {
-                String var2 = UIUtils.concatStrings(var6.contactId, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
+            BuddyContact var6;
+            if ((var6 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1)) != null) {
+                String var2 = UIUtils.concatStrings(var6.username, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
                 this.showNotification(var2, var3 == 1 ? statusIcons[1] : statusIcons[0], var4);
 
                 try {
                     ChatScreen var7;
-                    if ((var7 = (ChatScreen) this.setActiveScreen(var6.contactId)) != null) {
+                    if ((var7 = (ChatScreen) this.setActiveScreen(var6.username)) != null) {
                         var7.chatComponent.addSystemMessage(var2, var3 == 1 ? 1 : 2);
                         var7.chatComponent.scrollToBottom();
                     }
@@ -3047,9 +3048,9 @@ public final class GameManager {
     public void updateUserStatusMessage(long var1, String var3) {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactSubtext(var1, var3)) {
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            Contact var5 = this.friendManager.mainContactList.contactData.findDownload(null, null, var1);
+            BuddyContact var5 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1);
             String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
-            this.showNotification(UIUtils.concatStrings(var5.contactId, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
+            this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
             if (var1 == FriendScreen.currentUserTimestamp) {
                 FriendScreen.statusMessage = var3;
                 Xuka.saveStringData(FriendScreen.currentUserId, var3, false);
@@ -3061,7 +3062,7 @@ public final class GameManager {
         this.friendManager.addOfflineMessage(var1, var2);
     }
 
-    public void showOfflineMessages(ContactSource var1) {
+    public void showOfflineMessages(BuddyListManager var1) {
         this.friendManager.createOfflineMessageScreen(var1);
         this.friendManager.offlineMessageScreen.startSlideAnimation(1);
         this.addScreenToStack(this.friendManager.offlineMessageScreen);

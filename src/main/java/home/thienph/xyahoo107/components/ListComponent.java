@@ -3,9 +3,9 @@ package home.thienph.xyahoo107.components;
 import home.thienph.xyahoo107.actions.Action;
 import home.thienph.xyahoo107.actions.quyen_bj;
 import home.thienph.xyahoo107.canvas.GameGraphics;
-import home.thienph.xyahoo107.data.media.ContactGroup;
-import home.thienph.xyahoo107.data.media.Contact;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyGroup;
+import home.thienph.xyahoo107.data.media.BuddyContact;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -36,7 +36,7 @@ public final class ListComponent extends UIComponent {
     private boolean isMultiSelectMode;
     private int maxTextWidth;
     private int displayMode;
-    public ContactSource dataSource;
+    public BuddyListManager dataSource;
     public Vector listItems;
     private int totalItemCount;
     private int rightTextX;
@@ -77,7 +77,7 @@ public final class ListComponent extends UIComponent {
         this.isMultiSelectMode = var1;
     }
 
-    public void setDataSource(ContactSource var1, int var2, boolean var3) {
+    public void setDataSource(BuddyListManager var1, int var2, boolean var3) {
         this.displayMode = var2;
         this.listSelectedIndex = 0;
         if (var3) {
@@ -132,19 +132,19 @@ public final class ListComponent extends UIComponent {
         }
 
         System.gc();
-        if (this.dataSource != null && this.dataSource.downloadCategories != null && this.dataSource.downloadCategories.size() != 0) {
+        if (this.dataSource != null && this.dataSource.contactGroups != null && this.dataSource.contactGroups.size() != 0) {
             this.rightTextX = 0;
-            Vector var1 = this.dataSource.downloadCategories;
-            int var2 = this.dataSource.downloadCategories.size();
+            Vector var1 = this.dataSource.contactGroups;
+            int var2 = this.dataSource.contactGroups.size();
             int var3 = 0;
 
             for (int var4 = 0; var4 < var2; var4++) {
-                ContactGroup var9 = (ContactGroup) var1.elementAt(var4);
+                BuddyGroup var9 = (BuddyGroup) var1.elementAt(var4);
                 quyen_bj var5;
-                (var5 = new quyen_bj()).c = var9.getName();
+                (var5 = new quyen_bj()).c = var9.getGroupName();
                 if (var5.c != null && var5.c.length() > 0) {
                     var5.a = 1;
-                    var5.g = var9.status;
+                    var5.g = var9.expansionStatus;
                     this.listItems.addElement(var5);
                     if (var5.g == 1) {
                         continue;
@@ -155,10 +155,10 @@ public final class ListComponent extends UIComponent {
                 var3 = var9.contacts.size();
 
                 for (int var6 = 0; var6 < var3; var6++) {
-                    Contact var7 = (Contact) var11.elementAt(var6);
+                    BuddyContact var7 = (BuddyContact) var11.elementAt(var6);
                     quyen_bj var8;
                     (var8 = new quyen_bj()).k = var7.getRawDataArray();
-                    var8.c = var7.contactId;
+                    var8.c = var7.username;
                     var8.g = var7.statusCode;
                     var8.d = var7.displayName;
                     var7.getDefaultColor();
@@ -188,7 +188,7 @@ public final class ListComponent extends UIComponent {
                     }
 
                     var8.h = var7.isSelected;
-                    var8.e = var7.filePath;
+                    var8.e = var7.downloadText;
                     var8.i = var7;
                     this.listItems.addElement(var8);
                 }
@@ -320,9 +320,9 @@ public final class ListComponent extends UIComponent {
                 this.itemAction.action();
             }
         } else {
-            ContactGroup contactGroup2 = this.dataSource.findCategoryById(this.currentItem.c);
+            BuddyGroup contactGroup2 = this.dataSource.findBuddyContactByName(this.currentItem.c);
             if (contactGroup2 != null) {
-                contactGroup2.status = this.currentItem.g == 0 ? 1 : 0;
+                contactGroup2.expansionStatus = this.currentItem.g == 0 ? 1 : 0;
             }
             this.buildListItems();
         }

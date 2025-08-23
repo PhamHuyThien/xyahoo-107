@@ -22,7 +22,7 @@ public final class quyen_ii implements Action {
         Vector var4 = (Vector) this.a.offlineMessages.get(var1);
         this.a.offlineMessages.remove(var1);
         GameManager.instance.showChatWithMessages(var1, var4, var2);
-        this.b.dataSource.removeDownload(var1, 0L);
+        this.b.dataSource.removeContact(var1, 0L);
         this.b.buildListItems();
         this.a.updateOfflineMessageButton();
     }

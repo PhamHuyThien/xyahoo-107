@@ -4,7 +4,7 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.LoginScreen;
@@ -59,7 +59,7 @@ public final class LoginHandlerAction implements Action {
         GameManager.getInstance().initializeFriendManager();
         int currentUserId = GameManager.loadContactStatus(false);
         if (currentUserId != -1) {
-            ContactSource var6 = GameManager.loadBuddyList(false, FriendScreen.currentUserId);
+            BuddyListManager var6 = GameManager.loadBuddyList(false, FriendScreen.currentUserId);
             if (var6 != null) {
                 GameManager.instance.friendManager.mainContactList.setContactData(var6, -1);
                 GameManager.instance.friendManager.mainContactList.isLoading = false;

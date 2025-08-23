@@ -4,13 +4,13 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 
 import javax.microedition.lcdui.Image;
 
-public final class Contact {
-    public String contactId;
+public final class BuddyContact {
+    public String username;
     public String displayName;
     public int statusCode;
     public String description;
     public int downloadType;
-    public String filePath;
+    public String downloadText;
     public boolean isSelected;
     public String fileName;
     private int[] rawDataArray;
@@ -38,14 +38,14 @@ public final class Contact {
         }
     }
 
-    public Contact() {
+    public BuddyContact() {
     }
 
-    public Contact(String var1, String var2, int var3, String var4, int[] var5, int var6, int var7, String var8) {
-        this.contactId = var1;
+    public BuddyContact(String var1, String var2, int var3, String var4, int[] var5, int var6, int var7, String var8) {
+        this.username = var1;
         this.displayName = !var2.equals("") && var2 != null ? var2 : var1;
         this.statusCode = var3;
-        this.filePath = var4;
+        this.downloadText = var4;
         this.rawDataArray = var5;
         this.dataSize = var7;
         this.description = var8;

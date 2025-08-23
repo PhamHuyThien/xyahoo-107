@@ -2,10 +2,10 @@ package home.thienph.xyahoo107.connections;
 
 import home.thienph.xyahoo107.data.game.CardInfo;
 import home.thienph.xyahoo107.data.game.GameRoom;
-import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.data.media.BuddyContact;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.GameScreen;
@@ -524,9 +524,9 @@ public final class GamePacketHandler extends PacketHandler {
                 return;
             case 5000009:
                 StringBuffer var189 = null;
-                ContactSource var64 = new ContactSource();
+                BuddyListManager var64 = new BuddyListManager();
                 int var65;
-                Contact[] var66 = new Contact[var65 = PacketUtils.readInt(packet)];
+                BuddyContact[] var66 = new BuddyContact[var65 = PacketUtils.readInt(packet)];
                 String[] var67 = new String[var65];
 
                 for (int var68 = 0; var68 < var65; var68++) {
@@ -559,8 +559,8 @@ public final class GamePacketHandler extends PacketHandler {
                         var71 = 4;
                     }
 
-                    var66[var68] = new Contact(var69, var70, var71, null, null, -1, var68, var189.toString());
-                    var64.addDownloadToCategory(var67[var68], var66[var68]);
+                    var66[var68] = new BuddyContact(var69, var70, var71, null, null, -1, var68, var189.toString());
+                    var64.addContactToGroup(var67[var68], var66[var68]);
                 }
 
                 System.gc();
@@ -667,21 +667,21 @@ public final class GamePacketHandler extends PacketHandler {
                 }
                 break;
             case 5000028:
-                Contact[] var224 = new Contact[commandId = PacketUtils.readInt(packet)];
-                ContactSource var32 = new ContactSource();
+                BuddyContact[] var224 = new BuddyContact[commandId = PacketUtils.readInt(packet)];
+                BuddyListManager var32 = new BuddyListManager();
 
                 for (int var198 = 0; var198 < commandId; var198++) {
                     long var226 = PacketUtils.readLong(packet);
                     String var207 = PacketUtils.readString(packet);
                     String var227 = PacketUtils.readString(packet);
-                    var224[var198] = new Contact(var207, "", 0, var227, new int[0], 0, var198, null);
+                    var224[var198] = new BuddyContact(var207, "", 0, var227, new int[0], 0, var198, null);
                     var224[var198].timestamp = var226;
                     if (FriendScreen.currentViewMode == 1) {
-                        var32.addDownloadToCategory("Ban Be", var224[var198]);
+                        var32.addContactToGroup("Ban Be", var224[var198]);
                     } else if (FriendScreen.currentViewMode == 2) {
-                        var32.addDownloadToCategory("Danh sách từ chối", var224[var198]);
+                        var32.addContactToGroup("Danh sách từ chối", var224[var198]);
                     } else {
-                        var32.addDownloadToCategory("Danh sách kết bạn", var224[var198]);
+                        var32.addContactToGroup("Danh sách kết bạn", var224[var198]);
                     }
                 }
 
@@ -720,7 +720,7 @@ public final class GamePacketHandler extends PacketHandler {
                 int var44;
                 if ((var44 = PacketUtils.readInt(packet)) != 0) {
                     Vector var45 = new Vector();
-                    ContactSource var183 = new ContactSource();
+                    BuddyListManager var183 = new BuddyListManager();
 
                     for (int var196 = 0; var196 < var44; var196++) {
                         String var4 = PacketUtils.readString(packet);
@@ -729,9 +729,9 @@ public final class GamePacketHandler extends PacketHandler {
                         String var51 = PacketUtils.readString(packet);
                         long var52 = PacketUtils.readLong(packet);
                         if (!var45.contains(var4)) {
-                            Contact var6;
-                            (var6 = new Contact(var4, "", 0, var50[0] + (var50.length > 1 ? ".." : ""), new int[0], 0, 0, null)).timestamp = var52;
-                            var183.addDownloadToCategory("", var6);
+                            BuddyContact var6;
+                            (var6 = new BuddyContact(var4, "", 0, var50[0] + (var50.length > 1 ? ".." : ""), new int[0], 0, 0, null)).timestamp = var52;
+                            var183.addContactToGroup("", var6);
                             var45.addElement(var4);
                         }
 

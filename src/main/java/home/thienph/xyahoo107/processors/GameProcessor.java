@@ -5,11 +5,11 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.Contact;
+import home.thienph.xyahoo107.data.media.BuddyContact;
 import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.ChatScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
@@ -369,8 +369,8 @@ public class GameProcessor {
 
                                 byte var99 = packet.getPayload().readByte();
                                 int var100 = PacketUtils.readInt(packet);
-                                ContactSource var101 = new ContactSource();
-                                Contact[] var102 = new Contact[var100];
+                                BuddyListManager var101 = new BuddyListManager();
+                                BuddyContact[] var102 = new BuddyContact[var100];
                                 String[] var103 = new String[var100];
 
                                 for (int var104 = 0; var104 < var100; var104++) {
@@ -410,11 +410,11 @@ public class GameProcessor {
                                         var327 = null;
                                     }
 
-                                    var102[var104] = new Contact("", var321, var325, var322, null, -1, var104, var327);
+                                    var102[var104] = new BuddyContact("", var321, var325, var322, null, -1, var104, var327);
                                     var102[var104].fileName = var105;
                                     var102[var104].priority = var323;
                                     var102[var104].thumbnailImage = var324;
-                                    var101.addDownloadToCategory(var103[var104], var102[var104]);
+                                    var101.addContactToGroup(var103[var104], var102[var104]);
                                 }
 
                                 byte[] var320 = PacketUtils.readBytes(packet);
@@ -916,7 +916,7 @@ public class GameProcessor {
                                         break;
                                     case 11:
                                         ListComponent var8;
-                                        ContactSource var9 = (var8 = (ListComponent) var194).dataSource;
+                                        BuddyListManager var9 = (var8 = (ListComponent) var194).dataSource;
                                         byte var10 = packet.getPayload().readByte();
                                         var5 = 0;
 
@@ -935,7 +935,7 @@ public class GameProcessor {
                                             String var20 = PacketUtils.readString(packet);
                                             String var21 = PacketUtils.readString(packet);
                                             String var14 = PacketUtils.readString(packet);
-                                            Contact var15 = var9.findDownload(null, var241, 0L);
+                                            BuddyContact var15 = var9.findDownloadFile(null, var241, 0L);
                                             if (var11 != 0) {
                                                 var15.priority = var13;
                                             }
@@ -949,7 +949,7 @@ public class GameProcessor {
                                             }
 
                                             if (var21.length() > 0) {
-                                                var15.filePath = var21;
+                                                var15.downloadText = var21;
                                             }
 
                                             if (var14.length() > 0) {

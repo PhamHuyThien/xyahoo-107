@@ -4,9 +4,9 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
 import home.thienph.xyahoo107.connections.PacketSender;
-import home.thienph.xyahoo107.data.media.ContactGroup;
-import home.thienph.xyahoo107.data.media.Contact;
-import home.thienph.xyahoo107.managers.ContactSource;
+import home.thienph.xyahoo107.data.media.BuddyGroup;
+import home.thienph.xyahoo107.data.media.BuddyContact;
+import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.DialogScreen;
 import home.thienph.xyahoo107.screens.YahooScreen;
@@ -36,26 +36,26 @@ public final class quyen_je implements Action {
             UIUtils.focusComponent(this.d, (UIComponent) this.c);
             return;
         }
-        final ContactSource a = GameManager.instance.yahooChat.contactList.getContactData();
+        final BuddyListManager a = GameManager.instance.yahooChat.contactList.getContactData();
         final String s = trim;
-        final ContactSource ContactSource = a;
-        int i = a.downloadCategories.size() - 1;
+        final BuddyListManager BuddyListManager = a;
+        int i = a.contactGroups.size() - 1;
         while (true) {
             while (i >= 0) {
-                ContactGroup ContactGroup = (ContactGroup) ContactSource.downloadCategories.elementAt(i);
-                if (ContactGroup.getName().equalsIgnoreCase(s)) {
+                BuddyGroup ContactGroup = (BuddyGroup) BuddyListManager.contactGroups.elementAt(i);
+                if (ContactGroup.getGroupName().equalsIgnoreCase(s)) {
                     final String a2;
-                    final String s2 = a2 = ContactGroup.getName();
+                    final String s2 = a2 = ContactGroup.getGroupName();
                     final String s3 = a2;
                     if (s2 != null) {
                         trim = s3;
                     }
-                    if (GameManager.instance.yahooChat.contactList.getContactData().findDownload(lowerCase, null, 0L) != null) {
+                    if (GameManager.instance.yahooChat.contactList.getContactData().findDownloadFile(lowerCase, null, 0L) != null) {
                         GameManager.instance.showWrappedTextDialog("ID đã tồn tại.");
                         return;
                     }
                     PacketSender.g(lowerCase, trim);
-                    this.a.contactList.contactData.addDownloadToCategory(trim, new Contact(lowerCase, "", 0, "", new int[0], 0, 0, null));
+                    this.a.contactList.contactData.addContactToGroup(trim, new BuddyContact(lowerCase, "", 0, "", new int[0], 0, 0, null));
                     this.a.contactList.refreshDisplayList();
                     this.a.contactList.resetAnimation();
                     GameManager.instance.removeScreen(this.d);
