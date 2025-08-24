@@ -15,6 +15,7 @@
 # Lưu ý:
 
 - XYahoo server-side được share tại [xem tại đây](https://github.com/PhamHuyThien/xyahoo-server)
+- XYahoo tool được share tại [xem tại đây](https://github.com/PhamHuyThien/xyahoo-tool)
 - Vì app đã đóng cửa quá lâu, và gần như không tìm đuợc version mới nhất của app
 - Đây là version hiếm hoi còn sót lại trên internet
 - Mã nguồn gốc client nằm ở thư mục `/official-application`
