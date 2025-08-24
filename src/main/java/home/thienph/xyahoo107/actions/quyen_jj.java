@@ -25,13 +25,13 @@ public final class quyen_jj implements Action {
                 if (var1 != null && var1.length() > 0) {
                     YahooScreen.updateStatusMessage(this.a, var1);
                 } else {
-                    PacketSender.a(0, 2);
+                    PacketSender.requestReloadData(0, 2);
                 }
 
                 YahooScreen.yahooStatus = 0;
                 GameManager.showConnectionStatus = true;
             } else {
-                PacketSender.a(12, 2);
+                PacketSender.requestReloadData(12, 2);
                 YahooScreen.yahooStatus = 12;
                 GameManager.showConnectionStatus = true;
             }

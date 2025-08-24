@@ -10,9 +10,9 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.game.GameRoom;
 import home.thienph.xyahoo107.data.game.Notification;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
-import home.thienph.xyahoo107.data.media.BuddyContact;
-import home.thienph.xyahoo107.data.media.BuddyListManager;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.forms.FileBrowserList;
 import home.thienph.xyahoo107.forms.FileSystemInterface;
@@ -179,13 +179,13 @@ public final class GameManager {
         }
     }
 
-    private BuddyContact getResource(String var1) {
+    private BuddyInfo getResource(String var1) {
         this.initResourceCache();
-        return (BuddyContact) this.resourceCache.get(var1);
+        return (BuddyInfo) this.resourceCache.get(var1);
     }
 
     public CardInfo getCardInfoResource(String var1, int var2) {
-        BuddyContact var3;
+        BuddyInfo var3;
         if ((var3 = this.getResource(var1)) == null) {
             var3 = FriendScreen.instance.findContactById(var1);
         }
@@ -193,7 +193,7 @@ public final class GameManager {
         if (var3 != null && var3.cardInfo != null) {
             return var3.cardInfo;
         } else {
-            PacketSender.a(var1, 0);
+            PacketSender.requestReloadData(var1, 0);
             return null;
         }
     }
@@ -211,19 +211,19 @@ public final class GameManager {
             }
         }
 
-        BuddyContact var7;
+        BuddyInfo var7;
         if ((var7 = this.getResource(var1)) != null && var3 == 0) {
             var7.cardInfo = var2;
         }
 
-        BuddyContact var8;
+        BuddyInfo var8;
         if ((var8 = FriendScreen.instance.findContactById(var1)) != null) {
             if (var3 == 0) {
                 var8.cardInfo = var2;
             }
         } else {
-            BuddyContact var9;
-            (var9 = new BuddyContact()).username = var1;
+            BuddyInfo var9;
+            (var9 = new BuddyInfo()).username = var1;
             if (var3 == 0) {
                 var9.cardInfo = var2;
             }
@@ -1351,7 +1351,7 @@ public final class GameManager {
                     if (this.currentScreen == GameScreen.instance && GameScreen.isInGame) {
                         String var30 = FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX];
                         if (GameScreen.totalRooms == 0) {
-                            PacketSender.a(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
+                            PacketSender.requestReloadData(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
                         }
                     }
 
@@ -1603,7 +1603,7 @@ public final class GameManager {
         return Xuka.loadIntData(var0 ? "yahoocs" : "xubics" + FriendScreen.currentUserId, "xkown");
     }
 
-    public static boolean saveBuddyList(BuddyListManager var0, boolean var1, String var2) {
+    public static boolean saveBuddyList(BuddyGroupList var0, boolean var1, String var2) {
         ByteArrayOutputStream var3 = new ByteArrayOutputStream();
         Vector var9 = var0.contactGroups;
 
@@ -1617,7 +1617,7 @@ public final class GameManager {
                 writeIntToStream(var3, var10.size());
 
                 for (int var6 = 0; var6 < var10.size(); var6++) {
-                    BuddyContact var7 = (BuddyContact) var10.elementAt(var6);
+                    BuddyInfo var7 = (BuddyInfo) var10.elementAt(var6);
                     writeStringToStream(var3, var7.username);
                     writeStringToStream(var3, var7.displayName);
                     writeIntToStream(var3, var7.dataSize);
@@ -1634,13 +1634,13 @@ public final class GameManager {
         }
     }
 
-    public static BuddyListManager loadBuddyList(boolean var0, String var1) {
+    public static BuddyGroupList loadBuddyList(boolean var0, String var1) {
         byte[] var10;
         if ((var10 = Xuka.loadData((var0 ? "ybuddy" : "vbuddy") + var1, "xkown")) == null) {
             return null;
         } else {
             ByteArrayInputStream var11 = new ByteArrayInputStream(var10);
-            BuddyListManager var2 = new BuddyListManager();
+            BuddyGroupList var2 = new BuddyGroupList();
 
             try {
                 var2.contactGroups = new Vector();
@@ -1653,8 +1653,8 @@ public final class GameManager {
                     int var6 = readIntFromStream(var11);
 
                     for (int var7 = 0; var7 < var6; var7++) {
-                        BuddyContact var8;
-                        (var8 = new BuddyContact()).username = readStringFromStream(var11);
+                        BuddyInfo var8;
+                        (var8 = new BuddyInfo()).username = readStringFromStream(var11);
                         var8.displayName = readStringFromStream(var11);
                         var8.dataSize = readIntFromStream(var11);
                         if (!var0) {
@@ -2013,7 +2013,7 @@ public final class GameManager {
                     return;
                 }
 
-                PacketSender.a(var1);
+                PacketSender.requestReloadData(var1);
             }
         }
     }
@@ -2121,7 +2121,7 @@ public final class GameManager {
         }
     }
 
-    public void loadYahooBuddyList(BuddyListManager var1) {
+    public void loadYahooBuddyList(BuddyGroupList var1) {
         saveBuddyList(var1, true, YahooScreen.yahooUsername);
         this.yahooChat.contactList.setContactData(var1, -1);
         this.yahooChat.isActive = true;
@@ -2227,7 +2227,7 @@ public final class GameManager {
                 Xuka.platform = "null";
             }
 
-            PacketSender.a(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
+            PacketSender.requestReloadData(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
         }
 
         PacketSender.sendAppInfo();
@@ -2322,14 +2322,14 @@ public final class GameManager {
         try {
             if (this.isFileSending && this.uploadData != null) {
                 if (this.fileSentBytes < this.uploadData.length - this.fileBufferSize) {
-                    PacketSender.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
+                    PacketSender.requestReloadData(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
                     this.fileSentBytes = this.fileSentBytes + this.fileBufferSize;
                     this.fileProgress = 100 * this.fileSentBytes / this.uploadData.length;
                     if (this.fileSentBytes >= this.uploadData.length) {
                         this.completeFileSend();
                     }
                 } else {
-                    PacketSender.a(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
+                    PacketSender.requestReloadData(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
                     this.completeFileSend();
                     this.fileProgress = 100;
                 }
@@ -2380,7 +2380,7 @@ public final class GameManager {
     public void startFileSend() {
         if (!this.isFileSending) {
             this.isFileSending = true;
-            PacketSender.a(this.uploadData.length, this.uploadType, this.uploadFileName);
+            PacketSender.requestReloadData(this.uploadData.length, this.uploadType, this.uploadFileName);
             this.showNotification("Đang gửi file..", (Image) null, 2);
         } else {
             this.createSimpleDialog("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new ButtonAction("Hủy bỏ", new quyen_fz(this)), null, this.createBackButton(TextConstant.close()));
@@ -2440,12 +2440,12 @@ public final class GameManager {
             int var3 = this.downloadManager.downloadListComponent.listItems.size();
 
             while (--var3 >= 0) {
-                quyen_bj var4;
-                BuddyContact var5;
-                if ((var5 = (var4 = (quyen_bj) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).i).username.equals(var1)) {
+                BuddyListItem var4;
+                BuddyInfo var5;
+                if ((var5 = (var4 = (BuddyListItem) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).contactRef).username.equals(var1)) {
                     var5.imageBytes = var2;
                     var5.isSelected = true;
-                    var4.e = UIUtils.concatStrings(Integer.toString(var5.statusCode), " KBs", null, null);
+                    var4.statusText = UIUtils.concatStrings(Integer.toString(var5.statusCode), " KBs", null, null);
                     if (this.hasDownloaded) {
                         this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.fileName, null, null), (Image) null, 1);
                     } else {
@@ -2485,11 +2485,11 @@ public final class GameManager {
             var5 = UIUtils.concatStrings("Video", " ", var2, null);
         }
 
-        BuddyContact var6 = new BuddyContact(var1, var5, var3, null, null, -1, -1, null);
+        BuddyInfo var6 = new BuddyInfo(var1, var5, var3, null, null, -1, -1, null);
         var6.downloadType = var4;
-        var6.downloadText = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
+        var6.description = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
         var6.fileName = var2;
-        this.downloadManager.buddyListManager.insertContactToGroup("", var6);
+        this.downloadManager.buddyGroupList.insertContactToGroup("", var6);
         this.downloadManager.downloadListComponent.buildListItems();
     }
 
@@ -2761,32 +2761,57 @@ public final class GameManager {
         this.switchToScreen(GameScreen.instance);
     }
 
-    private static String generateCacheKey(int var0, boolean var1) {
-        StringBuffer var2;
-        (var2 = new StringBuffer(var1 ? "cs" : "dt")).append(var0);
-        return var2.toString();
+    /*
+     * Ý nghĩa: Tạo cache key cho việc lưu trữ dữ liệu
+     * Tạo key với prefix khác nhau tùy theo loại dữ liệu:
+     * - "cs" + dataId: cho checksum data (kiểm tra tính toàn vẹn)
+     * - "dt" + dataId: cho actual data (dữ liệu thực tế)
+     *
+     * @param dataId - ID của dữ liệu
+     * @param isChecksum - true nếu tạo key cho checksum, false cho data
+     * @return String cache key được tạo
+     */
+    private static String generateCacheKey(int dataId, boolean isChecksum) {
+        return (isChecksum ? "cs" : "dt") + dataId;
     }
 
     private void processDataInThread(byte[] var1) {
         new Thread(new ProcessDataTask(this, var1), "GameManager.processDataInThread").start();
     }
 
-    public void loadCachedData(int var1, int var2) {
-        byte[] var4;
-        if (Xuka.loadIntData(generateCacheKey(var1, true), "xkcsp") == var2 && (var4 = Xuka.loadData(generateCacheKey(var1, false), "xkcsp")) != null) {
-            this.processDataInThread(var4);
+    /*
+     * Ý nghĩa: Tải dữ liệu từ cache và xử lý
+     * Kiểm tra tính hợp lệ của cache bằng cách so sánh checksum
+     * Nếu cache hợp lệ thì xử lý dữ liệu, không thì yêu cầu tải lại từ server
+     *
+     * @param dataId - ID của dữ liệu cần tải
+     * @param expectedChecksum - checksum mong đợi để kiểm tra tính toàn vẹn
+     */
+    public void loadCachedData(int dataId, int dataVersion) {
+        byte[] cachedData = Xuka.loadData(generateCacheKey(dataId, false), "xkcsp");
+        int serverDataVersion = Xuka.loadIntData(generateCacheKey(dataId, true), "xkcsp");
+        if (serverDataVersion == dataVersion && cachedData != null) {
+            this.processDataInThread(cachedData);
         } else {
-            PacketSender.a(var1);
+            PacketSender.requestReloadData(dataId);
         }
     }
 
-    public void saveCachedData(int var1, int var2, byte[] var3) {
-        this.processDataInThread(var3);
-        Xuka.saveData(generateCacheKey(var1, true), intToBytes(var2), "xkcsp");
-        Xuka.saveData(generateCacheKey(var1, false), var3, "xkcsp");
+    /*
+     * Ý nghĩa: Lưu dữ liệu vào cache với checksum để kiểm tra tính toàn vẹn
+     * Xử lý dữ liệu ngay lập tức và lưu cả checksum và dữ liệu thực tế vào cache
+     *
+     * @param dataId - ID của dữ liệu cần lưu cache
+     * @param checksum - checksum để kiểm tra tính toàn vẹn dữ liệu
+     * @param dataToCache - dữ liệu thực tế cần cache
+     */
+    public void saveCachedData(int dataId, int dataVersion, byte[] dataToCache) {
+        this.processDataInThread(dataToCache);
+        Xuka.saveData(generateCacheKey(dataId, true), intToBytes(dataVersion), "xkcsp");
+        Xuka.saveData(generateCacheKey(dataId, false), dataToCache, "xkcsp");
     }
 
-    public void showGameLobby(BuddyListManager var1) {
+    public void showGameLobby(BuddyGroupList var1) {
         if (gameRoom == null) {
             (gameRoom = new GameLobbyScreen()).gameListComponent.itemAction = new quyen_gd(this);
             gameRoom.gameListComponent.selectAction.text = "Vào phòng";
@@ -2796,7 +2821,7 @@ public final class GameManager {
         }
 
         gameRoom.gameListComponent.setIconSettings(1, 10, 10);
-        gameRoom.gameListComponent.setStatusIconType(1);
+        gameRoom.gameListComponent.setEnableIconStatus(1);
         gameRoom.gameListComponent.setDataSource(var1, 0, false);
         gameRoom.startSlideAnimation(1);
         if (!this.containsScreenInstance(gameRoom)) {
@@ -2832,7 +2857,7 @@ public final class GameManager {
         }
     }
 
-    public void loadContactData(BuddyListManager var1) {
+    public void loadContactData(BuddyGroupList var1) {
         this.friendManager.mainContactList.setContactData(var1, -1);
         saveBuddyList(var1, false, FriendScreen.currentUserId);
         this.friendManager.mainContactList.isLoading = false;
@@ -2883,7 +2908,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode3(BuddyListManager var1) {
+    public void loadSecondaryContactsMode3(BuddyGroupList var1) {
         if (FriendScreen.currentViewMode == 3) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2896,7 +2921,7 @@ public final class GameManager {
         }
     }
 
-    public void loadSecondaryContactsMode2(BuddyListManager var1) {
+    public void loadSecondaryContactsMode2(BuddyGroupList var1) {
         if (FriendScreen.currentViewMode == 2) {
             this.friendManager.secondaryContactList.setContactData(var1, -1);
             this.friendManager.secondaryContactList.isLoading = false;
@@ -2928,8 +2953,8 @@ public final class GameManager {
                 this.showNotification(UIUtils.concatStrings(var3, " đồng ý kết bạn với bạn.", null, null), (Image) null, 1);
             }
 
-            BuddyContact var10;
-            (var10 = new BuddyContact(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
+            BuddyInfo var10;
+            (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
             FriendScreen.addContactToList("Ban Be", var10, this.friendManager.mainContactList);
             saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
             this.friendManager.addToOnlineList(var1);
@@ -3028,7 +3053,7 @@ public final class GameManager {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactStatus(var1, var3)) {
             this.friendManager.updateFavoriteStatus(var1, var3);
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            BuddyContact var6;
+            BuddyInfo var6;
             if ((var6 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1)) != null) {
                 String var2 = UIUtils.concatStrings(var6.username, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
                 this.showNotification(var2, var3 == 1 ? statusIcons[1] : statusIcons[0], var4);
@@ -3048,7 +3073,7 @@ public final class GameManager {
     public void updateUserStatusMessage(long var1, String var3) {
         if (this.friendManager != null && this.friendManager.mainContactList.updateContactSubtext(var1, var3)) {
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            BuddyContact var5 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1);
+            BuddyInfo var5 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1);
             String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
             this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
             if (var1 == FriendScreen.currentUserTimestamp) {
@@ -3062,7 +3087,7 @@ public final class GameManager {
         this.friendManager.addOfflineMessage(var1, var2);
     }
 
-    public void showOfflineMessages(BuddyListManager var1) {
+    public void showOfflineMessages(BuddyGroupList var1) {
         this.friendManager.createOfflineMessageScreen(var1);
         this.friendManager.offlineMessageScreen.startSlideAnimation(1);
         this.addScreenToStack(this.friendManager.offlineMessageScreen);

@@ -6,10 +6,10 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
-import home.thienph.xyahoo107.data.media.BuddyContact;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.data.media.BuddyListManager;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.NetworkManager;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -99,19 +99,19 @@ public final class FriendScreen extends Screen {
         UIUtils.focusComponent(this, this.mainContactList);
         this.contextMenuItems = new Vector();
         this.contextMenu = new ContextMenu(this.contextMenuItems);
-        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new quyen_im(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new FriendClickStatusAction(this)));
         this.contextMenuItems.addElement(this.createPendingRequestsButton());
-        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new quyen_iu(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new quyen_iw(this)));
-        this.contextMenuItems.addElement(new ButtonAction("ID từ chối", new quyen_iy(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new FriendClickAddContactAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new FriendClickChatWithAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("ID từ chối", new FriendListUserRefuseAction(this)));
         ButtonAction var1 = new ButtonAction("Chức năng khác", null);
         Vector var2;
-        (var2 = new Vector()).addElement(new ButtonAction("Mở/tắt ID ẩn", new quyen_iz(this)));
-        var2.addElement(new ButtonAction("Mở/tắt avatar", new quyen_ja(this)));
-        var2.addElement(new ButtonAction("Gửi tin nhóm", new quyen_ic(this)));
+        (var2 = new Vector()).addElement(new ButtonAction("Mở/tắt ID ẩn", new FriendOpenCloseOfflineAction(this)));
+        var2.addElement(new ButtonAction("Mở/tắt avatar", new FriendOpenCloseAvatarAction(this)));
+        var2.addElement(new ButtonAction("Gửi tin nhóm", new FriendSendToGroupAction(this)));
         var1.parentContainer = new ContextMenu(var2);
         this.contextMenuItems.addElement(var1);
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_id(this));
+        super.leftSoftkey = new ButtonAction("Menu", new FriendClickMenuAction(this));
         super.rightSoftkey = this.defaultRightSoftkey;
     }
 
@@ -166,7 +166,7 @@ public final class FriendScreen extends Screen {
             int var2 = 0;
 
             for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
-                this.addToOnlineList(((BuddyContact) var1.contacts.elementAt(var2)).timestamp);
+                this.addToOnlineList(((BuddyInfo) var1.contacts.elementAt(var2)).timestamp);
             }
         }
     }
@@ -256,7 +256,7 @@ public final class FriendScreen extends Screen {
             this.pendingInvitations = new Hashtable();
         }
 
-        PacketSender.a(var1);
+        PacketSender.requestReloadData(var1);
         this.pendingInvitations.put(new Long(var1), var3);
     }
 
@@ -284,7 +284,7 @@ public final class FriendScreen extends Screen {
         this.offlineMessages.put(var1, var3);
     }
 
-    public void createOfflineMessageScreen(BuddyListManager var1) {
+    public void createOfflineMessageScreen(BuddyGroupList var1) {
         this.offlineMessageScreen = new Screen();
         this.offlineMessageScreen.title = "Tin Nhắn Offline";
         ListComponent var2;
@@ -350,9 +350,9 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public static void addContactToList(String var0, BuddyContact var1, ContactListComponent var2) {
+    public static void addContactToList(String var0, BuddyInfo var1, ContactListComponent var2) {
         if (var2.contactData == null) {
-            var2.contactData = new BuddyListManager();
+            var2.contactData = new BuddyGroupList();
         }
 
         var2.contactData.addContactToGroup(var0, var1);
@@ -366,7 +366,7 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public BuddyContact findContactById(String var1) {
+    public BuddyInfo findContactById(String var1) {
         return this.mainContactList.contactData == null ? null : this.mainContactList.contactData.findDownloadFile(var1, null, 0L);
     }
 
@@ -386,13 +386,13 @@ public final class FriendScreen extends Screen {
         if (this.userStorage.containsKey(new Long(var1))) {
             return (String) this.userStorage.get(new Long(var1));
         } else {
-            BuddyContact var3;
+            BuddyInfo var3;
             return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownloadFile(null, null, var1)) != null ? var3.username : null;
         }
     }
 
     public long getUserTimestampById(String var1) {
-        BuddyContact var2;
+        BuddyInfo var2;
         return this.mainContactList != null && this.mainContactList.contactData != null && (var2 = this.mainContactList.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.timestamp : 0L;
     }
 
@@ -438,7 +438,7 @@ public final class FriendScreen extends Screen {
     public void addToFavorites(long var1) {
         if (this.mainContactList.contactData != null && !this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
             ContactListComponent var7 = this.mainContactList;
-            BuddyContact var8;
+            BuddyInfo var8;
             if ((var8 = var7.contactData == null ? null : var7.contactData.findDownloadFile(null, null, var1)) == null) {
                 return;
             }
@@ -459,9 +459,9 @@ public final class FriendScreen extends Screen {
             int var4 = 0;
 
             for (int var5 = this.mainContactList.displayItems.size(); var4 < var5; var4++) {
-                quyen_bj var6;
-                if ((var6 = (quyen_bj) this.mainContactList.displayItems.elementAt(var4)).a == 0 && var6.m == var1) {
-                    var6.g = var3;
+                BuddyListItem var6;
+                if ((var6 = (BuddyListItem) this.mainContactList.displayItems.elementAt(var4)).itemType == 0 && var6.timestamp == var1) {
+                    var6.statusCode = var3;
                     return;
                 }
             }
@@ -484,14 +484,14 @@ public final class FriendScreen extends Screen {
                             int var5 = 0;
 
                             for (int var6 = var8.mainContactList.displayItems.size(); var5 < var6; var5++) {
-                                quyen_bj var7;
-                                if ((var7 = (quyen_bj) var8.mainContactList.displayItems.elementAt(var5)).a == 0 && var7.m == var9[var4]) {
-                                    var7.g = 1;
-                                    var7.e = var3[var4];
+                                BuddyListItem var7;
+                                if ((var7 = (BuddyListItem) var8.mainContactList.displayItems.elementAt(var5)).itemType == 0 && var7.timestamp == var9[var4]) {
+                                    var7.statusCode = 1;
+                                    var7.statusText = var3[var4];
                                     if (var3[var4] != null && var3[var4].length() > 0) {
-                                        var7.f = UIUtils.concatStrings(var7.d, " - ", var3[var4], null);
+                                        var7.extraField = UIUtils.concatStrings(var7.displayName, " - ", var3[var4], null);
                                     } else {
-                                        var7.f = var7.d;
+                                        var7.extraField = var7.displayName;
                                     }
                                 }
                             }
@@ -527,7 +527,7 @@ public final class FriendScreen extends Screen {
         this.secondaryContactList = null;
         toggleOfflineFilter(this.mainContactList);
         UIUtils.focusComponent(this, this.mainContactList);
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_it(this));
+        super.leftSoftkey = new ButtonAction("Menu", new FriendSwitchMainMenuAction(this));
         UIUtils.setScreenSubtitleText(instance, "Bạn Bè");
         currentViewMode = 1;
         System.gc();

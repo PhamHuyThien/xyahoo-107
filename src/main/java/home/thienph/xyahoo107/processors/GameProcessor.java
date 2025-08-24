@@ -5,11 +5,11 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.BuddyContact;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.data.media.BuddyListManager;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.ChatScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
@@ -76,687 +76,1173 @@ public class GameProcessor {
                     case 55:
                     default:
                         System.gc();
+                        System.out.println("[MessageProcessor.processMessage] end processMessage = " + commandId);
                         return;
                     case 3:
-                        int var167 = PacketUtils.readInt(packet);
-                        Packet var183 = new Packet(0, 0);
-                        PacketUtils.writeInt(var167, var183);
-                        int var168 = PacketUtils.readInt(packet);
-                        int var193 = 0;
+                        /*
+                         * Ý nghĩa: Xử lý request đọc dữ liệu từ UI components và trả về response packet
+                         *
+                         * Đọc dữ liệu:
+                         * int: requestId - ID để tracking request/response matching, độ chính xác 100%
+                         * int: componentCount - số lượng UI components cần xử lý dữ liệu
+                         * for: danh sách componentCount lần
+                         *      byte: dataType - loại dữ liệu (0=int, 1=string, 2=boolean, 3=array)
+                         *      byte: sourceType - nguồn dữ liệu (0=direct value, 1=UI component value)
+                         *
+                         *      Nếu dataType == 0 (INTEGER):
+                         *          - sourceType 0: int directValue
+                         *          - sourceType 1: int screenId, int componentId, boolean isRequired
+                         *
+                         *      Nếu dataType == 1 (STRING):
+                         *          - sourceType 0: string directString
+                         *          - sourceType 1: int screenId, int componentId, boolean isRequired
+                         *
+                         *      Nếu dataType == 2 (BOOLEAN):
+                         *          - sourceType 0: boolean directBoolean
+                         *          - sourceType 1: int screenId, int componentId
+                         *
+                         *      Nếu dataType == 3 (ARRAY):
+                         *          - sourceType 1: int screenId, int componentId
+                         *
+                         * Ghi response:
+                         * int: requestId - copy lại để client mapping
+                         * [componentCount lần]: dữ liệu đã xử lý theo từng dataType
+                         * byte: dialogType - loại dialog hiện tại
+                         */
+                        int requestId = PacketUtils.readInt(packet);
+                        Packet responsePacket = new Packet(0, 0);
+                        PacketUtils.writeInt(requestId, responsePacket);
+                        int componentCount = PacketUtils.readInt(packet);
 
-                        for (; var193 < var168; var193++) {
-                            byte var212 = packet.getPayload().readByte();
-                            int var232 = packet.getPayload().readByte();
-                            if (var212 == 0) {
-                                if (var232 == 0) {
-                                    PacketUtils.writeInt(PacketUtils.readInt(packet), var183);
-                                } else if (var232 == 1) {
-                                    var232 = PacketUtils.readInt(packet);
-                                    Screen var256 = GameManager.instance.findScreenById(var232);
-                                    int var274 = PacketUtils.readInt(packet);
-                                    boolean var216 = PacketUtils.readBoolean(packet);
-                                    var232 = 0;
-                                    UIComponent var275;
-                                    if ((var275 = var256.findComponentByID(var274)) != null) {
-                                        if (var275 instanceof TextInputComponent) {
-                                            String var283 = ((TextInputComponent) var275).getText();
-                                            if (var216 && var283.equals("")) {
-                                                UIUtils.focusComponent(var256, var275);
+                        for (int componentIndex = 0; componentIndex < componentCount; componentIndex++) {
+                            byte dataType = packet.getPayload().readByte();
+                            int sourceType = packet.getPayload().readByte();
+
+                            if (dataType == 0) {
+                                if (sourceType == 0) {
+                                    int directValue = PacketUtils.readInt(packet);
+                                    PacketUtils.writeInt(directValue, responsePacket);
+                                } else if (sourceType == 1) {
+                                    int screenId = PacketUtils.readInt(packet);
+                                    Screen targetScreen = GameManager.instance.findScreenById(screenId);
+                                    int componentId = PacketUtils.readInt(packet);
+                                    boolean isRequired = PacketUtils.readBoolean(packet);
+                                    int extractedValue = 0;
+                                    UIComponent targetComponent = targetScreen.findComponentByID(componentId);
+
+                                    if (targetComponent != null) {
+                                        if (targetComponent instanceof TextInputComponent) {
+                                            String inputText = ((TextInputComponent) targetComponent).getText();
+                                            if (isRequired && inputText.equals("")) {
+                                                UIUtils.focusComponent(targetScreen, targetComponent);
                                                 return;
                                             }
 
                                             try {
-                                                var232 = Integer.parseInt(var283);
-                                            } catch (Exception var145) {
-                                                UIUtils.focusComponent(var256, var275);
+                                                extractedValue = Integer.parseInt(inputText);
+                                            } catch (Exception parseException) {
+                                                UIUtils.focusComponent(targetScreen, targetComponent);
                                                 return;
                                             }
-                                        } else if (var275 instanceof DropdownComponent) {
-                                            var232 = ((DropdownComponent) var275).getSelectedIndex();
-                                        } else if (var275 instanceof GridComponent) {
-                                            var232 = ((GridComponent) var275).getSelectedItemId();
-                                        } else if (var275 instanceof PhotoViewComponent) {
-                                            var232 = ((PhotoViewComponent) var275).displayMode;
+                                        } else if (targetComponent instanceof DropdownComponent) {
+                                            extractedValue = ((DropdownComponent) targetComponent).getSelectedIndex();
+                                        } else if (targetComponent instanceof GridComponent) {
+                                            extractedValue = ((GridComponent) targetComponent).getSelectedItemId();
+                                        } else if (targetComponent instanceof PhotoViewComponent) {
+                                            extractedValue = ((PhotoViewComponent) targetComponent).displayMode;
                                         }
                                     }
 
-                                    PacketUtils.writeInt(var232, var183);
+                                    PacketUtils.writeInt(extractedValue, responsePacket);
                                 }
-                            } else if (var212 == 1) {
-                                if (var232 == 0) {
-                                    PacketUtils.writeString(PacketUtils.readString(packet), var183);
-                                } else if (var232 == 1) {
-                                    var232 = PacketUtils.readInt(packet);
-                                    Screen var255 = GameManager.instance.findScreenById(var232);
-                                    int var272 = PacketUtils.readInt(packet);
-                                    boolean var215 = PacketUtils.readBoolean(packet);
-                                    UIComponent var238 = var255.findComponentByID(var272);
-                                    String var273 = "";
-                                    if (var238 instanceof TextInputComponent) {
-                                        var273 = ((TextInputComponent) var238).getText();
-                                        if (var215 && var273.equals("")) {
-                                            UIUtils.focusComponent(var255, var238);
+                            } else if (dataType == 1) {
+                                if (sourceType == 0) {
+                                    String directString = PacketUtils.readString(packet);
+                                    PacketUtils.writeString(directString, responsePacket);
+                                } else if (sourceType == 1) {
+                                    int screenId = PacketUtils.readInt(packet);
+                                    Screen targetScreen = GameManager.instance.findScreenById(screenId);
+                                    int componentId = PacketUtils.readInt(packet);
+                                    boolean isRequired = PacketUtils.readBoolean(packet);
+                                    UIComponent targetComponent = targetScreen.findComponentByID(componentId);
+                                    String extractedString = "";
+
+                                    if (targetComponent instanceof TextInputComponent) {
+                                        extractedString = ((TextInputComponent) targetComponent).getText();
+                                        if (isRequired && extractedString.equals("")) {
+                                            UIUtils.focusComponent(targetScreen, targetComponent);
                                             return;
                                         }
-                                    } else if (var238 instanceof DropdownComponent) {
-                                        var273 = ((DropdownComponent) var238).getSelectedText();
-                                    } else if (var238 instanceof ListComponent) {
-                                        ListComponent var282;
-                                        var273 = (var282 = (ListComponent) var238).getSelectedItem().j;
+                                    } else if (targetComponent instanceof DropdownComponent) {
+                                        extractedString = ((DropdownComponent) targetComponent).getSelectedText();
+                                    } else if (targetComponent instanceof ListComponent) {
+                                        ListComponent listComponent = (ListComponent) targetComponent;
+                                        extractedString = listComponent.getSelectedItem().fileName;
                                     }
 
-                                    PacketUtils.writeString(var273, var183);
+                                    PacketUtils.writeString(extractedString, responsePacket);
                                 }
-                            } else if (var212 == 2) {
-                                if (var232 == 0) {
-                                    PacketUtils.writeBoolean(PacketUtils.readBoolean(packet), var183);
-                                } else if (var232 == 1) {
-                                    var232 = PacketUtils.readInt(packet);
-                                    Screen var254 = GameManager.instance.findScreenById(var232);
-                                    int var271 = PacketUtils.readInt(packet);
-                                    UIComponent var214;
-                                    if ((var214 = var254.findComponentByID(var271)) instanceof CheckboxComponent) {
-                                        boolean var236 = ((CheckboxComponent) var214).isChecked;
-                                        PacketUtils.writeBoolean(((CheckboxComponent) var214).isChecked, var183);
+                            } else if (dataType == 2) {
+                                if (sourceType == 0) {
+                                    boolean directBoolean = PacketUtils.readBoolean(packet);
+                                    PacketUtils.writeBoolean(directBoolean, responsePacket);
+                                } else if (sourceType == 1) {
+                                    int screenId = PacketUtils.readInt(packet);
+                                    Screen targetScreen = GameManager.instance.findScreenById(screenId);
+                                    int componentId = PacketUtils.readInt(packet);
+                                    UIComponent targetComponent = targetScreen.findComponentByID(componentId);
+                                    if (targetComponent instanceof CheckboxComponent) {
+                                        boolean isChecked = ((CheckboxComponent) targetComponent).isChecked;
+                                        PacketUtils.writeBoolean(isChecked, responsePacket);
                                     }
                                 }
-                            } else if (var212 == 3 && var232 == 1) {
-                                var232 = PacketUtils.readInt(packet);
-                                Screen var253 = GameManager.instance.findScreenById(var232);
-                                int var269 = PacketUtils.readInt(packet);
-                                UIComponent var213;
-                                if ((var213 = var253.findComponentByID(var269)) instanceof ListComponent) {
-                                    String[] var234;
-                                    if ((var234 = ((ListComponent) var213).getSelectedItemIds()) != null) {
-                                        PacketUtils.writeInt(var269 = var234.length, var183);
-
-                                        for (int var281 = 0; var281 < var269; var281++) {
-                                            PacketUtils.writeString(var234[var281], var183);
+                            } else if (dataType == 3 && sourceType == 1) {
+                                int screenId = PacketUtils.readInt(packet);
+                                Screen targetScreen = GameManager.instance.findScreenById(screenId);
+                                int componentId = PacketUtils.readInt(packet);
+                                UIComponent targetComponent = targetScreen.findComponentByID(componentId);
+                                if (targetComponent instanceof ListComponent) {
+                                    String[] selectedItemIds = ((ListComponent) targetComponent).getSelectedItemIds();
+                                    if (selectedItemIds != null) {
+                                        int arrayLength = selectedItemIds.length;
+                                        PacketUtils.writeInt(arrayLength, responsePacket);
+                                        for (int itemIndex = 0; itemIndex < arrayLength; itemIndex++) {
+                                            PacketUtils.writeString(selectedItemIds[itemIndex], responsePacket);
                                         }
                                     } else {
-                                        PacketUtils.writeInt(0, var183);
+                                        PacketUtils.writeInt(0, responsePacket);
                                     }
                                 } else {
-                                    PacketUtils.writeInt(0, var183);
+                                    PacketUtils.writeInt(0, responsePacket);
                                 }
                             }
                         }
 
-                        PacketUtils.writeByte(dialogType, var183);
-                        PacketSender.a(var183.getPayload().getBuffer());
+                        PacketUtils.writeByte(dialogType, responsePacket);
+                        PacketSender.requestReloadData(responsePacket.getPayload().getBuffer());
                         break;
                     case 4:
-                        DialogScreen dialogScreen = new DialogScreen();
-                        dialogScreen.showInNavigation = true;
-                        dialogScreen.title = PacketUtils.readString(packet);
+                        /*
+                         * Ý nghĩa: Tạo và hiển thị dialog screen mới với animation slide-in
+                         *
+                         * Đọc dữ liệu:
+                         * string: title - tiêu đề của dialog screen
+                         * int: dialogId - ID duy nhất của dialog, dùng để identify và destroy screen cũ
+                         * boolean: isSwitchLastScreen - có chuyển về screen trước đó hay không
+                         *
+                         */
+                        DialogScreen newDialogScreen = new DialogScreen();
+                        newDialogScreen.showInNavigation = true;
+                        newDialogScreen.title = PacketUtils.readString(packet);
                         int dialogId = PacketUtils.readInt(packet);
-                        dialogScreen.dialogId = dialogId;
+                        newDialogScreen.dialogId = dialogId;
+
                         GameManager.instance.destroyScreen(GameManager.instance.findScreenById(dialogId));
-                        dialogScreen.startSlideAnimation(1);
+                        newDialogScreen.startSlideAnimation(1);
+
                         boolean isSwitchLastScreen = PacketUtils.readBoolean(packet);
-                        GameManager.instance.addScreenToStack((Screen) dialogScreen);
+                        GameManager.instance.addScreenToStack((Screen) newDialogScreen);
+
                         if (isSwitchLastScreen) {
                             GameManager.instance.switchToLastScreen();
                         }
+
                         if (dialogId == 11111) {
-                            GameManager.instance.setupMainMenu(dialogScreen);
+                            GameManager.instance.setupMainMenu(newDialogScreen);
                         }
                         break;
                     case 5:
-                        int var192 = PacketUtils.readInt(packet);
-                        Screen var211 = GameManager.instance.findScreenById(var192);
+                        /*
+                         * Ý nghĩa: Cấu hình softkey (left/center/right) cho screen với ButtonAction
+                         *
+                         * Đọc dữ liệu:
+                         * int: screenId - ID của screen cần cấu hình softkey
+                         * byte: softkeyType - loại softkey (0=left, 1=center, 2=right)
+                         *
+                         * Với softkeyType = 0 (LEFT SOFTKEY):
+                         *     ButtonAction từ createUIFactory(packet)
+                         *     - Nếu screenId là error code: tạo context menu với 2 items
+                         *       + Item 1: "Biểu cảm" với action quyen_ax()
+                         *       + Item 2: ButtonAction đã đọc
+                         *       + Gán leftSoftkey = "Menu" với action quyen_ay(contextMenu)
+                         *     - Nếu không phải error code: gán trực tiếp ButtonAction cho leftSoftkey
+                         *
+                         * Với softkeyType = 1 (CENTER SOFTKEY):
+                         *     ButtonAction từ createUIFactory(packet)
+                         *     Gán trực tiếp cho centerSoftkey
+                         *
+                         * Với softkeyType = 2 (RIGHT SOFTKEY):
+                         *     ButtonAction từ createUIFactory(packet)
+                         *     Gán trực tiếp cho rightSoftkey
+                         *
+                         * Cuối cùng: đánh dấu screen.needsUpdate = true
+                         */
+                        int screenId = PacketUtils.readInt(packet);
+                        Screen targetScreen = GameManager.instance.findScreenById(screenId);
+
                         switch (packet.getPayload().readByte()) {
-                            case 0:
-                                ButtonAction var231 = createUIFactory(packet);
-                                if (GameManager.isValidErrorCode(var192)) {
-                                    Vector var252;
-                                    (var252 = new Vector()).addElement(new ButtonAction("Biểu cảm", new quyen_ax()));
-                                    var252.addElement(var231);
-                                    ContextMenu var268 = new ContextMenu(var252);
-                                    var211.leftSoftkey = new ButtonAction("Menu", new quyen_ay(var268));
+                            case 0: // LEFT SOFTKEY
+                                ButtonAction leftButtonAction = createUIFactory(packet);
+                                if (GameManager.isValidErrorCode(screenId)) {
+                                    Vector menuItems = new Vector();
+                                    menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_ax()));
+                                    menuItems.addElement(leftButtonAction);
+                                    ContextMenu contextMenu = new ContextMenu(menuItems);
+                                    targetScreen.leftSoftkey = new ButtonAction("Menu", new quyen_ay(contextMenu));
                                 } else {
-                                    var211.leftSoftkey = var231;
+                                    targetScreen.leftSoftkey = leftButtonAction;
                                 }
                                 break;
-                            case 1:
-                                var211.centerSoftkey = createUIFactory(packet);
+
+                            case 1: // CENTER SOFTKEY
+                                targetScreen.centerSoftkey = createUIFactory(packet);
                                 break;
-                            case 2:
-                                var211.rightSoftkey = createUIFactory(packet);
+
+                            case 2: // RIGHT SOFTKEY
+                                targetScreen.rightSoftkey = createUIFactory(packet);
                         }
 
-                        var211.needsUpdate = true;
+                        targetScreen.needsUpdate = true;
                         break;
                     case 6:
-                        int var165 = PacketUtils.readInt(packet);
-                        DialogScreen var166 = (DialogScreen) GameManager.instance.findScreenById(var165);
-                        byte var251 = packet.getPayload().readByte();
-                        Object var180 = null;
-                        switch (var251) {
-                            case 0:
-                                String var305 = PacketUtils.readString(packet);
-                                int var307 = PacketUtils.readInt(packet);
-                                int var308 = PacketUtils.readInt(packet);
-                                TextInputComponent var309;
-                                var180 = var309 = ButtonAction.createLabeledTextInput(var166, var305, var307, var308);
-                                setComponentAlignment(var166, (UIComponent) var180, packet);
-                                var309.textInputHandler.posX = var309.posX;
+                        /*
+                         * Ý nghĩa: Factory pattern tạo và thêm UI component vào DialogScreen theo componentType
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen cần thêm component
+                         * byte: componentType - loại component cần tạo
+                         *
+                         * int: componentId - ID duy nhất cho component (đọc cuối cùng)
+                         *
+                         * componentType = 0 (TextInputComponent):
+                         *     string: label - nhãn hiển thị
+                         *     int: maxLength - độ dài tối đa
+                         *     int: inputType - loại input
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 1 (TextComponent/Spacer):
+                         *     string: text - nội dung text (nếu rỗng thì tạo spacer)
+                         *     int: width - chiều rộng
+                         *     int: textColor - màu chữ
+                         *     byte: alignment - căn chỉnh (nếu không phải spacer)
+                         *
+                         * componentType = 4 (TextLinkComponent/CustomButton):
+                         *     string: text - text hiển thị
+                         *     int: width - chiều rộng
+                         *     int: textColor - màu chữ
+                         *     bytes: actionData - dữ liệu cho action handler
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 5 (SimpleTextComponent):
+                         *     string: text - nội dung text
+                         *     int: unused - giá trị không dùng
+                         *
+                         * componentType = 6 (ImageComponent từ resourceId):
+                         *     int: imageResourceId - ID resource image
+                         *     int: width - chiều rộng
+                         *     int: height - chiều cao
+                         *     boolean: isVisible - hiển thị hay không
+                         *     boolean: hasBorder - có border hay không
+                         *     string: clickActionName - tên action khi click
+                         *     bytes: clickActionData - dữ liệu cho click action
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 7 (DropdownComponent):
+                         *     string: label - nhãn hiển thị
+                         *     int: selectedIndex - index được chọn ban đầu
+                         *     int: optionCount - số lượng options
+                         *     [optionCount lần]: string option - từng option
+                         *     bytes: changeActionData - dữ liệu cho change action
+                         *     int: finalSelectedIndex - index được set cuối cùng
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 8 (ImageComponent từ multiple images):
+                         *     byte: imageCount - số lượng image IDs
+                         *     [imageCount lần]: int imageId - ID từng image
+                         *     int: width - chiều rộng
+                         *     int: height - chiều cao
+                         *     boolean: isVisible - hiển thị hay không
+                         *     boolean: hasBorder - có border hay không
+                         *     string: clickActionName - tên action khi click
+                         *     bytes: clickActionData - dữ liệu cho click action
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 11 (ListComponent/BuddyList):
+                         *     boolean: showGroups - hiển thị groups hay không
+                         *     byte: displayMode - chế độ hiển thị (có thêm field hay không)
+                         *     byte: iconType - loại icon (0=none, 2=color, 3=image)
+                         *     int: iconWidth, iconHeight - kích thước icon (nếu iconType = 2)
+                         *     byte: statusIconType - loại status icon
+                         *     int: contactCount - số lượng contacts
+                         *     [contactCount lần]:
+                         *         string: groupName - tên nhóm
+                         *         string: fileName - tên file
+                         *         string: displayName - tên hiển thị
+                         *         string: extraField - field phụ (nếu displayMode = 1)
+                         *         int/bytes: iconData - dữ liệu icon (tùy iconType)
+                         *         byte: status - trạng thái (nếu statusIconType = 1)
+                         *         string: tooltip - tooltip text
+                         *     bytes: itemActionData - dữ liệu cho item action
+                         *
+                         * componentType = 12 (ImageComponent từ bytes):
+                         *     bytes: imageData - dữ liệu image
+                         *     boolean: isVisible - hiển thị hay không
+                         *     boolean: hasBorder - có border hay không
+                         *     string: clickActionName - tên action khi click
+                         *     bytes: clickActionData - dữ liệu cho click action
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 13 (GridComponent):
+                         *     int: itemCount - số lượng items
+                         *     int: itemWidth - rộng item
+                         *     int: itemHeight - cao item
+                         *     boolean: hasCheckboxes - có checkboxes hay không
+                         *     [itemCount lần]:
+                         *         string: itemText - text của item
+                         *         int: itemId - ID của item
+                         *         int: itemColor - màu của item
+                         *         boolean: isChecked - trạng thái checked (nếu hasCheckboxes = true)
+                         *     bytes: selectActionData - dữ liệu cho select action
+                         *
+                         * componentType = 14 (CheckboxComponent):
+                         *     string: label - nhãn hiển thị
+                         *     boolean: isChecked - trạng thái checked ban đầu
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 15 (LabelComponent):
+                         *     string: text - nội dung label
+                         *     int: textColor - màu chữ
+                         *     byte: alignment - căn chỉnh component
+                         *
+                         * componentType = 16 (PopupDialogComponent):
+                         *     string: message - nội dung popup
+                         *     byte: dialogType - loại dialog
+                         *     bytes: actionData - dữ liệu cho action
+                         *
+                         * componentType = 17 (ButtonComponent):
+                         *     string: text - text hiển thị trên button
+                         *     int: width - chiều rộng button
+                         *     bytes: actionData - dữ liệu cho button action
+                         *     byte: alignment - căn chỉnh component
+                         */
+                        int dialogId1 = PacketUtils.readInt(packet);
+                        DialogScreen targetDialog = (DialogScreen) GameManager.instance.findScreenById(dialogId1);
+                        byte componentType = packet.getPayload().readByte();
+                        Object createdComponent = null;
+                        
+                        System.out.println("[UIComponentFactory] screen id: " + dialogId1 + ", component type: " + componentType);
+
+                        switch (componentType) {
+                            case 0: // TextInputComponent
+                                String label = PacketUtils.readString(packet);
+                                int maxLength = PacketUtils.readInt(packet);
+                                int inputType = PacketUtils.readInt(packet);
+                                TextInputComponent textInput = ButtonAction.createLabeledTextInput(targetDialog, label, maxLength, inputType);
+                                createdComponent = textInput;
+                                setComponentAlignment(targetDialog, (UIComponent) createdComponent, packet);
+                                textInput.textInputHandler.posX = textInput.posX;
                                 break;
-                            case 1:
-                                String var310 = PacketUtils.readString(packet);
-                                int var70 = PacketUtils.readInt(packet);
-                                if (var310.equals("")) {
-                                    TextComponent var311;
-                                    (var311 = ButtonAction.createSpacer(var166, var70)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
-                                    var311.isVisible = !var310.trim().equals("");
-                                    var180 = var311;
-                                    packet.getPayload().readByte();
+
+                            case 1: // TextComponent or Spacer
+                                String text = PacketUtils.readString(packet);
+                                int width = PacketUtils.readInt(packet);
+                                if (text.equals("")) {
+                                    TextComponent spacer = ButtonAction.createSpacer(targetDialog, width);
+                                    spacer.textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
+                                    spacer.isVisible = !text.trim().equals("");
+                                    createdComponent = spacer;
+                                    packet.getPayload().readByte(); // Skip alignment
                                 } else {
-                                    var180 = ButtonAction.createWrappedText(var310, var166, var70, UIUtils.validateColor(PacketUtils.readInt(packet)), true, true)[0];
-                                    setComponentAlignment(var166, (UIComponent) var180, packet);
+                                    createdComponent = ButtonAction.createWrappedText(text, targetDialog, width, UIUtils.validateColor(PacketUtils.readInt(packet)), true, true)[0];
+                                    setComponentAlignment(targetDialog, (UIComponent) createdComponent, packet);
                                 }
                                 break;
+
                             case 2:
                             case 3:
                             case 9:
                             case 10:
                             default:
                                 break;
-                            case 4:
-                                String var312 = PacketUtils.readString(packet);
-                                int var73 = PacketUtils.readInt(packet);
-                                int var74 = UIUtils.validateColor(PacketUtils.readInt(packet));
-                                byte[] var75 = PacketUtils.readBytes(packet);
-                                TextLinkComponent var76;
-                                (var76 = ButtonAction.createCustomButton(var166, var312, var73, new quyen_ah(var75), var166.dialogX, var166.nextComponentY, var166.dialogWidth)).textColor = new Integer(var74);
-                                var180 = var76;
-                                setComponentAlignment(var166, var76, packet);
+
+                            case 4: // TextLinkComponent/CustomButton
+                                String buttonText = PacketUtils.readString(packet);
+                                int buttonWidth = PacketUtils.readInt(packet);
+                                int textColor = UIUtils.validateColor(PacketUtils.readInt(packet));
+                                byte[] actionData = PacketUtils.readBytes(packet);
+                                TextLinkComponent customButton = ButtonAction.createCustomButton(targetDialog, buttonText, buttonWidth, new TextLinkAction(actionData), targetDialog.dialogX, targetDialog.nextComponentY, targetDialog.dialogWidth);
+                                customButton.textColor = new Integer(textColor);
+                                createdComponent = customButton;
+                                setComponentAlignment(targetDialog, customButton, packet);
                                 break;
-                            case 5:
-                                String var80 = PacketUtils.readString(packet);
-                                PacketUtils.readInt(packet);
-                                var180 = ButtonAction.createSimpleText(var166, var80)[0];
+
+                            case 5: // SimpleTextComponent
+                                String simpleText = PacketUtils.readString(packet);
+                                PacketUtils.readInt(packet); // Unused parameter
+                                createdComponent = ButtonAction.createSimpleText(targetDialog, simpleText)[0];
                                 break;
-                            case 6:
-                            case 12:
-                                Image var82 = null;
-                                int var83 = -1;
-                                int var313 = 0;
-                                int var314 = 0;
-                                if (var251 == 12) {
-                                    byte[] var315;
-                                    var313 = (var82 = Image.createImage(var315 = PacketUtils.readBytes(packet), 0, var315.length)).getWidth();
-                                    var314 = var82.getHeight();
-                                } else if (var251 == 6) {
-                                    var83 = PacketUtils.readInt(packet);
-                                    var313 = PacketUtils.readInt(packet);
-                                    var314 = PacketUtils.readInt(packet);
+
+                            case 6: // ImageComponent from resource ID
+                            case 12: // ImageComponent from bytes
+                                Image image = null;
+                                int imageResourceId = -1;
+                                int imageWidth = 0;
+                                int imageHeight = 0;
+
+                                if (componentType == 12) {
+                                    byte[] imageBytes = PacketUtils.readBytes(packet);
+                                    image = Image.createImage(imageBytes, 0, imageBytes.length);
+                                    imageWidth = image.getWidth();
+                                    imageHeight = image.getHeight();
+                                } else if (componentType == 6) {
+                                    imageResourceId = PacketUtils.readInt(packet);
+                                    imageWidth = PacketUtils.readInt(packet);
+                                    imageHeight = PacketUtils.readInt(packet);
                                 }
 
-                                boolean var316 = PacketUtils.readBoolean(packet);
-                                boolean var317 = PacketUtils.readBoolean(packet);
-                                String var318 = PacketUtils.readString(packet);
-                                byte[] var89 = PacketUtils.readBytes(packet);
-                                ImageComponent var90 = ButtonAction.createImageComponent(var166, var83, var82, var313, var314, var316, var317);
-                                if (var89 != null && var89.length > 1) {
-                                    var90.setClickAction(var318, new quyen_aj(var89));
+                                boolean isVisible = PacketUtils.readBoolean(packet);
+                                boolean hasBorder = PacketUtils.readBoolean(packet);
+                                String clickActionName = PacketUtils.readString(packet);
+                                byte[] clickActionData = PacketUtils.readBytes(packet);
+
+                                ImageComponent imageComponent = ButtonAction.createImageComponent(targetDialog, imageResourceId, image, imageWidth, imageHeight, isVisible, hasBorder);
+                                if (clickActionData != null && clickActionData.length > 1) {
+                                    imageComponent.setClickAction(clickActionName, new ImageClickAction(clickActionData));
                                 }
 
-                                var180 = var90;
-                                setComponentAlignment(var166, var90, packet);
+                                createdComponent = imageComponent;
+                                setComponentAlignment(targetDialog, imageComponent, packet);
                                 break;
-                            case 7:
-                                String var118 = PacketUtils.readString(packet);
-                                int var119 = PacketUtils.readInt(packet);
-                                int var120;
-                                String[] var121 = new String[var120 = PacketUtils.readInt(packet)];
 
-                                for (int var122 = 0; var122 < var120; var122++) {
-                                    var121[var122] = PacketUtils.readString(packet);
+                            case 7: // DropdownComponent
+                                String dropdownLabel = PacketUtils.readString(packet);
+                                int selectedIndex = PacketUtils.readInt(packet);
+                                int optionCount = PacketUtils.readInt(packet);
+                                String[] options = new String[optionCount];
+
+                                for (int i = 0; i < optionCount; i++) {
+                                    options[i] = PacketUtils.readString(packet);
                                 }
 
-                                byte[] var328 = PacketUtils.readBytes(packet);
-                                DropdownComponent var123 = ButtonAction.createChoiceBoxWithID(var166, var118, var121, var119);
-                                if (var328 != null && var328.length > 1) {
-                                    var123.setChangeAction(new quyen_an(var328));
+                                byte[] changeActionData = PacketUtils.readBytes(packet);
+                                DropdownComponent dropdown = ButtonAction.createChoiceBoxWithID(targetDialog, dropdownLabel, options, selectedIndex);
+                                if (changeActionData != null && changeActionData.length > 1) {
+                                    dropdown.setChangeAction(new DropdownChangeAction(changeActionData));
                                 }
 
-                                int var124 = PacketUtils.readInt(packet);
-                                var180 = var123;
-                                setComponentAlignment(var166, var123, packet);
-                                var123.textInputHandler.posX = var123.posX;
-                                var123.setSelectedIndex(var124);
+                                int finalSelectedIndex = PacketUtils.readInt(packet);
+                                createdComponent = dropdown;
+                                setComponentAlignment(targetDialog, dropdown, packet);
+                                dropdown.textInputHandler.posX = dropdown.posX;
+                                dropdown.setSelectedIndex(finalSelectedIndex);
                                 break;
-                            case 8:
-                                byte var91;
-                                int[] var92 = new int[var91 = packet.getPayload().readByte()];
 
-                                for (int var93 = 0; var93 < var91; var93++) {
-                                    var92[var93] = PacketUtils.readInt(packet);
+                            case 8: // ImageComponent with multiple images
+                                byte imageCount = packet.getPayload().readByte();
+                                int[] imageIds = new int[imageCount];
+
+                                for (int i = 0; i < imageCount; i++) {
+                                    imageIds[i] = PacketUtils.readInt(packet);
                                 }
 
-                                int var84 = PacketUtils.readInt(packet);
-                                int var85 = PacketUtils.readInt(packet);
-                                boolean var86 = PacketUtils.readBoolean(packet);
-                                boolean var87 = PacketUtils.readBoolean(packet);
-                                String var88 = PacketUtils.readString(packet);
-                                byte[] var319 = PacketUtils.readBytes(packet);
-                                ImageComponent var335;
-                                (var335 = new ImageComponent()).setSize(var84, var85);
-                                var335.isVisible = var86;
-                                var335.setMultipleImages(var92);
-                                var335.setPosition(Screen.screenWidth - var84 >> 1, var166.nextComponentY == 6 ? var166.nextComponentY : var166.nextComponentY + 2);
-                                var335.hasBorder = var87;
-                                var166.addComponent(var335);
-                                var166.nextComponentY += 2;
-                                if (var88.length() > 0 && var319 != null && var319.length > 1) {
-                                    var335.setClickAction(var88, new quyen_ak(var319));
+                                int multiImageWidth = PacketUtils.readInt(packet);
+                                int multiImageHeight = PacketUtils.readInt(packet);
+                                boolean multiImageVisible = PacketUtils.readBoolean(packet);
+                                boolean multiImageBorder = PacketUtils.readBoolean(packet);
+                                String multiImageClickAction = PacketUtils.readString(packet);
+                                byte[] multiImageActionData = PacketUtils.readBytes(packet);
+
+                                ImageComponent multiImageComponent = new ImageComponent();
+                                multiImageComponent.setSize(multiImageWidth, multiImageHeight);
+                                multiImageComponent.isVisible = multiImageVisible;
+                                multiImageComponent.setMultipleImages(imageIds);
+                                multiImageComponent.setPosition(Screen.screenWidth - multiImageWidth >> 1, targetDialog.nextComponentY == 6 ? targetDialog.nextComponentY : targetDialog.nextComponentY + 2);
+                                multiImageComponent.hasBorder = multiImageBorder;
+                                targetDialog.addComponent(multiImageComponent);
+                                targetDialog.nextComponentY += 2;
+
+                                if (multiImageClickAction.length() > 0 && multiImageActionData != null && multiImageActionData.length > 1) {
+                                    multiImageComponent.setClickAction(multiImageClickAction, new MultiImageClickAction(multiImageActionData));
                                 }
 
-                                var180 = var335;
-                                setComponentAlignment(var166, var335, packet);
+                                createdComponent = multiImageComponent;
+                                setComponentAlignment(targetDialog, multiImageComponent, packet);
                                 break;
-                            case 11:
-                                boolean var94 = PacketUtils.readBoolean(packet);
-                                byte var95 = packet.getPayload().readByte();
-                                byte var96 = packet.getPayload().readByte();
-                                int var97 = -1;
-                                int var98 = -1;
-                                if (var96 == 2) {
-                                    var97 = PacketUtils.readInt(packet);
-                                    var98 = PacketUtils.readInt(packet);
+
+                            case 11: // ListComponent/BuddyList
+                                boolean adjustHeight = PacketUtils.readBoolean(packet);
+                                byte enableDescription = packet.getPayload().readByte();
+                                byte iconType = packet.getPayload().readByte();
+                                int iconWidth = -1;
+                                int iconHeight = -1;
+
+                                if (iconType == 2) {
+                                    iconWidth = PacketUtils.readInt(packet);
+                                    iconHeight = PacketUtils.readInt(packet);
                                 }
 
-                                byte var99 = packet.getPayload().readByte();
-                                int var100 = PacketUtils.readInt(packet);
-                                BuddyListManager var101 = new BuddyListManager();
-                                BuddyContact[] var102 = new BuddyContact[var100];
-                                String[] var103 = new String[var100];
+                                byte enableStatusIcon = packet.getPayload().readByte();
+                                int contactCount = PacketUtils.readInt(packet);
+                                BuddyGroupList buddyManager = new BuddyGroupList();
+                                BuddyInfo[] contacts = new BuddyInfo[contactCount];
+                                String[] groupNames = new String[contactCount];
 
-                                for (int var104 = 0; var104 < var100; var104++) {
-                                    var103[var104] = PacketUtils.readString(packet);
-                                    String var105 = PacketUtils.readString(packet);
-                                    String var321 = PacketUtils.readString(packet);
-                                    String var322 = null;
-                                    if (var95 == 1) {
-                                        var322 = PacketUtils.readString(packet);
+                                for (int i = 0; i < contactCount; i++) {
+                                    groupNames[i] = PacketUtils.readString(packet);
+                                    String fileName = PacketUtils.readString(packet);
+                                    String displayName = PacketUtils.readString(packet);
+                                    String description = null;
+
+                                    if (enableDescription == 1) {
+                                        description = PacketUtils.readString(packet);
                                     }
 
-                                    Integer var323 = null;
-                                    Image var324 = null;
-                                    if (var96 == 2) {
-                                        var323 = new Integer(PacketUtils.readInt(packet));
-                                    } else if (var96 == 3) {
-                                        var324 = UIUtils.createImageFromBytes(PacketUtils.readBytes(packet));
-                                        if (var97 == -1) {
-                                            var97 = var324.getWidth();
-                                            var98 = var324.getHeight();
+                                    Integer imageSourceId = null;
+                                    Image thumbnailImage = null;
+
+                                    if (iconType == 2) {
+                                        imageSourceId = new Integer(PacketUtils.readInt(packet));
+                                    } else if (iconType == 3) {
+                                        thumbnailImage = UIUtils.createImageFromBytes(PacketUtils.readBytes(packet));
+                                        if (iconWidth == -1) {
+                                            iconWidth = thumbnailImage.getWidth();
+                                            iconHeight = thumbnailImage.getHeight();
                                         }
                                     }
 
-                                    byte var325 = 0;
-                                    if (var99 == 1) {
-                                        if ((var325 = packet.getPayload().readByte()) == 0) {
-                                            var325 = 2;
-                                        } else if (var325 == 1) {
-                                            var325 = 3;
+                                    byte status = 0;
+                                    if (enableStatusIcon == 1) {
+                                        status = packet.getPayload().readByte();
+                                        if (status == 0) {
+                                            status = 2;
+                                        } else if (status == 1) {
+                                            status = 3;
                                         } else {
-                                            var325 = 4;
+                                            status = 4;
                                         }
                                     }
 
-                                    String var327;
-                                    if ((var327 = PacketUtils.readString(packet)) != null && var327.length() == 0) {
-                                        var327 = null;
+                                    String statusDescription = PacketUtils.readString(packet);
+                                    if (statusDescription != null && statusDescription.length() == 0) {
+                                        statusDescription = null;
                                     }
 
-                                    var102[var104] = new BuddyContact("", var321, var325, var322, null, -1, var104, var327);
-                                    var102[var104].fileName = var105;
-                                    var102[var104].priority = var323;
-                                    var102[var104].thumbnailImage = var324;
-                                    var101.addContactToGroup(var103[var104], var102[var104]);
+                                    contacts[i] = new BuddyInfo("", displayName, status, description, null, -1, i, statusDescription);
+                                    contacts[i].fileName = fileName;
+                                    contacts[i].imageSourceId = imageSourceId;
+                                    contacts[i].thumbnailImage = thumbnailImage;
+                                    buddyManager.addContactToGroup(groupNames[i], contacts[i]);
                                 }
 
-                                byte[] var320 = PacketUtils.readBytes(packet);
-                                if (var97 == -1) {
-                                    var97 = 10;
-                                    var98 = 10;
+                                byte[] itemActionData = PacketUtils.readBytes(packet);
+                                if (iconWidth == -1) {
+                                    iconWidth = 10;
+                                    iconHeight = 10;
                                 }
 
-                                ListComponent var330 = new ListComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight);
-                                var166.addComponent(var330);
-                                UIUtils.focusComponent(var166, var330);
-                                var330.setIconSettings(var96, var97, var98);
-                                var330.setStatusIconType(var99);
-                                var330.setDataSource(var101, var95, var94);
-                                if (var320 != null && var320.length > 1) {
-                                    var330.itemAction = new quyen_al(var320);
+                                ListComponent listComponent = new ListComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight);
+                                targetDialog.addComponent(listComponent);
+                                UIUtils.focusComponent(targetDialog, listComponent);
+                                listComponent.setIconSettings(iconType, iconWidth, iconHeight);
+                                listComponent.setEnableIconStatus(enableStatusIcon);
+                                listComponent.setDataSource(buddyManager, enableDescription, adjustHeight);
+
+                                if (itemActionData != null && itemActionData.length > 1) {
+                                    listComponent.itemAction = new ListBuddyListClickAction(itemActionData);
                                 }
 
-                                if (var320 == null || var320.length <= 1) {
-                                    var330.selectAction.text = "";
+                                if (itemActionData == null || itemActionData.length <= 1) {
+                                    listComponent.selectAction.text = "";
                                 }
 
-                                var180 = var330;
-                                var166.isScrollLocked = true;
+                                createdComponent = listComponent;
+                                targetDialog.isScrollLocked = true;
                                 break;
-                            case 13:
-                                int var106 = PacketUtils.readInt(packet);
-                                int var107 = PacketUtils.readInt(packet);
-                                int var108 = PacketUtils.readInt(packet);
-                                boolean var109 = PacketUtils.readBoolean(packet);
-                                int[] var110 = new int[var106];
-                                Integer[] var111 = new Integer[var106];
-                                String[] var112 = new String[var106];
-                                boolean[] var113 = null;
-                                if (var109) {
-                                    var113 = new boolean[var106];
+
+                            case 13: // GridComponent
+                                int itemCount = PacketUtils.readInt(packet);
+                                int itemWidth = PacketUtils.readInt(packet);
+                                int itemHeight = PacketUtils.readInt(packet);
+                                boolean hasCheckboxes = PacketUtils.readBoolean(packet);
+
+                                int[] itemDataIds = new int[itemCount];
+                                Integer[] itemImageIds = new Integer[itemCount];
+                                String[] itemTexts = new String[itemCount];
+                                boolean[] checkedStates = null;
+
+                                if (hasCheckboxes) {
+                                    checkedStates = new boolean[itemCount];
                                 }
 
-                                for (int var114 = 0; var114 < var106; var114++) {
-                                    var112[var114] = PacketUtils.readString(packet);
-                                    var110[var114] = PacketUtils.readInt(packet);
-                                    var111[var114] = new Integer(PacketUtils.readInt(packet));
-                                    if (var109) {
-                                        var113[var114] = PacketUtils.readBoolean(packet);
+                                for (int i = 0; i < itemCount; i++) {
+                                    itemTexts[i] = PacketUtils.readString(packet);
+                                    itemDataIds[i] = PacketUtils.readInt(packet);
+                                    itemImageIds[i] = new Integer(PacketUtils.readInt(packet));
+                                    if (hasCheckboxes) {
+                                        checkedStates[i] = PacketUtils.readBoolean(packet);
                                     }
                                 }
 
-                                GridComponent var336 = new GridComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight, var106, var112, var110, var111, var107, var108, false, 2);
-                                var166.addComponent(var336);
-                                UIUtils.focusComponent(var166, var336);
-                                byte[] var116 = PacketUtils.readBytes(packet);
-                                ButtonAction var329 = new ButtonAction("Chọn", new quyen_am(var109, var336, var113, var116));
-                                var336.middleSoftKey = var329;
-                                var180 = var336;
-                                var166.isScrollLocked = true;
+                                GridComponent gridComponent = new GridComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight, itemCount, itemTexts, itemDataIds, itemImageIds, itemWidth, itemHeight, false, 2);
+                                targetDialog.addComponent(gridComponent);
+                                UIUtils.focusComponent(targetDialog, gridComponent);
+
+                                byte[] selectActionData = PacketUtils.readBytes(packet);
+                                ButtonAction gridSelectAction = new ButtonAction("Chọn", new GridClickAction(hasCheckboxes, gridComponent, checkedStates, selectActionData));
+                                gridComponent.middleSoftKey = gridSelectAction;
+                                createdComponent = gridComponent;
+                                targetDialog.isScrollLocked = true;
                                 break;
-                            case 14:
-                                String var190 = PacketUtils.readString(packet);
-                                boolean var182 = PacketUtils.readBoolean(packet);
-                                var180 = ButtonAction.createCheckbox(var166, var190, var182);
-                                setComponentAlignment(var166, (UIComponent) var180, packet);
+
+                            case 14: // CheckboxComponent
+                                String checkboxLabel = PacketUtils.readString(packet);
+                                boolean isChecked = PacketUtils.readBoolean(packet);
+                                createdComponent = ButtonAction.createCheckbox(targetDialog, checkboxLabel, isChecked);
+                                setComponentAlignment(targetDialog, (UIComponent) createdComponent, packet);
                                 break;
-                            case 15:
-                                String var69;
-                                TextComponent var71;
-                                (var71 = ButtonAction.createLabel(var69 = PacketUtils.readString(packet), var166, -1)).textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
-                                var71.isVisible = !var69.trim().equals("");
-                                var71.enableScrolling = true;
-                                var180 = var71;
-                                setComponentAlignment(var166, var71, packet);
+
+                            case 15: // LabelComponent
+                                String labelText = PacketUtils.readString(packet);
+                                TextComponent labelComponent = ButtonAction.createLabel(labelText, targetDialog, -1);
+                                labelComponent.textColor = new Integer(UIUtils.validateColor(PacketUtils.readInt(packet)));
+                                labelComponent.isVisible = !labelText.trim().equals("");
+                                labelComponent.enableScrolling = true;
+                                createdComponent = labelComponent;
+                                setComponentAlignment(targetDialog, labelComponent, packet);
                                 break;
-                            case 16:
-                                String var189 = PacketUtils.readString(packet);
-                                byte var181 = packet.getPayload().readByte();
-                                byte[] var304 = PacketUtils.readBytes(packet);
-                                var180 = ButtonAction.createPopupDialog(var166, var189, var181, new quyen_az(var304));
+
+                            case 16: // PopupDialogComponent
+                                String popupMessage = PacketUtils.readString(packet);
+                                byte dialogType = packet.getPayload().readByte();
+                                byte[] popupActionData = PacketUtils.readBytes(packet);
+                                createdComponent = ButtonAction.createPopupDialog(targetDialog, popupMessage, dialogType, new PopupDialogClickAction(popupActionData));
                                 break;
-                            case 17:
-                                String var72 = PacketUtils.readString(packet);
-                                int var77 = PacketUtils.readInt(packet);
-                                byte[] var78 = PacketUtils.readBytes(packet);
-                                var180 = ButtonAction.createButton(var166, var72, new quyen_ai(var78), var166.nextComponentY, var77);
-                                setComponentAlignment(var166, (UIComponent) var180, packet);
+
+                            case 17: // ButtonComponent
+                                String buttonLabel = PacketUtils.readString(packet);
+                                int buttonWidthParam = PacketUtils.readInt(packet);
+                                byte[] buttonActionData = PacketUtils.readBytes(packet);
+                                createdComponent = ButtonAction.createButton(targetDialog, buttonLabel, new ButtonClickAction(buttonActionData), targetDialog.nextComponentY, buttonWidthParam);
+                                setComponentAlignment(targetDialog, (UIComponent) createdComponent, packet);
                         }
 
-                        int var191 = PacketUtils.readInt(packet);
-                        ((UIComponent) var180).id = var191;
-                        if (((UIComponent) var180).id > 1000 && var180 instanceof TextInputComponent) {
-                            ((TextInputComponent) var180).useNativeInput = true;
+                        int componentId = PacketUtils.readInt(packet);
+                        ((UIComponent) createdComponent).id = componentId;
+
+                        if (((UIComponent) createdComponent).id > 1000 && createdComponent instanceof TextInputComponent) {
+                            ((TextInputComponent) createdComponent).useNativeInput = true;
                         }
                         break;
                     case 7:
-                        int var178 = PacketUtils.readInt(packet);
-                        Screen var179 = GameManager.instance.findScreenById(var178);
-                        int var64 = PacketUtils.readInt(packet);
-                        UIComponent var65 = var179.findComponentByID(var64);
-                        UIUtils.focusComponent(var179, var65);
-                        if (var179.equals(GameManager.instance.getCurrentScreen())) {
-                            var179.focusFirstComponent();
+                        /*
+                         * Ý nghĩa: Focus vào một UI component cụ thể trong screen
+                         *
+                         * Đọc dữ liệu:
+                         * int: screenId - ID của screen chứa component
+                         * int: componentId - ID của component cần focus
+                         */
+                        int screenId2 = PacketUtils.readInt(packet);
+                        Screen targetScreen2 = GameManager.instance.findScreenById(screenId2);
+                        int componentId2 = PacketUtils.readInt(packet);
+                        UIComponent targetComponent = targetScreen2.findComponentByID(componentId2);
+
+                        UIUtils.focusComponent(targetScreen2, targetComponent);
+                        if (targetScreen2.equals(GameManager.instance.getCurrentScreen())) {
+                            targetScreen2.focusFirstComponent();
                         }
                         break;
+
                     case 8:
+                        /*
+                         * Ý nghĩa: Thực hiện garbage collection và return khỏi method
+                         *
+                         * Đọc dữ liệu: không có
+                         */
                         System.gc();
                         return;
-                    case 12:
-                        int var164 = PacketUtils.readInt(packet);
-                        DialogScreen var230 = (DialogScreen) GameManager.instance.findScreenById(var164);
-                        int var250;
-                        String[] var267 = new String[var250 = PacketUtils.readInt(packet)];
 
-                        for (int var210 = 0; var210 < var250; var210++) {
-                            var267[var210] = PacketUtils.readString(packet);
+                    case 12:
+                        /*
+                         * Ý nghĩa: Tạo menu items cho DialogScreen từ danh sách string
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen cần tạo menu
+                         * int: menuItemCount - số lượng menu items
+                         * [menuItemCount lần]: string menuItem - text của từng menu item
+                         */
+                        int dialogId3 = PacketUtils.readInt(packet);
+                        DialogScreen targetDialog3 = (DialogScreen) GameManager.instance.findScreenById(dialogId3);
+                        int menuItemCount = PacketUtils.readInt(packet);
+                        String[] menuItems = new String[menuItemCount];
+
+                        for (int i = 0; i < menuItemCount; i++) {
+                            menuItems[i] = PacketUtils.readString(packet);
                         }
 
-                        var230.createMenuItems(var267);
+                        targetDialog3.createMenuItems(menuItems);
                         break;
+
                     case 13:
-                        int var306 = PacketUtils.readInt(packet);
-                        DialogScreen var67 = (DialogScreen) GameManager.instance.findScreenById(var306);
-                        int var68 = PacketUtils.readInt(packet);
-                        var67.expandMenu(var68);
+                        /*
+                         * Ý nghĩa: Mở rộng menu item tại index cụ thể trong DialogScreen
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen chứa menu
+                         * int: menuIndex - index của menu item cần expand
+                         */
+                        int expandDialogId = PacketUtils.readInt(packet);
+                        DialogScreen expandDialog = (DialogScreen) GameManager.instance.findScreenById(expandDialogId);
+                        int menuIndex = PacketUtils.readInt(packet);
+                        expandDialog.expandMenu(menuIndex);
                         break;
+
                     case 14:
-                        byte var160 = packet.getPayload().readByte();
-                        String var177 = "";
-                        if (var160 == 0) {
-                            var177 = PacketUtils.readString(packet);
+                        /*
+                         * Ý nghĩa: Hiển thị confirmation dialog cho SMS với text từ direct hoặc UI component
+                         *
+                         * Đọc dữ liệu:
+                         * byte: textSourceType - nguồn text (0=direct string, 1=từ UI component)
+                         *
+                         * Nếu textSourceType = 0:
+                         *     string: messageText - nội dung tin nhắn trực tiếp
+                         *
+                         * Nếu textSourceType = 1:
+                         *     int: sourceScreenId - ID screen chứa TextInputComponent
+                         *     int: sourceComponentId - ID của TextInputComponent
+                         *     boolean: isRequired - có bắt buộc nhập hay không
+                         *
+                         * string: phoneNumber - số điện thoại đích (format: "SEND: xxxxxxxxxx")
+                         */
+                        byte textSourceType = packet.getPayload().readByte();
+                        String messageText = "";
+
+                        if (textSourceType == 0) {
+                            messageText = PacketUtils.readString(packet);
                         } else {
-                            int var161 = PacketUtils.readInt(packet);
-                            Screen var188 = GameManager.instance.findScreenById(var161);
-                            int var207 = PacketUtils.readInt(packet);
-                            boolean var162 = PacketUtils.readBoolean(packet);
-                            UIComponent var208;
-                            if ((var208 = var188.findComponentByID(var207)) instanceof TextInputComponent) {
-                                var177 = ((TextInputComponent) var208).getText();
-                                if (var162 && var177.equals("")) {
-                                    UIUtils.focusComponent(var188, var208);
+                            int sourceScreenId = PacketUtils.readInt(packet);
+                            Screen sourceScreen = GameManager.instance.findScreenById(sourceScreenId);
+                            int sourceComponentId = PacketUtils.readInt(packet);
+                            boolean isRequired = PacketUtils.readBoolean(packet);
+
+                            UIComponent sourceComponent = sourceScreen.findComponentByID(sourceComponentId);
+                            if (sourceComponent instanceof TextInputComponent) {
+                                messageText = ((TextInputComponent) sourceComponent).getText();
+                                if (isRequired && messageText.equals("")) {
+                                    UIUtils.focusComponent(sourceScreen, sourceComponent);
                                     return;
                                 }
                             }
                         }
 
-                        String var163 = PacketUtils.readString(packet);
-                        String var209 = UIUtils.concatStrings("Gửi tin: ", var177, Xuka.refCode, "\nĐến số: ");
-                        GameManager.instance.showConfirmDialog(UIUtils.concatStrings(var209, var163.substring(6), null, null), new quyen_aw(var177, var163));
+                        String phoneNumber = PacketUtils.readString(packet);
+                        String confirmMessage = UIUtils.concatStrings("Gửi tin: ", messageText, Xuka.refCode, "\nĐến số: ");
+                        GameManager.instance.showConfirmDialog(UIUtils.concatStrings(confirmMessage, phoneNumber.substring(6), null, null), new quyen_aw(messageText, phoneNumber));
                         break;
+
                     case 15:
+                        /*
+                         * Ý nghĩa: Mở URL bằng platform request (browser/external app)
+                         *
+                         * Đọc dữ liệu:
+                         * string: url - URL cần mở
+                         */
                         try {
-                            Xuka.instance.platformRequest(PacketUtils.readString(packet));
-                        } catch (ConnectionNotFoundException var146) {
+                            String url = PacketUtils.readString(packet);
+                            Xuka.instance.platformRequest(url);
+                        } catch (ConnectionNotFoundException connectionException) {
+                            // Ignore exception
                         }
                         break;
+
                     case 16:
                     case 17:
-                        DialogScreen var266;
-                        UIComponent var206 = (var266 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
-                        UIComponent var228 = null;
+                        /*
+                         * Ý nghĩa: Điều chỉnh vị trí X (horizontal) của UI component
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen
+                         * int: targetComponentId - ID component cần điều chỉnh vị trí
+                         *
+                         * Case 16 - Set absolute position X:
+                         *     int: absoluteX - vị trí X tuyệt đối
+                         *
+                         * Case 17 - Set relative position X:
+                         *     int: referenceComponentId - ID component làm tham chiếu
+                         *     Vị trí X = referenceComponent.posX + referenceComponent.width + 6
+                         */
+                        DialogScreen positionDialog = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet));
+                        UIComponent targetPositionComponent = positionDialog.findComponentByID(PacketUtils.readInt(packet));
+                        UIComponent referenceComponent = null;
+
                         if (commandId == 16) {
-                            var206.posX = PacketUtils.readInt(packet);
+                            int absoluteX = PacketUtils.readInt(packet);
+                            targetPositionComponent.posX = absoluteX;
                         } else {
-                            var228 = var266.findComponentByID(PacketUtils.readInt(packet));
+                            int referenceComponentId = PacketUtils.readInt(packet);
+                            referenceComponent = positionDialog.findComponentByID(referenceComponentId);
                             if (commandId == 17) {
-                                var206.posX = var228.posX + var228.width + 6;
+                                targetPositionComponent.posX = referenceComponent.posX + referenceComponent.width + 6;
                             }
                         }
                         break;
+
                     case 18:
                     case 19:
                     case 20:
-                        DialogScreen var265;
-                        UIComponent var205 = (var265 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
-                        UIComponent var226 = null;
+                        /*
+                         * Ý nghĩa: Điều chỉnh vị trí Y (vertical) của UI component và update layout
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen
+                         * int: targetComponentId - ID component cần điều chỉnh vị trí
+                         *
+                         * Case 18 - Set absolute position Y:
+                         *     int: absoluteY - vị trí Y tuyệt đối
+                         *
+                         * Case 19 - Set position below reference component:
+                         *     int: referenceComponentId - ID component làm tham chiếu
+                         *     Vị trí Y = referenceComponent.posY + referenceComponent.height + 2
+                         *
+                         * Case 20 - Set position same Y as reference component:
+                         *     int: referenceComponentId - ID component làm tham chiếu
+                         *     Vị trí Y = referenceComponent.posY
+                         *
+                         * Sau khi set: dialog.nextComponentY = targetComponent.posY + targetComponent.height + 2
+                         * Cuối cùng: dialog.updateLayout()
+                         */
+                        DialogScreen layoutDialog = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet));
+                        UIComponent targetLayoutComponent = layoutDialog.findComponentByID(PacketUtils.readInt(packet));
+                        UIComponent layoutReferenceComponent = null;
+
                         if (commandId == 18) {
-                            var205.posY = PacketUtils.readInt(packet);
-                            var265.nextComponentY = var205.posY + var205.height + 2;
+                            int absoluteY = PacketUtils.readInt(packet);
+                            targetLayoutComponent.posY = absoluteY;
+                            layoutDialog.nextComponentY = targetLayoutComponent.posY + targetLayoutComponent.height + 2;
                         } else {
-                            var226 = var265.findComponentByID(PacketUtils.readInt(packet));
+                            int referenceComponentId = PacketUtils.readInt(packet);
+                            layoutReferenceComponent = layoutDialog.findComponentByID(referenceComponentId);
+
                             if (commandId == 19) {
-                                var205.posY = var226.posY + var226.height + 2;
+                                targetLayoutComponent.posY = layoutReferenceComponent.posY + layoutReferenceComponent.height + 2;
                             } else if (commandId == 20) {
-                                var205.posY = var226.posY;
+                                targetLayoutComponent.posY = layoutReferenceComponent.posY;
                             }
                         }
 
-                        var265.nextComponentY = var205.posY + var205.height + 2;
-                        var265.updateLayout();
+                        layoutDialog.nextComponentY = targetLayoutComponent.posY + targetLayoutComponent.height + 2;
+                        layoutDialog.updateLayout();
                         break;
                     case 21:
-                        String var176 = PacketUtils.readString(packet);
-                        Packet var159 = new Packet(0, 0);
-                        PacketUtils.writeInt(0, var159);
-                        PacketUtils.writeString(var176, var159);
-                        PacketSender.a(var159.getPayload().getBuffer());
+                        /*
+                         * Ý nghĩa: Gửi response packet với string data
+                         *
+                         * Đọc dữ liệu:
+                         * string: responseData - dữ liệu cần gửi trong response
+                         */
+                        String responseData = PacketUtils.readString(packet);
+                        Packet responsePacket2 = new Packet(0, 0);
+                        PacketUtils.writeInt(0, responsePacket2);
+                        PacketUtils.writeString(responseData, responsePacket2);
+                        PacketSender.requestReloadData(responsePacket2.getPayload().getBuffer());
                         break;
+
                     case 22:
-                        GameManager.instance.destroyScreen(GameManager.instance.setActiveScreen(PacketUtils.readString(packet)));
+                        /*
+                         * Ý nghĩa: Kích hoạt screen theo title và destroy screen hiện tại
+                         *
+                         * Đọc dữ liệu:
+                         * string: screenTitle - title của screen cần kích hoạt
+                         */
+                        String screenTitle = PacketUtils.readString(packet);
+                        GameManager.instance.destroyScreen(GameManager.instance.setActiveScreen(screenTitle));
                         break;
+
                     case 23:
+                        /*
+                         * Ý nghĩa: Đóng dialog hiện tại
+                         *
+                         * Đọc dữ liệu: không có
+                         */
                         GameManager.instance.closeDialog();
                         break;
+
                     case 24:
-                        int var158 = PacketUtils.readInt(packet);
-                        int var204 = PacketUtils.readInt(packet);
-                        String var225 = PacketUtils.readString(packet);
+                        /*
+                         * Ý nghĩa: Set text cho TextInputComponent cụ thể
+                         *
+                         * Đọc dữ liệu:
+                         * int: screenId - ID của screen chứa component
+                         * int: componentId - ID của TextInputComponent
+                         * string: newText - text mới cần set
+                         */
+                        int textScreenId = PacketUtils.readInt(packet);
+                        int textComponentId = PacketUtils.readInt(packet);
+                        String newText = PacketUtils.readString(packet);
 
                         try {
-                            ((TextInputComponent) GameManager.instance.findScreenById(var158).findComponentByID(var204)).setText(var225);
-                        } catch (Exception var144) {
+                            TextInputComponent textInput = (TextInputComponent) GameManager.instance.findScreenById(textScreenId).findComponentByID(textComponentId);
+                            textInput.setText(newText);
+                        } catch (Exception textException) {
+                            // Ignore exception if component not found or wrong type
                         }
                         break;
+
                     case 26:
-                        String var203 = PacketUtils.readString(packet);
-                        long var302 = PacketUtils.readLong(packet);
-                        ChatScreen var298;
-                        (var298 = GameManager.getInstance().getOrCreateChatScreen(var203)).setChatId(var302);
-                        GameManager.getInstance().switchToScreenByTitle(var298.title);
+                        /*
+                         * Ý nghĩa: Tạo hoặc lấy ChatScreen và chuyển đến chat với chatId
+                         *
+                         * Đọc dữ liệu:
+                         * string: chatTitle - title của chat screen
+                         * long: chatId - ID duy nhất của chat session
+                         */
+                        String chatTitle = PacketUtils.readString(packet);
+                        long chatId = PacketUtils.readLong(packet);
+
+                        ChatScreen chatScreen = GameManager.getInstance().getOrCreateChatScreen(chatTitle);
+                        chatScreen.setChatId(chatId);
+                        GameManager.getInstance().switchToScreenByTitle(chatScreen.title);
                         break;
+
                     case 28:
-                        GameManager.instance.showWrappedTextDialog(PacketUtils.readString(packet));
+                        /*
+                         * Ý nghĩa: Hiển thị dialog với wrapped text
+                         *
+                         * Đọc dữ liệu:
+                         * string: dialogText - nội dung text cần hiển thị trong dialog
+                         */
+                        String dialogText = PacketUtils.readString(packet);
+                        GameManager.instance.showWrappedTextDialog(dialogText);
                         break;
+
                     case 29:
                     case 60:
                     case 61:
-                        String var264 = null;
-                        byte var279 = 0;
-                        byte var285 = 0;
-                        byte var287 = 0;
-                        Vector var224 = null;
-                        String var249 = null;
+                        /*
+                         * Ý nghĩa: Tạo dialog với các loại khác nhau
+                         *
+                         * Case 29 - Simple Dialog:
+                         *     string: dialogMessage - nội dung dialog
+                         *     string: leftButtonText - text button trái
+                         *     bytes: leftButtonAction - action data cho button trái
+                         *     string: centerButtonText - text button giữa
+                         *     bytes: centerButtonAction - action data cho button giữa
+                         *     string: rightButtonText - text button phải
+                         *     bytes: rightButtonAction - action data cho button phải
+                         *
+                         * Case 60 - Table Dialog (chỉ select/back):
+                         *     string: dialogTitle - tiêu đề dialog
+                         *     byte: rowCount - số hàng
+                         *     byte: columnCount - số cột
+                         *     byte: tableType - loại table
+                         *     [rowCount lần]:
+                         *         [columnCount lần]: string cellData - dữ liệu từng cell
+                         *
+                         * Case 61 - Table Dialog với custom buttons:
+                         *     string: dialogTitle - tiêu đề dialog
+                         *     byte: rowCount - số hàng
+                         *     byte: columnCount - số cột
+                         *     byte: tableType - loại table
+                         *     [rowCount lần]:
+                         *         [columnCount lần]: string cellData - dữ liệu từng cell
+                         *     string: leftButtonText - text button trái
+                         *     bytes: leftButtonAction - action data cho button trái
+                         *     string: centerButtonText - text button giữa
+                         *     bytes: centerButtonAction - action data cho button giữa
+                         *     string: rightButtonText - text button phải
+                         *     bytes: rightButtonAction - action data cho button phải
+                         */
+                        String dialogTitle = null;
+                        byte rowCount = 0;
+                        byte columnCount = 0;
+                        byte tableType = 0;
+                        Vector tableData = null;
+                        String simpleMessage = null;
+
                         if (commandId == 29) {
-                            var249 = PacketUtils.readString(packet);
+                            simpleMessage = PacketUtils.readString(packet);
                         } else if (commandId == 60 || commandId == 61) {
-                            var264 = PacketUtils.readString(packet);
-                            var279 = packet.getPayload().readByte();
-                            var285 = packet.getPayload().readByte();
-                            var287 = packet.getPayload().readByte();
-                            var224 = new Vector();
+                            dialogTitle = PacketUtils.readString(packet);
+                            rowCount = packet.getPayload().readByte();
+                            columnCount = packet.getPayload().readByte();
+                            tableType = packet.getPayload().readByte();
+                            tableData = new Vector();
 
-                            for (int var289 = 0; var289 < var279; var289++) {
-                                String[] var292 = new String[var285];
-
-                                for (int var295 = 0; var295 < var285; var295++) {
-                                    var292[var295] = PacketUtils.readString(packet);
+                            for (int row = 0; row < rowCount; row++) {
+                                String[] rowData = new String[columnCount];
+                                for (int col = 0; col < columnCount; col++) {
+                                    rowData[col] = PacketUtils.readString(packet);
                                 }
-
-                                var224.addElement(var292);
+                                tableData.addElement(rowData);
                             }
 
-                            if (var264 != null && var264.length() == 0) {
-                                var264 = null;
+                            if (dialogTitle != null && dialogTitle.length() == 0) {
+                                dialogTitle = null;
                             }
                         }
 
-                        ButtonAction var290 = null;
-                        ButtonAction var293 = null;
-                        ButtonAction var296 = null;
+                        ButtonAction leftButton = null;
+                        ButtonAction centerButton = null;
+                        ButtonAction rightButton = null;
+
                         if (commandId == 29 || commandId == 61) {
-                            String var202 = PacketUtils.readString(packet);
-                            byte[] var301 = PacketUtils.readBytes(packet);
-                            String var303 = PacketUtils.readString(packet);
-                            byte[] var297 = PacketUtils.readBytes(packet);
-                            String var300 = PacketUtils.readString(packet);
-                            byte[] var175 = PacketUtils.readBytes(packet);
-                            if (var301 != null && var301.length > 1) {
-                                var290 = new ButtonAction(var202, new quyen_at(var301));
+                            String leftButtonText = PacketUtils.readString(packet);
+                            byte[] leftButtonAction = PacketUtils.readBytes(packet);
+                            String centerButtonText = PacketUtils.readString(packet);
+                            byte[] centerButtonAction = PacketUtils.readBytes(packet);
+                            String rightButtonText = PacketUtils.readString(packet);
+                            byte[] rightButtonAction = PacketUtils.readBytes(packet);
+
+                            if (leftButtonAction != null && leftButtonAction.length > 1) {
+                                leftButton = new ButtonAction(leftButtonText, new quyen_at(leftButtonAction));
                             }
 
-                            if (var297 != null && var297.length > 1) {
-                                var293 = new ButtonAction(var303, new quyen_au(var297));
+                            if (centerButtonAction != null && centerButtonAction.length > 1) {
+                                centerButton = new ButtonAction(centerButtonText, new quyen_au(centerButtonAction));
                             }
 
-                            if (var175 != null && var175.length > 1) {
-                                var296 = new ButtonAction(var300, new quyen_av(var175));
+                            if (rightButtonAction != null && rightButtonAction.length > 1) {
+                                rightButton = new ButtonAction(rightButtonText, new quyen_av(rightButtonAction));
                             }
                         }
 
                         if (commandId == 29) {
-                            GameManager.instance.createSimpleDialog(var249, var290, var293, var296);
+                            GameManager.instance.createSimpleDialog(simpleMessage, leftButton, centerButton, rightButton);
                         } else if (commandId == 60) {
-                            GameManager.instance.createDialog(var264, var287, var224, var285, GameManager.instance.getSelectButton(), GameManager.instance.createBackButton("OK"), null);
+                            GameManager.instance.createDialog(dialogTitle, tableType, tableData, columnCount, GameManager.instance.getSelectButton(), GameManager.instance.createBackButton("OK"), null);
                         } else if (commandId == 61) {
-                            GameManager.instance.createDialog(var264, var287, var224, var285, var290, var293, var296);
+                            GameManager.instance.createDialog(dialogTitle, tableType, tableData, columnCount, leftButton, centerButton, rightButton);
                         }
                         break;
+
                     case 30:
-                        int var157 = PacketUtils.readInt(packet);
-                        int var263 = PacketUtils.readInt(packet);
-                        boolean var278 = PacketUtils.readBoolean(packet);
+                        /*
+                         * Ý nghĩa: Set multi-select mode cho ListComponent
+                         *
+                         * Đọc dữ liệu:
+                         * int: screenId - ID của screen chứa ListComponent
+                         * int: componentId - ID của ListComponent
+                         * boolean: multiSelectEnabled - bật/tắt multi-select mode
+                         */
+                        int listScreenId = PacketUtils.readInt(packet);
+                        int listComponentId = PacketUtils.readInt(packet);
+                        boolean multiSelectEnabled = PacketUtils.readBoolean(packet);
 
                         try {
-                            ((ListComponent) GameManager.instance.findScreenById(var157).findComponentByID(var263)).setMultiSelectMode(var278);
-                        } catch (Exception var142) {
+                            ListComponent listComponent = (ListComponent) GameManager.instance.findScreenById(listScreenId).findComponentByID(listComponentId);
+                            listComponent.setMultiSelectMode(multiSelectEnabled);
+                        } catch (Exception listException) {
+                            // Ignore exception if component not found or wrong type
                         }
                         break;
+
                     case 31:
-                        int var156 = PacketUtils.readInt(packet);
-                        int var174 = PacketUtils.readInt(packet);
+                        /*
+                         * Ý nghĩa: Toggle select all items trong ListComponent
+                         *
+                         * Đọc dữ liệu:
+                         * int: screenId - ID của screen chứa ListComponent
+                         * int: componentId - ID của ListComponent
+                         */
+                        int toggleScreenId = PacketUtils.readInt(packet);
+                        int toggleComponentId = PacketUtils.readInt(packet);
 
                         try {
-                            ((ListComponent) GameManager.instance.findScreenById(var156).findComponentByID(var174)).toggleSelectAll();
-                        } catch (Exception var141) {
+                            ListComponent toggleListComponent = (ListComponent) GameManager.instance.findScreenById(toggleScreenId).findComponentByID(toggleComponentId);
+                            toggleListComponent.toggleSelectAll();
+                        } catch (Exception toggleException) {
+                            // Ignore exception if component not found or wrong type
                         }
                         break;
+
                     case 39:
-                        processMessage(PacketUtils.readBytes(packet));
+                        /*
+                         * Ý nghĩa: Xử lý message từ byte array (recursive call)
+                         *
+                         * Đọc dữ liệu:
+                         * bytes: messageData - dữ liệu message cần xử lý tiếp
+                         */
+                        byte[] messageData = PacketUtils.readBytes(packet);
+                        processMessage(messageData);
                         break;
+
                     case 47:
-                        int var126 = PacketUtils.readInt(packet);
-                        DialogScreen var127;
-                        if ((var127 = (DialogScreen) GameManager.instance.findScreenById(var126)) != null) {
-                            int var128 = packet == null ? 1 : PacketUtils.readInt(packet);
-                            int var129 = packet == null ? 20 : PacketUtils.readInt(packet);
-                            String var130 = UIUtils.concatStrings(" / ", Integer.toString(var129), null, null);
-                            int var131 = FontRenderer.getTextWidth(" 99 ") + 6;
-                            int var132 = Screen.screenWidth - FontRenderer.getTextWidth(UIUtils.concatStrings("<<   >>   ", var130, null, null)) - var131 >> 1;
-                            TextLinkComponent var133 = new TextLinkComponent("<<", var132, Screen.screenHeight - GameManager.footerHeight - FontRenderer.fontHeight - 6, FontRenderer.fontHeight + 4);
-                            TextLinkComponent var134 = new TextLinkComponent(">>", var133.posX + FontRenderer.getTextWidth("<<   "), var133.posY, FontRenderer.fontHeight + 4);
-                            TextInputComponent var135;
-                            (var135 = new TextInputComponent()).isReadOnly = true;
-                            var135.setBounds(var134.posX + FontRenderer.getTextWidth(">>   "), var133.posY - 1, var131, FontRenderer.fontHeight + 3);
-                            var135.setInputConstraint(1);
-                            var135.setText(Integer.toString(var128));
-                            TextComponent var136 = new TextComponent(var130, var135.posX + var135.width, var135.posY + 2, FontRenderer.fontHeight + 2);
+                        /*
+                         * Ý nghĩa: Tạo pagination component với << >> và input field cho DialogScreen
+                         *
+                         * Đọc dữ liệu:
+                         * int: dialogId - ID của DialogScreen cần thêm pagination
+                         * int: currentPage - trang hiện tại
+                         * int: totalPages - tổng số trang
+                         * int: prevButtonId - ID cho button "<<"
+                         * bytes: prevButtonAction - action data cho button "<<"
+                         * int: nextButtonId - ID cho button ">>"
+                         * bytes: nextButtonAction - action data cho button ">>"
+                         * int: inputFieldId - ID cho input field
+                         * bytes: inputFieldAction - action data cho input field ("Đến trang")
+                         */
+                        int paginationDialogId = PacketUtils.readInt(packet);
+                        DialogScreen paginationDialog = (DialogScreen) GameManager.instance.findScreenById(paginationDialogId);
+
+                        if (paginationDialog != null) {
+                            int currentPage = packet == null ? 1 : PacketUtils.readInt(packet);
+                            int totalPages = packet == null ? 20 : PacketUtils.readInt(packet);
+
+                            String pageInfo = UIUtils.concatStrings(" / ", Integer.toString(totalPages), null, null);
+                            int inputWidth = FontRenderer.getTextWidth(" 99 ") + 6;
+                            int startX = Screen.screenWidth - FontRenderer.getTextWidth(UIUtils.concatStrings("<<   >>   ", pageInfo, null, null)) - inputWidth >> 1;
+
+                            // Create << button
+                            TextLinkComponent prevButton = new TextLinkComponent("<<", startX, Screen.screenHeight - GameManager.footerHeight - FontRenderer.fontHeight - 6, FontRenderer.fontHeight + 4);
+
+                            // Create >> button
+                            TextLinkComponent nextButton = new TextLinkComponent(">>", prevButton.posX + FontRenderer.getTextWidth("<<   "), prevButton.posY, FontRenderer.fontHeight + 4);
+
+                            // Create page input field
+                            TextInputComponent pageInput = new TextInputComponent();
+                            pageInput.isReadOnly = true;
+                            pageInput.setBounds(nextButton.posX + FontRenderer.getTextWidth(">>   "), prevButton.posY - 1, inputWidth, FontRenderer.fontHeight + 3);
+                            pageInput.setInputConstraint(1); // Numeric input
+                            pageInput.setText(Integer.toString(currentPage));
+
+                            // Create page info label
+                            TextComponent pageInfoLabel = new TextComponent(pageInfo, pageInput.posX + pageInput.width, pageInput.posY + 2, FontRenderer.fontHeight + 2);
+
                             if (packet != null) {
-                                var133.id = PacketUtils.readInt(packet);
-                                byte[] var137 = PacketUtils.readBytes(packet);
-                                var134.id = PacketUtils.readInt(packet);
-                                byte[] var138 = PacketUtils.readBytes(packet);
-                                var135.id = PacketUtils.readInt(packet);
-                                byte[] var139 = PacketUtils.readBytes(packet);
-                                var133.linkAction = new quyen_ao(var137);
-                                var134.linkAction = new quyen_ap(var138);
-                                var135.middleSoftKey = new ButtonAction("Đến trang", new quyen_aq(var135, var129, var139));
+                                // Set IDs and actions
+                                int prevButtonId = PacketUtils.readInt(packet);
+                                byte[] prevButtonAction = PacketUtils.readBytes(packet);
+                                int nextButtonId = PacketUtils.readInt(packet);
+                                byte[] nextButtonAction = PacketUtils.readBytes(packet);
+                                int inputFieldId = PacketUtils.readInt(packet);
+                                byte[] inputFieldAction = PacketUtils.readBytes(packet);
+
+                                prevButton.id = prevButtonId;
+                                nextButton.id = nextButtonId;
+                                pageInput.id = inputFieldId;
+
+                                prevButton.linkAction = new quyen_ao(prevButtonAction);
+                                nextButton.linkAction = new quyen_ap(nextButtonAction);
+                                pageInput.middleSoftKey = new ButtonAction("Đến trang", new quyen_aq(pageInput, totalPages, inputFieldAction));
                             }
 
-                            var127.addComponent(var133);
-                            var127.addComponent(var134);
-                            var127.addComponent(var135);
-                            var127.addComponent(var136);
+                            paginationDialog.addComponent(prevButton);
+                            paginationDialog.addComponent(nextButton);
+                            paginationDialog.addComponent(pageInput);
+                            paginationDialog.addComponent(pageInfoLabel);
                             System.gc();
                         }
                         break;
+                    /*
+                     * Case 48 - Context Menu:
+                     * Ý nghĩa: Tạo và hiển thị context menu
+                     *
+                     * Dữ liệu packet:
+                     *     byte: menuType - loại menu
+                     *     byte: itemCount - số lượng item trong menu
+                     *     [itemCount lần]:
+                     *         string: itemText - text hiển thị của item
+                     *         bytes: actionData - action data khi click item
+                     */
                     case 48:
                         if (contextMenuItems == null) {
                             contextMenuItems = new Vector();
@@ -765,214 +1251,309 @@ public class GameProcessor {
                         }
 
                         System.gc();
-                        byte var223 = packet.getPayload().readByte();
-                        byte var248 = packet.getPayload().readByte();
+                        byte menuType = packet.getPayload().readByte();
+                        byte itemCount = packet.getPayload().readByte();
 
-                        for (int var201 = 0; var201 < var248; var201++) {
-                            String var262 = PacketUtils.readString(packet);
-                            byte[] var277 = PacketUtils.readBytes(packet);
-                            byte var284 = (byte) var201;
-                            ButtonAction var286 = new ButtonAction(var262, new quyen_ar(var284, var277));
-                            contextMenuItems.addElement(var286);
+                        for (int itemIndex = 0; itemIndex < itemCount; itemIndex++) {
+                            String itemText = PacketUtils.readString(packet);
+                            byte[] actionData = PacketUtils.readBytes(packet);
+                            byte itemIndexByte = (byte) itemIndex;
+                            ButtonAction buttonAction = new ButtonAction(itemText, new quyen_ar(itemIndexByte, actionData));
+                            contextMenuItems.addElement(buttonAction);
                         }
 
                         if (contextMenu == null) {
                             contextMenu = new ContextMenu(contextMenuItems);
                         }
 
-                        GameManager.instance.showContextMenu(contextMenu, var223);
+                        GameManager.instance.showContextMenu(contextMenu, menuType);
                         break;
+
+                    /*
+                     * Case 49 - Friend Request:
+                     * Ý nghĩa: Gửi yêu cầu kết bạn
+                     *
+                     * Dữ liệu packet:
+                     *     string: friendName - tên người bạn
+                     *     long: friendId - ID của người bạn
+                     */
                     case 49:
-                        String var299 = PacketUtils.readString(packet);
+                        String friendName = PacketUtils.readString(packet);
                         PacketUtils.readLong(packet);
-                        GameManager.instance.friendManager.sendFriendRequest(var299);
+                        GameManager.instance.friendManager.sendFriendRequest(friendName);
                         break;
+
+                    /*
+                     * Case 50 - Switch To Dialog Screen:
+                     * Ý nghĩa: Chuyển đến màn hình dialog với animation
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen cần chuyển đến
+                     */
                     case 50:
-                        int var66 = PacketUtils.readInt(packet);
-                        DialogScreen var155;
-                        (var155 = (DialogScreen) GameManager.instance.findScreenById(var66)).startSlideAnimation(1);
-                        GameManager.instance.switchToScreen(var155);
+                        int screenId5 = PacketUtils.readInt(packet);
+                        DialogScreen dialogScreen;
+                        (dialogScreen = (DialogScreen) GameManager.instance.findScreenById(screenId5)).startSlideAnimation(1);
+                        GameManager.instance.switchToScreen(dialogScreen);
                         break;
+
+                    /*
+                     * Case 52 - Show Loading:
+                     * Ý nghĩa: Hiển thị trạng thái loading
+                     */
                     case 52:
                         GameManager.instance.setLoadingState(true);
                         break;
+
+                    /*
+                     * Case 53 - Hide Loading:
+                     * Ý nghĩa: Ẩn trạng thái loading
+                     */
                     case 53:
                         GameManager.instance.setLoadingState(false);
                         break;
+
+                    /*
+                     * Case 54 - Photo Viewer:
+                     * Ý nghĩa: Tạo và hiển thị màn hình xem ảnh
+                     *
+                     * Dữ liệu packet:
+                     *     int: dialogId - ID của dialog
+                     *     string: photoTitle - tiêu đề ảnh
+                     *     string: photoCaption - mô tả ảnh
+                     *     int: displayMode - chế độ hiển thị
+                     *     bytes: imageData - dữ liệu ảnh
+                     *     int: photoId - ID của ảnh
+                     */
                     case 54:
-                        int var187 = PacketUtils.readInt(packet);
-                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(var187));
-                        PhotoViewerScreen var200;
-                        (var200 = new PhotoViewerScreen()).dialogId = var187;
-                        var200.setTitle(PacketUtils.readString(packet));
-                        var200.setCaption(PacketUtils.readString(packet));
-                        var200.photoComponent.displayMode = PacketUtils.readInt(packet);
-                        var200.setImageData(PacketUtils.readBytes(packet));
-                        var200.photoComponent.id = PacketUtils.readInt(packet);
-                        var200.showSaveButton(1);
-                        var200.startSlideAnimation(1);
-                        GameManager.instance.addScreenToStack(var200);
+                        int dialogId5 = PacketUtils.readInt(packet);
+                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(dialogId5));
+                        PhotoViewerScreen photoViewerScreen;
+                        (photoViewerScreen = new PhotoViewerScreen()).dialogId = dialogId5;
+                        photoViewerScreen.setTitle(PacketUtils.readString(packet));
+                        photoViewerScreen.setCaption(PacketUtils.readString(packet));
+                        photoViewerScreen.photoComponent.displayMode = PacketUtils.readInt(packet);
+                        photoViewerScreen.setImageData(PacketUtils.readBytes(packet));
+                        photoViewerScreen.photoComponent.id = PacketUtils.readInt(packet);
+                        photoViewerScreen.showSaveButton(1);
+                        photoViewerScreen.startSlideAnimation(1);
+                        GameManager.instance.addScreenToStack(photoViewerScreen);
                         GameManager.instance.switchToLastScreen();
                         break;
+
+                    /*
+                     * Case 56 - Show Text Input:
+                     * Ý nghĩa: Hiển thị text input dialog
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen
+                     *     int: componentId - ID của text input component
+                     */
                     case 56:
-                        int var154 = PacketUtils.readInt(packet);
-                        int var199 = PacketUtils.readInt(packet);
+                        int inputScreenId = PacketUtils.readInt(packet);
+                        int inputComponentId = PacketUtils.readInt(packet);
 
                         try {
-                            Screen var261;
-                            TextInputComponent var276 = (TextInputComponent) (var261 = GameManager.instance.findScreenById(var154)).findComponentByID(var199);
-                            UIUtils.showTextInput(var261, var276);
-                        } catch (Exception var143) {
+                            Screen targetScreen4;
+                            TextInputComponent textInputComponent = (TextInputComponent) (targetScreen4 = GameManager.instance.findScreenById(inputScreenId)).findComponentByID(inputComponentId);
+                            UIUtils.showTextInput(targetScreen4, textInputComponent);
+                        } catch (Exception exception) {
                         }
                         break;
+
+                    /*
+                     * Case 57 - Layout Components Horizontally:
+                     * Ý nghĩa: Sắp xếp các component theo hàng ngang
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen
+                     *     byte: componentCount - số lượng component
+                     *     [componentCount lần]: int componentId - ID của từng component
+                     */
                     case 57:
-                        int var152 = PacketUtils.readInt(packet);
-                        DialogScreen var153 = (DialogScreen) GameManager.instance.findScreenById(var152);
-                        byte var173;
-                        int[] var186;
-                        (var186 = new int[var173 = packet.getPayload().readByte()])[0] = PacketUtils.readInt(packet);
-                        UIComponent var197;
-                        int var221 = (var197 = var153.findComponentByID(var186[0])).width;
+                        int layoutScreenId = PacketUtils.readInt(packet);
+                        DialogScreen layoutDialogScreen = (DialogScreen) GameManager.instance.findScreenById(layoutScreenId);
+                        byte componentCount1;
+                        int[] componentIds;
+                        (componentIds = new int[componentCount1 = packet.getPayload().readByte()])[0] = PacketUtils.readInt(packet);
+                        UIComponent firstComponent;
+                        int totalWidth = (firstComponent = layoutDialogScreen.findComponentByID(componentIds[0])).width;
 
-                        for (int var246 = 1; var246 < var173; var246++) {
-                            var186[var246] = PacketUtils.readInt(packet);
-                            UIComponent var259;
-                            (var259 = var153.findComponentByID(var186[var246])).posY = var197.posY;
-                            var221 += var259.width;
+                        for (int componentIndex = 1; componentIndex < componentCount1; componentIndex++) {
+                            componentIds[componentIndex] = PacketUtils.readInt(packet);
+                            UIComponent currentComponent;
+                            (currentComponent = layoutDialogScreen.findComponentByID(componentIds[componentIndex])).posY = firstComponent.posY;
+                            totalWidth += currentComponent.width;
                         }
 
-                        var153.nextComponentY = var197.posY + var197.height + 2;
-                        int var247 = (Screen.screenWidth - var221) / (var173 + 1);
-                        var197.posX = Screen.screenWidth - (var221 + var247 * (var173 - 1)) >> 1;
+                        layoutDialogScreen.nextComponentY = firstComponent.posY + firstComponent.height + 2;
+                        int spacing = (Screen.screenWidth - totalWidth) / (componentCount1 + 1);
+                        firstComponent.posX = Screen.screenWidth - (totalWidth + spacing * (componentCount1 - 1)) >> 1;
 
-                        for (int var260 = 1; var260 < var173; var260++) {
-                            var197 = var153.findComponentByID(var186[var260]);
-                            UIComponent var222 = var153.findComponentByID(var186[var260 - 1]);
-                            var197.posX = var222.posX + var222.width + var247;
+                        for (int componentIndex = 1; componentIndex < componentCount1; componentIndex++) {
+                            firstComponent = layoutDialogScreen.findComponentByID(componentIds[componentIndex]);
+                            UIComponent previousComponent = layoutDialogScreen.findComponentByID(componentIds[componentIndex - 1]);
+                            firstComponent.posX = previousComponent.posX + previousComponent.width + spacing;
                         }
 
-                        var153.updateLayout();
+                        layoutDialogScreen.updateLayout();
                         break;
+
+                    /*
+                     * Case 58 - Set Components X Position:
+                     * Ý nghĩa: Thiết lập vị trí X cho các component
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen
+                     *     int: xPosition - vị trí x mới
+                     *     byte: componentCount - số lượng component
+                     *     [componentCount lần]: int componentId - ID của từng component
+                     */
                     case 58:
-                        DialogScreen var258 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet));
-                        int var151 = PacketUtils.readInt(packet);
-                        byte var172 = packet.getPayload().readByte();
+                        DialogScreen xPositionDialogScreen = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet));
+                        int xPosition = PacketUtils.readInt(packet);
+                        byte xComponentCount = packet.getPayload().readByte();
 
-                        for (int var185 = 0; var185 < var172; var185++) {
-                            var258.findComponentByID(PacketUtils.readInt(packet)).posX = var151;
+                        for (int xIndex = 0; xIndex < xComponentCount; xIndex++) {
+                            xPositionDialogScreen.findComponentByID(PacketUtils.readInt(packet)).posX = xPosition;
                         }
                         break;
-                    case 59:
-                        DialogScreen var257;
-                        UIComponent var220 = (var257 = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
-                        byte var171 = packet.getPayload().readByte();
-                        UIComponent var196 = null;
-                        int[] var184 = new int[var171];
 
-                        for (int var150 = 0; var150 < var171; var150++) {
-                            var184[var150] = PacketUtils.readInt(packet);
-                            (var196 = var257.findComponentByID(var184[var150])).posX = var220.posX + var220.width + 6;
-                            if (var150 == 0) {
-                                var196.posY = var220.posY;
+                    /*
+                     * Case 59 - Layout Components Vertically:
+                     * Ý nghĩa: Sắp xếp các component theo hàng dọc
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen
+                     *     int: anchorComponentId - ID của component làm gốc
+                     *     byte: componentCount - số lượng component
+                     *     [componentCount lần]: int componentId - ID của từng component
+                     */
+                    case 59:
+                        DialogScreen verticalLayoutScreen;
+                        UIComponent anchorComponent = (verticalLayoutScreen = (DialogScreen) GameManager.instance.findScreenById(PacketUtils.readInt(packet))).findComponentByID(PacketUtils.readInt(packet));
+                        byte verticalComponentCount = packet.getPayload().readByte();
+                        UIComponent lastComponent = null;
+                        int[] verticalComponentIds = new int[verticalComponentCount];
+
+                        for (int verticalIndex = 0; verticalIndex < verticalComponentCount; verticalIndex++) {
+                            verticalComponentIds[verticalIndex] = PacketUtils.readInt(packet);
+                            (lastComponent = verticalLayoutScreen.findComponentByID(verticalComponentIds[verticalIndex])).posX = anchorComponent.posX + anchorComponent.width + 6;
+                            if (verticalIndex == 0) {
+                                lastComponent.posY = anchorComponent.posY;
                             } else {
-                                UIComponent var245 = var257.findComponentByID(var184[var150 - 1]);
-                                var196.posY = var245.posY + var245.height + 2;
+                                UIComponent previousVerticalComponent = verticalLayoutScreen.findComponentByID(verticalComponentIds[verticalIndex - 1]);
+                                lastComponent.posY = previousVerticalComponent.posY + previousVerticalComponent.height + 2;
                             }
                         }
 
-                        var257.nextComponentY = var196.posY + var196.height + 2;
-                        var257.updateLayout();
+                        verticalLayoutScreen.nextComponentY = lastComponent.posY + lastComponent.height + 2;
+                        verticalLayoutScreen.updateLayout();
                         break;
+
+                    /*
+                     * Case 62 - Update Component Properties:
+                     * Ý nghĩa: Cập nhật thuộc tính của các component
+                     *
+                     * Dữ liệu packet:
+                     *     int: screenId - ID của screen
+                     *     byte: updateCount - số lượng update
+                     *     [updateCount lần]:
+                     *         int: componentId - ID của component
+                     *         byte: updateType - loại update (0=TextInput, 1=Text, 4=TextLink, 7=Dropdown, 11=List, 14=Checkbox, 18=PhotoViewer)
+                     *         [data tùy theo updateType]
+                     */
                     case 62:
-                        int var149 = PacketUtils.readInt(packet);
-                        byte var2 = packet.getPayload().readByte();
+                        int updateScreenId = PacketUtils.readInt(packet);
+                        byte updateCount = packet.getPayload().readByte();
 
                         try {
-                            for (int var3 = 0; var3 < var2; var3++) {
-                                int var4 = PacketUtils.readInt(packet);
-                                int var5 = packet.getPayload().readByte();
-                                Screen var6;
-                                UIComponent var194 = (var6 = GameManager.instance.findScreenById(var149)).findComponentByID(var4);
-                                switch (var5) {
+                            for (int updateIndex = 0; updateIndex < updateCount; updateIndex++) {
+                                int updateComponentId = PacketUtils.readInt(packet);
+                                int updateType = packet.getPayload().readByte();
+                                Screen updateTargetScreen;
+                                UIComponent updateComponent = (updateTargetScreen = GameManager.instance.findScreenById(updateScreenId)).findComponentByID(updateComponentId);
+                                switch (updateType) {
                                     case 0:
-                                        String var219 = PacketUtils.readString(packet);
-                                        String var244 = PacketUtils.readString(packet);
-                                        ((TextInputComponent) var194).textInputHandler.text = var219;
-                                        ((TextInputComponent) var194).setText(var244);
+                                        String inputText = PacketUtils.readString(packet);
+                                        String displayText = PacketUtils.readString(packet);
+                                        ((TextInputComponent) updateComponent).textInputHandler.text = inputText;
+                                        ((TextInputComponent) updateComponent).setText(displayText);
                                         break;
                                     case 1:
-                                        String var243 = PacketUtils.readString(packet);
-                                        ((TextComponent) var194).updateText(var243);
+                                        String newText1 = PacketUtils.readString(packet);
+                                        ((TextComponent) updateComponent).updateText(newText1);
                                         break;
                                     case 4:
-                                        String var242 = PacketUtils.readString(packet);
-                                        byte[] var294 = PacketUtils.readBytes(packet);
-                                        ((TextLinkComponent) var194).linkText = var242;
-                                        ((TextLinkComponent) var194).setLinkAction(new quyen_ag(var294));
+                                        String linkText = PacketUtils.readString(packet);
+                                        byte[] linkActionData = PacketUtils.readBytes(packet);
+                                        ((TextLinkComponent) updateComponent).linkText = linkText;
+                                        ((TextLinkComponent) updateComponent).setLinkAction(new quyen_ag(linkActionData));
                                         break;
                                     case 7:
-                                        short var288 = PacketUtils.readShort(packet);
-                                        ((DropdownComponent) var194).setSelectedIndex(var288);
+                                        short selectedIndex = PacketUtils.readShort(packet);
+                                        ((DropdownComponent) updateComponent).setSelectedIndex(selectedIndex);
                                         break;
                                     case 11:
-                                        ListComponent var8;
-                                        BuddyListManager var9 = (var8 = (ListComponent) var194).dataSource;
-                                        byte var10 = packet.getPayload().readByte();
-                                        var5 = 0;
+                                        ListComponent listComponent;
+                                        BuddyGroupList dataSource = (listComponent = (ListComponent) updateComponent).dataSource;
+                                        byte listItemCount = packet.getPayload().readByte();
+                                        updateType = 0;
 
-                                        for (; var5 < var10; var5++) {
-                                            String var241 = PacketUtils.readString(packet);
-                                            int var11 = PacketUtils.readInt(packet);
-                                            byte[] var291 = PacketUtils.readBytes(packet);
-                                            Integer var13 = null;
-                                            Image var195 = null;
-                                            if (var8.getIconType() == 2) {
-                                                var13 = new Integer(var11);
+                                        for (; updateType < listItemCount; updateType++) {
+                                            String contactName = PacketUtils.readString(packet);
+                                            int iconId = PacketUtils.readInt(packet);
+                                            byte[] iconData = PacketUtils.readBytes(packet);
+                                            Integer iconIdObj = null;
+                                            Image iconImage = null;
+                                            if (listComponent.getIconType() == 2) {
+                                                iconIdObj = new Integer(iconId);
                                             } else {
-                                                var195 = UIUtils.createImageFromBytes(var291);
+                                                iconImage = UIUtils.createImageFromBytes(iconData);
                                             }
 
-                                            String var20 = PacketUtils.readString(packet);
-                                            String var21 = PacketUtils.readString(packet);
-                                            String var14 = PacketUtils.readString(packet);
-                                            BuddyContact var15 = var9.findDownloadFile(null, var241, 0L);
-                                            if (var11 != 0) {
-                                                var15.priority = var13;
+                                            String displayName = PacketUtils.readString(packet);
+                                            String downloadText = PacketUtils.readString(packet);
+                                            String description = PacketUtils.readString(packet);
+                                            BuddyInfo contact = dataSource.findDownloadFile(null, contactName, 0L);
+                                            if (iconId != 0) {
+                                                contact.imageSourceId = iconIdObj;
                                             }
 
-                                            if (var291 != null && var291.length != 0) {
-                                                var15.thumbnailImage = var195;
+                                            if (iconData != null && iconData.length != 0) {
+                                                contact.thumbnailImage = iconImage;
                                             }
 
-                                            if (var20.length() > 0) {
-                                                var15.displayName = var20;
+                                            if (displayName.length() > 0) {
+                                                contact.displayName = displayName;
                                             }
 
-                                            if (var21.length() > 0) {
-                                                var15.downloadText = var21;
+                                            if (downloadText.length() > 0) {
+                                                contact.description = downloadText;
                                             }
 
-                                            if (var14.length() > 0) {
-                                                var15.description = var14;
+                                            if (description.length() > 0) {
+                                                contact.statusDescription = description;
                                             }
                                         }
 
-                                        var8.buildListItems();
+                                        listComponent.buildListItems();
                                         break;
                                     case 14:
-                                        boolean var12 = PacketUtils.readBoolean(packet);
-                                        ((CheckboxComponent) var194).isChecked = var12;
+                                        boolean isChecked = PacketUtils.readBoolean(packet);
+                                        ((CheckboxComponent) updateComponent).isChecked = isChecked;
                                         break;
                                     case 18:
-                                        PhotoViewerScreen var7;
-                                        (var7 = (PhotoViewerScreen) var6).setTitle(PacketUtils.readString(packet));
-                                        var7.setCaption(PacketUtils.readString(packet));
-                                        var7.photoComponent.displayMode = PacketUtils.readInt(packet);
-                                        var7.setImageData(PacketUtils.readBytes(packet));
+                                        PhotoViewerScreen photoScreen = (PhotoViewerScreen) updateTargetScreen;
+                                        photoScreen.setTitle(PacketUtils.readString(packet));
+                                        photoScreen.setCaption(PacketUtils.readString(packet));
+                                        photoScreen.photoComponent.displayMode = PacketUtils.readInt(packet);
+                                        photoScreen.setImageData(PacketUtils.readBytes(packet));
+                                        break;
                                 }
                             }
-                        } catch (Exception var147) {
-                            var147.printStackTrace();
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
                 }
             }

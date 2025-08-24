@@ -7,15 +7,15 @@ import home.thienph.xyahoo107.screens.ChatScreen;
 import home.thienph.xyahoo107.screens.FriendScreen;
 
 final class quyen_ix implements Action {
-    private final quyen_iw a;
+    private final FriendClickChatWithAction a;
 
-    quyen_ix(quyen_iw var1) {
+    quyen_ix(FriendClickChatWithAction var1) {
         this.a = var1;
     }
 
     public void action() {
-        quyen_iw var1 = this.a;
-        String var5 = FriendScreen.getActiveTextInput(this.a.a).getText().trim();
+        FriendClickChatWithAction var1 = this.a;
+        String var5 = FriendScreen.getActiveTextInput(this.a.friendScreen).getText().trim();
         ChatScreen var2;
         if ((var2 = (ChatScreen) GameManager.instance.setActiveScreen(var5)) != null) {
             var2.startSlideAnimation(1);

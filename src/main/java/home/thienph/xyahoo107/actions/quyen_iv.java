@@ -4,20 +4,20 @@ package home.thienph.xyahoo107.actions;
 import home.thienph.xyahoo107.screens.FriendScreen;
 
 final class quyen_iv implements Action {
-    private final quyen_iu a;
+    private final FriendClickAddContactAction a;
 
-    quyen_iv(quyen_iu var1) {
+    quyen_iv(FriendClickAddContactAction var1) {
         this.a = var1;
     }
 
     public void action() {
-        quyen_iu var1 = this.a;
-        if (FriendScreen.getActiveTextInput(this.a.a).getText() != null) {
+        FriendClickAddContactAction var1 = this.a;
+        if (FriendScreen.getActiveTextInput(this.a.friendScreen).getText() != null) {
             var1 = this.a;
-            if (FriendScreen.getActiveTextInput(this.a.a).getText().length() > 0) {
+            if (FriendScreen.getActiveTextInput(this.a.friendScreen).getText().length() > 0) {
                 var1 = this.a;
                 var1 = this.a;
-                this.a.a.sendFriendRequest(FriendScreen.getActiveTextInput(this.a.a).getText());
+                this.a.friendScreen.sendFriendRequest(FriendScreen.getActiveTextInput(this.a.friendScreen).getText());
             }
         }
     }

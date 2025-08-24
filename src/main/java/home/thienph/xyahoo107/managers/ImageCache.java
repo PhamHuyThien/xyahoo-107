@@ -31,15 +31,15 @@ public final class ImageCache {
     }
 
 
-    public static void cacheImage(Integer var0, byte[] var1) {
+    public static void cacheImage(Integer imageId, byte[] data) {
         try {
             try {
-                imageCache.remove(var0);
+;                imageCache.remove(imageId);
             } catch (Exception var2) {
             }
 
-            imageCache.put(var0, Image.createImage(var1, 0, var1.length));
-            Xuka.saveData(getImageFileName(var0), var1, "xkimg");
+            imageCache.put(imageId, Image.createImage(data, 0, data.length));
+            Xuka.saveData(getImageFileName(imageId), data, "xkimg");
         } catch (Exception var3) {
             var3.printStackTrace();
         }

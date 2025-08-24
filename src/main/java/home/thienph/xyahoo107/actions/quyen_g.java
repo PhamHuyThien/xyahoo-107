@@ -15,7 +15,7 @@ public final class quyen_g implements Action {
     }
 
     public void action() {
-        String banMuonXoa = UIUtils.concatStrings("Bạn có muốn xóa ", ContactListComponent.getSelectedItem(this.a).c, "?", null);
+        String banMuonXoa = UIUtils.concatStrings("Bạn có muốn xóa ", ContactListComponent.getSelectedItem(this.a).groupName, "?", null);
         GameManager.getInstance().createSimpleDialog(banMuonXoa, null, new ButtonAction("OK", new quyen_h(this)), GameManager.instance.createBackButton(TextConstant.close()));
         System.gc();
     }

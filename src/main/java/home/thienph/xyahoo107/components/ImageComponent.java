@@ -77,7 +77,10 @@ public final class ImageComponent extends UIComponent {
             var1.drawImage(ImageCache.getImage(this.singleImageId), this.imageRenderX, this.imageRenderY, 0);
         } else {
             for (int var7 = 0; var7 < this.multiImagePositions.length; var7++) {
-                var1.drawImage(ImageCache.getImage(this.multiImageIds[var7]), super.posX + (super.width >> 1) + (this.multiImagePositions[var7] >> 24), super.posY + (super.height >> 1) + (this.multiImagePositions[var7] << 8 >> 24), 0);
+                var1.drawImage(ImageCache.getImage(this.multiImageIds[var7]), 
+                        super.posX + (super.width >> 1) + (this.multiImagePositions[var7] >> 24),
+                        super.posY + (super.height >> 1) + (this.multiImagePositions[var7] << 8 >> 24),
+                        0);
             }
         }
     }

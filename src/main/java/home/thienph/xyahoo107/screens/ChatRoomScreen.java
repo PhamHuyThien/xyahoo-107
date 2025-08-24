@@ -26,7 +26,7 @@ public final class ChatRoomScreen extends DialogScreen {
     public boolean showWelcomeMessage = true;
     private final ContextMenu contextMenu;
     private final Vector menuActions;
-    private final ButtonAction backSoftkey = new ButtonAction(TextConstant.close(), new quyen_q(this));
+    private final ButtonAction backSoftkey = new ButtonAction(TextConstant.close(), new ChatRoomClickLeaveRoomAction(this));
 
     public ChatRoomScreen(String var1, String var2, boolean var3) {
         super.isScrollLocked = true;
@@ -43,25 +43,25 @@ public final class ChatRoomScreen extends DialogScreen {
         this.addComponent(this.textInputComponent);
         UIUtils.focusComponent(this, (UIComponent) this.textInputComponent);
         this.menuActions = new Vector();
-        this.menuActions.addElement(new ButtonAction("Biểu cảm", new quyen_z(this)));
-        this.menuActions.addElement(new ButtonAction("Copy", new quyen_aa(this)));
-        this.menuActions.addElement(new ButtonAction("Dán", new quyen_ab(this)));
-        this.menuActions.addElement(new ButtonAction("Bạn trong phòng", new quyen_ac(this)));
+        this.menuActions.addElement(new ButtonAction("Biểu cảm", new ChatRoomClickEmojiAction(this)));
+        this.menuActions.addElement(new ButtonAction("Copy", new ChatRoomClickCopyAction(this)));
+        this.menuActions.addElement(new ButtonAction("Dán", new ChatRoomClickPasteAction(this)));
+        this.menuActions.addElement(new ButtonAction("Bạn trong phòng", new ChatRoomViewUserInRoomAction(this)));
         if (this.isRoomOwner) {
             ButtonAction var4 = new ButtonAction("Chức năng khác", null);
             Vector var5;
-            (var5 = new Vector()).addElement(new ButtonAction("Mời bạn chat", new quyen_ad(this)));
-            var5.addElement(new ButtonAction("Đá khỏi phòng", new quyen_ae(this)));
-            var5.addElement(new ButtonAction("Đổi tên phòng", new quyen_r(this)));
-            var5.addElement(new ButtonAction("Đổi mật khẩu", new quyen_s(this)));
-            var5.addElement(new ButtonAction("Gia hạn phòng", new quyen_t(this)));
-            var5.addElement(new ButtonAction("Xóa phòng", new quyen_u(this)));
+            (var5 = new Vector()).addElement(new ButtonAction("Mời bạn chat", new ChatRoomInviteUserAction(this)));
+            var5.addElement(new ButtonAction("Đá khỏi phòng", new ChatRoomKickUserAction(this)));
+            var5.addElement(new ButtonAction("Đổi tên phòng", new ChatRoomChangeNameRoomAction(this)));
+            var5.addElement(new ButtonAction("Đổi mật khẩu", new ChatRoomChangePasswordRoomAction(this)));
+            var5.addElement(new ButtonAction("Gia hạn phòng", new ChatRoomExtendRoomAction(this)));
+            var5.addElement(new ButtonAction("Xóa phòng", new ChatRoomDeleteRoomAction(this)));
             var4.parentContainer = new ContextMenu(var5);
             this.menuActions.addElement(var4);
         }
 
         this.contextMenu = new ContextMenu(this.menuActions);
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_w(this));
+        super.leftSoftkey = new ButtonAction("Menu", new ChatRoomClickMenuAction(this));
         super.centerSoftkey = new ButtonAction("Chat", null);
     }
 
@@ -94,7 +94,7 @@ public final class ChatRoomScreen extends DialogScreen {
                     return false;
                 }
             } else {
-                PacketSender.a(this.roomId, this.textInputComponent.getText());
+                PacketSender.requestReloadData(this.roomId, this.textInputComponent.getText());
                 this.textInputComponent.setText("");
                 return false;
             }

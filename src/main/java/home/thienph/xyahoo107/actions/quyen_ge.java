@@ -11,6 +11,6 @@ final class quyen_ge implements Action {
 
     public void action() {
         GameScreen.instance.exitGame(false);
-        PacketSender.e(GameManager.gameRoom.gameListComponent.getSelectedItem().c);
+        PacketSender.e(GameManager.gameRoom.gameListComponent.getSelectedItem().groupName);
     }
 }

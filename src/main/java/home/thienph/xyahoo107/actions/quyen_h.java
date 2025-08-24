@@ -15,7 +15,7 @@ final class quyen_h implements Action {
 
     public void action() {
         quyen_g var1 = this.a;
-        long var4 = ContactListComponent.getSelectedItem(this.a.a).m;
+        long var4 = ContactListComponent.getSelectedItem(this.a.a).timestamp;
         Packet var3 = new Packet(5000024, 2);
         PacketUtils.writeLong(var4, var3);
         NetworkManager.sendPacket(var3);

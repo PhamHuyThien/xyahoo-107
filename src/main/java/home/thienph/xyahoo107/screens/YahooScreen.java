@@ -6,7 +6,7 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.data.media.BuddyListManager;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -221,7 +221,7 @@ public final class YahooScreen extends Screen {
                 this.switchToMode(true);
                 this.buddyListRequestId = GameManager.loadContactStatus(true);
                 if (this.buddyListRequestId != -1) {
-                    BuddyListManager var5;
+                    BuddyGroupList var5;
                     if ((var5 = GameManager.loadBuddyList(true, yahooUsername)) != null) {
                         GameManager.instance.yahooChat.contactList.setContactData(var5, -1);
                     } else {

@@ -58,28 +58,27 @@ public final class PhotoViewerScreen extends Screen {
         }
     }
 
-    public void setImageData(final byte[] b) {
-        this.imageBytes = b;
-        Image image;
+    public void setImageData(final byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+        Image tempImage = null;
         try {
-            image = Image.createImage(b, 0, b.length);
+            tempImage = Image.createImage(imageBytes, 0, imageBytes.length);
         } catch (final Exception ex) {
-            image = null;
             ex.printStackTrace();
         }
-        if (image != null) {
-            final Image a = image;
-            this.displayImage = a;
-            final int n = 0;
-            this.targetX = n;
-            this.currentY = n;
-            final int n2 = 0;
-            this.targetY = n2;
-            this.currentY = n2;
-            final int width = a.getWidth();
-            this.maxPanX = width - screenWidth;
-            this.maxPanY = a.getHeight() - screenHeight + GameManager.footerHeight + ((this.captionText == null) ? 0 : (GameManager.footerHeight + 2)) - 1;
-            this.imageX = ((width > screenWidth) ? 0 : (screenWidth - width >> 1));
+        if (tempImage != null) {
+            final Image loadedImage = tempImage;
+            this.displayImage = loadedImage;
+            final int initialX = 0;
+            this.targetX = initialX;
+            this.currentX = initialX;
+            final int initialY = 0;
+            this.targetY = initialY;
+            this.currentY = initialY;
+            final int imageWidth = loadedImage.getWidth();
+            this.maxPanX = imageWidth - screenWidth;
+            this.maxPanY = loadedImage.getHeight() - screenHeight + GameManager.footerHeight + ((this.captionText == null) ? 0 : (GameManager.footerHeight + 2)) - 1;
+            this.imageX = ((imageWidth > screenWidth) ? 0 : (screenWidth - imageWidth >> 1));
             this.imageY = screenY + ((this.captionText == null) ? 0 : (GameManager.footerHeight + 2));
         }
     }

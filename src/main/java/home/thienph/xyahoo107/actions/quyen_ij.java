@@ -13,6 +13,6 @@ public final class quyen_ij implements Action {
     }
 
     public void action() {
-        PacketSender.i(this.a.getSelectedItem().c);
+        PacketSender.i(this.a.getSelectedItem().groupName);
     }
 }

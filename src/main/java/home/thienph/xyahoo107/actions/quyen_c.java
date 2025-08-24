@@ -13,18 +13,18 @@ public final class quyen_c implements Action {
     }
 
     public void action() {
-        String var1 = this.a.isChatMode ? "Y! " + ContactListComponent.getSelectedItem(this.a).c : ContactListComponent.getSelectedItem(this.a).c;
+        String var1 = this.a.isChatMode ? "Y! " + ContactListComponent.getSelectedItem(this.a).groupName : ContactListComponent.getSelectedItem(this.a).groupName;
         ChatScreen var2;
         if ((var2 = (ChatScreen) GameManager.instance.setActiveScreen(var1)) != null) {
             var2.startSlideAnimation(1);
             GameManager.instance.switchToScreenByTitle(var1);
         } else {
             if (this.a.isChatMode) {
-                var2 = new ChatScreen(var1, this.a.isChatMode, null, ContactListComponent.getSelectedItem(this.a).c);
+                var2 = new ChatScreen(var1, this.a.isChatMode, null, ContactListComponent.getSelectedItem(this.a).groupName);
             } else {
-                (var2 = new ChatScreen(var1, this.a.isChatMode, ContactListComponent.getSelectedItem(this.a).k, null)).chatTitle = ContactListComponent.getSelectedItem(this.a).d.equals("") ? ContactListComponent.getSelectedItem(this.a).c : ContactListComponent.getSelectedItem(this.a).d;
-                var2.setChatId(ContactListComponent.getSelectedItem(this.a).m);
-                GameManager.instance.friendManager.addToFavorites(ContactListComponent.getSelectedItem(this.a).m);
+                (var2 = new ChatScreen(var1, this.a.isChatMode, ContactListComponent.getSelectedItem(this.a).rawData, null)).chatTitle = ContactListComponent.getSelectedItem(this.a).displayName.equals("") ? ContactListComponent.getSelectedItem(this.a).groupName : ContactListComponent.getSelectedItem(this.a).displayName;
+                var2.setChatId(ContactListComponent.getSelectedItem(this.a).timestamp);
+                GameManager.instance.friendManager.addToFavorites(ContactListComponent.getSelectedItem(this.a).timestamp);
             }
 
             var2.startSlideAnimation(1);

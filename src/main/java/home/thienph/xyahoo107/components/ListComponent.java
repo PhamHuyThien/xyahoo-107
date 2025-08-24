@@ -1,11 +1,11 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.quyen_bj;
+import home.thienph.xyahoo107.actions.BuddyListItem;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
-import home.thienph.xyahoo107.data.media.BuddyContact;
-import home.thienph.xyahoo107.data.media.BuddyListManager;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -16,7 +16,7 @@ import java.util.Vector;
 
 public final class ListComponent extends UIComponent {
     private int iconType;
-    private int statusIconType;
+    private int enableIconStatus;
     private int iconWidth;
     private int iconHeight;
     private int targetScrollY;
@@ -35,14 +35,14 @@ public final class ListComponent extends UIComponent {
     private final ButtonAction multiSelectAction;
     private boolean isMultiSelectMode;
     private int maxTextWidth;
-    private int displayMode;
-    public BuddyListManager dataSource;
+    private int enableDescription;
+    public BuddyGroupList dataSource;
     public Vector listItems;
     private int totalItemCount;
     private int rightTextX;
     private StringBuffer stringBuffer;
     private boolean keyProcessed;
-    private quyen_bj currentItem;
+    private BuddyListItem currentItem;
     public Action itemAction;
     private boolean needsTextScrolling;
     private boolean scrollingLeft;
@@ -59,47 +59,47 @@ public final class ListComponent extends UIComponent {
     private int lastTouchY;
     private boolean allSelected;
 
-    public void setIconSettings(int var1, int var2, int var3) {
-        this.iconType = var1;
-        this.iconWidth = var2;
-        this.iconHeight = var3;
+    public void setIconSettings(int iconType, int iconWidth, int iconHeight) {
+        this.iconType = iconType;
+        this.iconWidth = iconWidth;
+        this.iconHeight = iconHeight;
     }
 
-    public void setStatusIconType(int var1) {
-        this.statusIconType = var1;
+    public void setEnableIconStatus(int enableIconStatus) {
+        this.enableIconStatus = enableIconStatus;
     }
 
     public int getIconType() {
         return this.iconType;
     }
 
-    public void setMultiSelectMode(boolean var1) {
-        this.isMultiSelectMode = var1;
+    public void setMultiSelectMode(boolean multiSelectMode) {
+        this.isMultiSelectMode = multiSelectMode;
     }
 
-    public void setDataSource(BuddyListManager var1, int var2, boolean var3) {
-        this.displayMode = var2;
+    public void setDataSource(BuddyGroupList dataSource, int enableDescription, boolean adjustHeight) {
+        this.enableDescription = enableDescription;
         this.listSelectedIndex = 0;
-        if (var3) {
+        if (adjustHeight) {
             super.height = super.height - (GameManager.footerHeight + 2);
         }
 
         this.maxItemTextWidth = super.width - 36 - this.iconWidth;
         this.itemHeight = this.rowHeight = FontRenderer.fontHeight + 8;
         this.doubleRowHeight = (this.rowHeight << 1) - 3;
-        if (this.displayMode == 0) {
+        if (this.enableDescription == 0) {
             if (this.rowHeight < this.iconHeight + 8) {
                 this.rowHeight = this.iconHeight + 8;
                 this.doubleRowHeight = (this.rowHeight << 1) - 4;
             }
-        } else if (this.displayMode == 1 && this.doubleRowHeight < this.iconHeight + 8) {
+        } else if (this.enableDescription == 1 && this.doubleRowHeight < this.iconHeight + 8) {
             this.doubleRowHeight = this.iconHeight + 8;
         }
 
-        this.dataSource = var1;
+        this.dataSource = dataSource;
         this.textStartX = this.iconType != 0 ? 15 + this.iconWidth : 9;
         this.maxTextWidth = super.width - 18;
-        if (this.statusIconType != 0) {
+        if (this.enableIconStatus != 0) {
             this.maxTextWidth -= 12;
         }
 
@@ -110,14 +110,14 @@ public final class ListComponent extends UIComponent {
         this.buildListItems();
     }
 
-    public ListComponent(int var1, int var2, int var3, int var4) {
-        super(0, 0, var3, var4, true);
+    public ListComponent(int posX, int posY, int width, int height) {
+        super(0, 0, width, height, true);
         new Vector();
         this.selectAction = new ButtonAction("Chọn", null);
         this.emptyAction = new ButtonAction("", null);
         this.multiSelectAction = new ButtonAction("Chọn", null);
         this.isMultiSelectMode = false;
-        String[] var10000 = new String[]{"Vui lòng chờ"};
+        String[] defaultMessages = new String[]{"Vui lòng chờ"};
         this.textStartX = 22;
         this.allSelected = false;
         super.isPressed = true;
@@ -134,63 +134,63 @@ public final class ListComponent extends UIComponent {
         System.gc();
         if (this.dataSource != null && this.dataSource.contactGroups != null && this.dataSource.contactGroups.size() != 0) {
             this.rightTextX = 0;
-            Vector var1 = this.dataSource.contactGroups;
-            int var2 = this.dataSource.contactGroups.size();
-            int var3 = 0;
+            Vector contactGroups = this.dataSource.contactGroups;
+            int groupCount = this.dataSource.contactGroups.size();
+            int contactCount = 0;
 
-            for (int var4 = 0; var4 < var2; var4++) {
-                BuddyGroup var9 = (BuddyGroup) var1.elementAt(var4);
-                quyen_bj var5;
-                (var5 = new quyen_bj()).c = var9.getGroupName();
-                if (var5.c != null && var5.c.length() > 0) {
-                    var5.a = 1;
-                    var5.g = var9.expansionStatus;
-                    this.listItems.addElement(var5);
-                    if (var5.g == 1) {
+            for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+                BuddyGroup currentGroup = (BuddyGroup) contactGroups.elementAt(groupIndex);
+                BuddyListItem groupItem;
+                (groupItem = new BuddyListItem()).groupName = currentGroup.getGroupName();
+                if (groupItem.groupName != null && groupItem.groupName.length() > 0) {
+                    groupItem.itemType = 1;
+                    groupItem.statusCode = currentGroup.expansionStatus;
+                    this.listItems.addElement(groupItem);
+                    if (groupItem.statusCode == 1) {
                         continue;
                     }
                 }
 
-                Vector var11 = var9.contacts;
-                var3 = var9.contacts.size();
+                Vector groupContacts = currentGroup.contacts;
+                contactCount = currentGroup.contacts.size();
 
-                for (int var6 = 0; var6 < var3; var6++) {
-                    BuddyContact var7 = (BuddyContact) var11.elementAt(var6);
-                    quyen_bj var8;
-                    (var8 = new quyen_bj()).k = var7.getRawDataArray();
-                    var8.c = var7.username;
-                    var8.g = var7.statusCode;
-                    var8.d = var7.displayName;
-                    var7.getDefaultColor();
-                    var8.b = null;
-                    var8.b = new Integer(var7.getDefaultColor());
-                    var8.m = var7.timestamp;
-                    var8.j = var7.fileName;
-                    var8.l = var7.description;
-                    var8.n = var7.priority;
-                    var8.o = var7.thumbnailImage;
-                    if (var8.l != null && GameGraphics.screenWidth < 160) {
+                for (int contactIndex = 0; contactIndex < contactCount; contactIndex++) {
+                    BuddyInfo currentContact = (BuddyInfo) groupContacts.elementAt(contactIndex);
+                    BuddyListItem contactItem;
+                    (contactItem = new BuddyListItem()).rawData = currentContact.getRawDataArray();
+                    contactItem.groupName = currentContact.username;
+                    contactItem.statusCode = currentContact.statusCode;
+                    contactItem.displayName = currentContact.displayName;
+                    currentContact.getDefaultColor();
+                    contactItem.textColor = null;
+                    contactItem.textColor = new Integer(currentContact.getDefaultColor());
+                    contactItem.timestamp = currentContact.timestamp;
+                    contactItem.fileName = currentContact.fileName;
+                    contactItem.description = currentContact.statusDescription;
+                    contactItem.imageSourceId = currentContact.imageSourceId;
+                    contactItem.thumbnailImage = currentContact.thumbnailImage;
+                    if (contactItem.description != null && GameGraphics.screenWidth < 160) {
                         if (this.stringBuffer == null) {
                             this.stringBuffer = new StringBuffer();
                         } else {
                             this.stringBuffer.delete(0, this.stringBuffer.length());
                         }
 
-                        this.stringBuffer.append(var8.d);
+                        this.stringBuffer.append(contactItem.displayName);
                         this.stringBuffer.append(" - ");
-                        this.stringBuffer.append(var8.l);
-                        var8.d = this.stringBuffer.toString();
-                        var8.l = null;
+                        this.stringBuffer.append(contactItem.description);
+                        contactItem.displayName = this.stringBuffer.toString();
+                        contactItem.description = null;
                     }
 
-                    if (this.rightTextX == 0 && var8.l != null) {
-                        this.rightTextX = super.width - (FontRenderer.getTextWidth(var8.l) + 31);
+                    if (this.rightTextX == 0 && contactItem.description != null) {
+                        this.rightTextX = super.width - (FontRenderer.getTextWidth(contactItem.description) + 31);
                     }
 
-                    var8.h = var7.isSelected;
-                    var8.e = var7.downloadText;
-                    var8.i = var7;
-                    this.listItems.addElement(var8);
+                    contactItem.isSelected = currentContact.isSelected;
+                    contactItem.statusText = currentContact.description;
+                    contactItem.contactRef = currentContact;
+                    this.listItems.addElement(contactItem);
                 }
             }
 
@@ -203,11 +203,11 @@ public final class ListComponent extends UIComponent {
                 this.listSelectedIndex = this.totalItemCount - 1;
             }
 
-            if (this.displayMode == 0) {
+            if (this.enableDescription == 0) {
                 this.visibleItemCount = super.height / this.itemHeight + 2;
                 this.maxScrollY = this.totalItemCount * this.rowHeight - super.height;
-            } else if (this.displayMode == 1) {
-                this.visibleItemCount = super.height / this.doubleRowHeight + (var2 > 1 ? var2 : 2);
+            } else if (this.enableDescription == 1) {
+                this.visibleItemCount = super.height / this.doubleRowHeight + (groupCount > 1 ? groupCount : 2);
                 this.maxScrollY = this.totalItemCount * this.doubleRowHeight - super.height;
             }
 
@@ -225,7 +225,7 @@ public final class ListComponent extends UIComponent {
     private void updateSoftKeys() {
         if (this.listSelectedIndex == -1 || this.listSelectedIndex >= this.listItems.size() || this.listItems.size() == 0) {
             super.middleSoftKey = null;
-        } else if (((quyen_bj) this.listItems.elementAt(this.listSelectedIndex)).a == 1) {
+        } else if (((BuddyListItem) this.listItems.elementAt(this.listSelectedIndex)).itemType == 1) {
             super.middleSoftKey = this.emptyAction;
         } else if (this.isMultiSelectMode) {
             super.middleSoftKey = this.multiSelectAction;
@@ -234,17 +234,17 @@ public final class ListComponent extends UIComponent {
         }
     }
 
-    public boolean handleDirectKeyPress(int var1) {
-        if (var1 != 13 && var1 != 12) {
+    public boolean handleDirectKeyPress(int keyCode) {
+        if (keyCode != 13 && keyCode != 12) {
             return true;
         } else {
-            this.handleKeyPress(var1);
+            this.handleKeyPress(keyCode);
             return false;
         }
     }
 
     private void updateScrollPosition() {
-        if (this.displayMode == 0) {
+        if (this.enableDescription == 0) {
             this.targetScrollY = this.listSelectedIndex * this.rowHeight - (super.height >> 1);
         } else {
             this.targetScrollY = this.listSelectedIndex * this.doubleRowHeight - (super.height >> 1);
@@ -260,19 +260,19 @@ public final class ListComponent extends UIComponent {
         }
     }
 
-    public boolean handleKeyPress(int var1) {
+    public boolean handleKeyPress(int keyCode) {
         if (this.listItems != null && this.totalItemCount != 0) {
             label38:
             {
                 this.keyProcessed = true;
-                if (var1 == 12) {
+                if (keyCode == 12) {
                     this.listSelectedIndex--;
                     if (this.listSelectedIndex >= 0) {
                         break label38;
                     }
 
                     this.listSelectedIndex = this.totalItemCount - 1;
-                } else if (var1 == 13) {
+                } else if (keyCode == 13) {
                     this.listSelectedIndex++;
                     if (this.listSelectedIndex < this.totalItemCount) {
                         break label38;
@@ -284,7 +284,7 @@ public final class ListComponent extends UIComponent {
                 this.keyProcessed = false;
             }
 
-            if (var1 == 12 || var1 == 13) {
+            if (keyCode == 12 || keyCode == 13) {
                 this.updateSoftKeys();
                 this.updateScrollPosition();
                 GameGraphics.clearKeyStates();
@@ -293,7 +293,7 @@ public final class ListComponent extends UIComponent {
                 UIUtils.markScreenForUpdate(this);
             }
 
-            if (var1 == 16) {
+            if (keyCode == 16) {
                 this.handleSelection();
                 GameGraphics.clearKeyStates();
             }
@@ -308,21 +308,21 @@ public final class ListComponent extends UIComponent {
         if (this.listSelectedIndex == -1) {
             return;
         }
-        this.currentItem = (quyen_bj) this.listItems.elementAt(this.listSelectedIndex);
-        if (this.currentItem.a == 0) {
+        this.currentItem = (BuddyListItem) this.listItems.elementAt(this.listSelectedIndex);
+        if (this.currentItem.itemType == 0) {
             if (this.isMultiSelectMode) {
-                quyen_bj quyen_bj2 = (quyen_bj) this.listItems.elementAt(this.listSelectedIndex);
-                ((quyen_bj) this.listItems.elementAt(this.listSelectedIndex)).h = !quyen_bj2.h;
-                quyen_bj2.i.isSelected = !quyen_bj2.i.isSelected;
+                BuddyListItem selectedItem = (BuddyListItem) this.listItems.elementAt(this.listSelectedIndex);
+                ((BuddyListItem) this.listItems.elementAt(this.listSelectedIndex)).isSelected = !selectedItem.isSelected;
+                selectedItem.contactRef.isSelected = !selectedItem.contactRef.isSelected;
                 return;
             }
             if (this.itemAction != null) {
                 this.itemAction.action();
             }
         } else {
-            BuddyGroup contactGroup2 = this.dataSource.findBuddyContactByName(this.currentItem.c);
-            if (contactGroup2 != null) {
-                contactGroup2.expansionStatus = this.currentItem.g == 0 ? 1 : 0;
+            BuddyGroup contactGroup = this.dataSource.findBuddyContactByName(this.currentItem.groupName);
+            if (contactGroup != null) {
+                contactGroup.expansionStatus = this.currentItem.statusCode == 0 ? 1 : 0;
             }
             this.buildListItems();
         }
@@ -334,10 +334,10 @@ public final class ListComponent extends UIComponent {
         this.needsTextScrolling = false;
     }
 
-    public void render(Graphics var1) {
-        var1.setClip(super.posX, super.posY, super.width, super.height);
-        var1.translate(0, -this.currentScrollY);
-        if (this.displayMode == 0) {
+    public void render(Graphics graphics) {
+        graphics.setClip(super.posX, super.posY, super.width, super.height);
+        graphics.translate(0, -this.currentScrollY);
+        if (this.enableDescription == 0) {
             this.currentDrawY = this.firstVisibleIndex * this.rowHeight - 2;
         } else {
             this.currentDrawY = this.firstVisibleIndex * this.doubleRowHeight - 2;
@@ -345,39 +345,39 @@ public final class ListComponent extends UIComponent {
 
         this.lastVisibleIndex = this.firstVisibleIndex + this.visibleItemCount;
         this.itemCountLimit = this.totalItemCount;
-        int var2 = 0;
-        int var3 = 0;
+        int itemCenterY = 0;
+        int itemDrawHeight = 0;
 
-        for (int var4 = this.firstVisibleIndex; var4 <= this.lastVisibleIndex && var4 < this.itemCountLimit; var4++) {
-            quyen_bj var5;
-            if ((var5 = (quyen_bj) this.listItems.elementAt(var4)).a == 1) {
-                var3 = this.itemHeight;
-                var1.setColor(2440262);
-                var1.fillRect(0, var4 == 0 ? this.currentDrawY + 1 : this.currentDrawY + 2, super.width, var3);
-                if (var4 == this.listSelectedIndex) {
-                    this.drawSelectionBackground(var1, var4, var3);
+        for (int itemIndex = this.firstVisibleIndex; itemIndex <= this.lastVisibleIndex && itemIndex < this.itemCountLimit; itemIndex++) {
+            BuddyListItem currentListItem;
+            if ((currentListItem = (BuddyListItem) this.listItems.elementAt(itemIndex)).itemType == 1) {
+                itemDrawHeight = this.itemHeight;
+                graphics.setColor(2440262);
+                graphics.fillRect(0, itemIndex == 0 ? this.currentDrawY + 1 : this.currentDrawY + 2, super.width, itemDrawHeight);
+                if (itemIndex == this.listSelectedIndex) {
+                    this.drawSelectionBackground(graphics, itemIndex, itemDrawHeight);
                 }
 
-                var2 = this.currentDrawY + (this.itemHeight >> 1) + 1;
-                var1.drawImage(GameManager.arrowIcons[var5.g], 10, var2, 3);
-                FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(var5.c, 22, this.currentDrawY + 5, var1);
+                itemCenterY = this.currentDrawY + (this.itemHeight >> 1) + 1;
+                graphics.drawImage(GameManager.arrowIcons[currentListItem.statusCode], 10, itemCenterY, 3);
+                FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(currentListItem.groupName, 22, this.currentDrawY + 5, graphics);
             } else {
-                var3 = this.rowHeight;
-                if (this.displayMode == 1) {
-                    var3 = this.doubleRowHeight;
+                itemDrawHeight = this.rowHeight;
+                if (this.enableDescription == 1) {
+                    itemDrawHeight = this.doubleRowHeight;
                 }
 
-                if (var4 == this.listSelectedIndex) {
-                    this.drawSelectionBackground(var1, var4, var3);
+                if (itemIndex == this.listSelectedIndex) {
+                    this.drawSelectionBackground(graphics, itemIndex, itemDrawHeight);
                 }
 
-                if (var4 == this.listSelectedIndex) {
+                if (itemIndex == this.listSelectedIndex) {
                     if (this.currentTextWidth == 0) {
                         this.textScrollX = this.textStartX;
-                        this.currentTextWidth = FontRenderer.getTextWidth(var5.d);
-                        var2 = var5.e == null ? 0 : FontRenderer.getTextWidth(var5.e);
-                        if (this.currentTextWidth < var2) {
-                            this.currentTextWidth = var2;
+                        this.currentTextWidth = FontRenderer.getTextWidth(currentListItem.displayName);
+                        itemCenterY = currentListItem.statusText == null ? 0 : FontRenderer.getTextWidth(currentListItem.statusText);
+                        if (this.currentTextWidth < itemCenterY) {
+                            this.currentTextWidth = itemCenterY;
                         }
 
                         if (this.currentTextWidth > this.maxItemTextWidth) {
@@ -405,66 +405,66 @@ public final class ListComponent extends UIComponent {
                     }
                 }
 
-                var2 = this.currentDrawY + (this.displayMode == 0 ? (this.rowHeight - FontRenderer.fontHeight >> 1) - 1 : this.doubleRowHeight - (FontRenderer.fontHeight << 1) - 5 >> 1) + 2;
-                if (this.statusIconType != 0) {
-                    var1.setClip(-5, var1.getClipY(), this.textStartX + this.maxTextWidth, var1.getClipHeight());
+                itemCenterY = this.currentDrawY + (this.enableDescription == 0 ? (this.rowHeight - FontRenderer.fontHeight >> 1) - 1 : this.doubleRowHeight - (FontRenderer.fontHeight << 1) - 5 >> 1) + 2;
+                if (this.enableIconStatus != 0) {
+                    graphics.setClip(-5, graphics.getClipY(), this.textStartX + this.maxTextWidth, graphics.getClipHeight());
                 }
 
-                if (var5.d != null) {
-                    FontRenderer.getFontInstance(var5.b).drawText(var5.d, var4 == this.listSelectedIndex ? this.textScrollX : this.textStartX, var2, var1);
+                if (currentListItem.displayName != null) {
+                    FontRenderer.getFontInstance(currentListItem.textColor).drawText(currentListItem.displayName, itemIndex == this.listSelectedIndex ? this.textScrollX : this.textStartX, itemCenterY, graphics);
                 }
 
-                if (this.displayMode == 1 && var5.e != null) {
-                    FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(var5.e, var4 == this.listSelectedIndex ? this.textScrollX : this.textStartX, var2 + FontRenderer.fontHeight + 3, var1);
+                if (this.enableDescription == 1 && currentListItem.statusText != null) {
+                    FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(currentListItem.statusText, itemIndex == this.listSelectedIndex ? this.textScrollX : this.textStartX, itemCenterY + FontRenderer.fontHeight + 3, graphics);
                 }
 
-                if (this.statusIconType != 0) {
-                    var1.setClip(super.posX, var1.getClipY(), super.width, var1.getClipHeight());
+                if (this.enableIconStatus != 0) {
+                    graphics.setClip(super.posX, graphics.getClipY(), super.width, graphics.getClipHeight());
                 }
 
-                if (this.isMultiSelectMode && var5.g != 3) {
-                    var1.drawRegion(GameManager.loadingImage, 0, var5.h ? 13 : 0, 13, 13, 0, super.width - 12, this.currentDrawY + (this.rowHeight >> 1), 3);
-                } else if (this.statusIconType != 0) {
-                    var1.drawImage(GameManager.statusIcons[this.statusIconType == 1 ? var5.g : 6], super.width - 9 - 10, this.currentDrawY + ((this.displayMode == 0 ? this.rowHeight : this.doubleRowHeight) >> 1) + 1, 6);
+                if (this.isMultiSelectMode && currentListItem.statusCode != 3) {
+                    graphics.drawRegion(GameManager.loadingImage, 0, currentListItem.isSelected ? 13 : 0, 13, 13, 0, super.width - 12, this.currentDrawY + (this.rowHeight >> 1), 3);
+                } else if (this.enableIconStatus != 0) {
+                    graphics.drawImage(GameManager.statusIcons[this.enableIconStatus == 1 ? currentListItem.statusCode : 6], super.width - 9 - 10, this.currentDrawY + ((this.enableDescription == 0 ? this.rowHeight : this.doubleRowHeight) >> 1) + 1, 6);
                 }
 
-                if (var5.l != null) {
-                    if (this.displayMode == 1) {
-                        var2 = this.currentDrawY + (this.doubleRowHeight - FontRenderer.fontHeight >> 1);
+                if (currentListItem.description != null) {
+                    if (this.enableDescription == 1) {
+                        itemCenterY = this.currentDrawY + (this.doubleRowHeight - FontRenderer.fontHeight >> 1);
                     }
 
-                    FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(var5.l, this.rightTextX, var2, var1);
+                    FontRenderer.getFontInstance(FontRenderer.COLOR_BROWN).drawText(currentListItem.description, this.rightTextX, itemCenterY, graphics);
                 }
 
-                var2 = this.currentDrawY + ((this.displayMode == 0 ? this.rowHeight : this.doubleRowHeight) >> 1) + 1;
+                itemCenterY = this.currentDrawY + ((this.enableDescription == 0 ? this.rowHeight : this.doubleRowHeight) >> 1) + 1;
                 if (this.iconType != 0) {
                     if (this.iconType != 1) {
-                        var1.setClip(var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, this.currentDrawY < this.currentScrollY ? this.currentScrollY : this.currentDrawY + 2, this.iconWidth, var3 - 1);
-                        var1.drawImage(var5.o == null ? ImageCache.getImage(var5.n) : var5.o, var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, var2, 6);
-                        var1.setClip(super.posX, super.posY + this.currentScrollY, super.width, super.height);
+                        graphics.setClip(itemIndex == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, this.currentDrawY < this.currentScrollY ? this.currentScrollY : this.currentDrawY + 2, this.iconWidth, itemDrawHeight - 1);
+                        graphics.drawImage(currentListItem.thumbnailImage == null ? ImageCache.getImage(currentListItem.imageSourceId) : currentListItem.thumbnailImage, itemIndex == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, itemCenterY, 6);
+                        graphics.setClip(super.posX, super.posY + this.currentScrollY, super.width, super.height);
                     } else {
-                        var1.drawImage(GameManager.statusIcons[5], var4 == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, var2, 6);
+                        graphics.drawImage(GameManager.statusIcons[5], itemIndex == this.listSelectedIndex ? this.textScrollX - 6 - this.iconWidth : 9, itemCenterY, 6);
                     }
                 }
             }
 
-            if (var4 == this.listSelectedIndex) {
-                var1.setColor(8700157);
-                var1.fillRect(0, this.currentDrawY + 1, super.width, 1);
+            if (itemIndex == this.listSelectedIndex) {
+                graphics.setColor(8700157);
+                graphics.fillRect(0, this.currentDrawY + 1, super.width, 1);
             } else {
-                var1.setColor(6781570);
+                graphics.setColor(6781570);
             }
 
-            var1.fillRect(0, this.currentDrawY + var3 + 1, super.width, 1);
-            this.currentDrawY += var3;
+            graphics.fillRect(0, this.currentDrawY + itemDrawHeight + 1, super.width, 1);
+            this.currentDrawY += itemDrawHeight;
         }
 
-        var1.translate(0, this.currentScrollY);
+        graphics.translate(0, this.currentScrollY);
     }
 
-    private void drawSelectionBackground(Graphics var1, int var2, int var3) {
-        var1.setColor(66826);
-        var1.fillRect(0, var2 == 0 ? this.currentDrawY + 1 : this.currentDrawY + 2, super.width, var3);
+    private void drawSelectionBackground(Graphics graphics, int itemIndex, int itemDrawHeight) {
+        graphics.setColor(66826);
+        graphics.fillRect(0, itemIndex == 0 ? this.currentDrawY + 1 : this.currentDrawY + 2, super.width, itemDrawHeight);
     }
 
     public void update() {
@@ -481,7 +481,7 @@ public final class ListComponent extends UIComponent {
                 this.currentScrollY = 0;
             }
 
-            this.firstVisibleIndex = this.currentScrollY / (this.displayMode == 0 ? this.rowHeight : this.doubleRowHeight) - 1;
+            this.firstVisibleIndex = this.currentScrollY / (this.enableDescription == 0 ? this.rowHeight : this.doubleRowHeight) - 1;
             if (this.firstVisibleIndex < 0) {
                 this.firstVisibleIndex = 0;
             }
@@ -499,45 +499,45 @@ public final class ListComponent extends UIComponent {
         }
     }
 
-    public void renderFocusIndicator(Graphics var1) {
-        ScrollBar.render(var1, this.listSelectedIndex);
+    public void renderFocusIndicator(Graphics graphics) {
+        ScrollBar.render(graphics, this.listSelectedIndex);
     }
 
-    public void handlePointerRelease(int var1, int var2) {
-        this.lastTouchX = var1;
-        this.lastTouchY = var2;
+    public void handlePointerRelease(int touchX, int touchY) {
+        this.lastTouchX = touchX;
+        this.lastTouchY = touchY;
     }
 
-    public void handlePointerPress(int var1, int var2) {
+    public void handlePointerPress(int touchX, int touchY) {
         if (this.isDragging) {
             this.isDragging = false;
-            this.targetScrollY = this.targetScrollY - (var2 - this.lastTouchY) * 5;
+            this.targetScrollY = this.targetScrollY - (touchY - this.lastTouchY) * 5;
             if (this.targetScrollY < 0) {
                 this.targetScrollY = 0;
             } else if (this.targetScrollY > this.maxScrollY) {
                 this.targetScrollY = this.maxScrollY;
             }
         } else {
-            if (this.displayMode == 0) {
-                var1 = (var2 + this.currentScrollY) / this.rowHeight;
+            if (this.enableDescription == 0) {
+                touchX = (touchY + this.currentScrollY) / this.rowHeight;
             } else {
-                var1 = (var2 + this.currentScrollY) / this.doubleRowHeight;
+                touchX = (touchY + this.currentScrollY) / this.doubleRowHeight;
             }
 
-            if (var1 < 0) {
-                var1 = 0;
+            if (touchX < 0) {
+                touchX = 0;
             }
 
-            if (var1 > this.totalItemCount - 1) {
-                var1 = this.totalItemCount - 1;
+            if (touchX > this.totalItemCount - 1) {
+                touchX = this.totalItemCount - 1;
             }
 
-            if (this.listSelectedIndex == var1) {
+            if (this.listSelectedIndex == touchX) {
                 this.handleSelection();
                 return;
             }
 
-            this.listSelectedIndex = var1;
+            this.listSelectedIndex = touchX;
             this.updateSoftKeys();
             this.resetTextScrolling();
             UIUtils.markScreenForUpdate(this);
@@ -546,10 +546,10 @@ public final class ListComponent extends UIComponent {
         ScrollBar.setScrolling(true);
     }
 
-    public void handlePointerDrag(int var1, int var2) {
-        if (ContactListComponent.abs(var1 - this.lastTouchX) > 1 || ContactListComponent.abs(var2 - this.lastTouchY) > 1) {
+    public void handlePointerDrag(int touchX, int touchY) {
+        if (ContactListComponent.abs(touchX - this.lastTouchX) > 1 || ContactListComponent.abs(touchY - this.lastTouchY) > 1) {
             this.isDragging = true;
-            this.targetScrollY = this.targetScrollY - (var2 - this.lastTouchY);
+            this.targetScrollY = this.targetScrollY - (touchY - this.lastTouchY);
             if (this.targetScrollY < 0) {
                 this.targetScrollY = 0;
             }
@@ -559,38 +559,38 @@ public final class ListComponent extends UIComponent {
             }
 
             this.currentScrollY = this.targetScrollY;
-            this.firstVisibleIndex = this.currentScrollY / (this.displayMode == 0 ? this.rowHeight : this.doubleRowHeight) - 1;
+            this.firstVisibleIndex = this.currentScrollY / (this.enableDescription == 0 ? this.rowHeight : this.doubleRowHeight) - 1;
             if (this.firstVisibleIndex < 0) {
                 this.firstVisibleIndex = 0;
             }
 
-            this.lastTouchX = var1;
-            this.lastTouchY = var2;
+            this.lastTouchX = touchX;
+            this.lastTouchY = touchY;
         }
 
         ScrollBar.setScrolling(true);
     }
 
-    public quyen_bj getSelectedItem() {
-        return this.listSelectedIndex < 0 ? null : (quyen_bj) this.listItems.elementAt(this.listSelectedIndex);
+    public BuddyListItem getSelectedItem() {
+        return this.listSelectedIndex < 0 ? null : (BuddyListItem) this.listItems.elementAt(this.listSelectedIndex);
     }
 
     public String[] getSelectedItemIds() {
         if (this.isMultiSelectMode) {
-            Vector var1 = new Vector();
+            Vector selectedIds = new Vector();
 
-            for (int var2 = this.totalItemCount - 1; var2 >= 0; var2--) {
-                quyen_bj var3;
-                if ((var3 = (quyen_bj) this.listItems.elementAt(var2)).a == 0 && var3.h) {
-                    var3.h = false;
-                    var1.addElement(var3.j);
+            for (int itemIndex = this.totalItemCount - 1; itemIndex >= 0; itemIndex--) {
+                BuddyListItem listItem;
+                if ((listItem = (BuddyListItem) this.listItems.elementAt(itemIndex)).itemType == 0 && listItem.isSelected) {
+                    listItem.isSelected = false;
+                    selectedIds.addElement(listItem.fileName);
                 }
             }
 
-            if (var1.size() > 0) {
-                String[] var4 = new String[var1.size()];
-                var1.copyInto(var4);
-                return var4;
+            if (selectedIds.size() > 0) {
+                String[] resultArray = new String[selectedIds.size()];
+                selectedIds.copyInto(resultArray);
+                return resultArray;
             }
         }
 
@@ -601,11 +601,11 @@ public final class ListComponent extends UIComponent {
         if (this.isMultiSelectMode) {
             this.allSelected = !this.allSelected;
 
-            for (int var1 = this.totalItemCount - 1; var1 >= 0; var1--) {
-                quyen_bj var2;
-                if ((var2 = (quyen_bj) this.listItems.elementAt(var1)).a == 0) {
-                    var2.h = this.allSelected;
-                    var2.i.isSelected = this.allSelected;
+            for (int itemIndex = this.totalItemCount - 1; itemIndex >= 0; itemIndex--) {
+                BuddyListItem listItem;
+                if ((listItem = (BuddyListItem) this.listItems.elementAt(itemIndex)).itemType == 0) {
+                    listItem.isSelected = this.allSelected;
+                    listItem.contactRef.isSelected = this.allSelected;
                 }
             }
         }

@@ -20,7 +20,7 @@ public final class quyen_fj implements Action {
     }
 
     public void action() {
-        PacketSender.a(this.b, this.c.getText(), (byte) 0);
+        PacketSender.requestReloadData(this.b, this.c.getText(), (byte) 0);
         this.a.removeScreen(this.d);
     }
 }

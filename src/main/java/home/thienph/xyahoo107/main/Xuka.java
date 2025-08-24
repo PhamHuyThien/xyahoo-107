@@ -185,34 +185,51 @@ public class Xuka extends MIDlet {
         new Thread(new SMSSenderTask(x, string, Action, b, action2)).start();
     }
 
-    public static byte[] loadData(final String str, final String str2) {
-        final StringBuffer sb;
-        (sb = new StringBuffer(str2)).append(str);
-        byte[] record;
+    /*
+     * Ý nghĩa: Tải dữ liệu byte array từ RecordStore
+     * Mở RecordStore với tên được tạo từ prefix + key và đọc record đầu tiên
+     *
+     * @param cacheKey - key để tìm dữ liệu trong cache
+     * @param storePrefix - prefix của RecordStore
+     * @return byte[] dữ liệu từ cache, null nếu không tìm thấy hoặc lỗi
+     */
+    public static byte[] loadData(final String cacheKey, final String storePrefix) {
+        final StringBuffer storeNameBuffer;
+        (storeNameBuffer = new StringBuffer(storePrefix)).append(cacheKey);
+        byte[] recordData;
         try {
-            final RecordStore openRecordStore;
-            record = (openRecordStore = RecordStore.openRecordStore(sb.toString(), (boolean) (0 != 0))).getRecord(1);
-            openRecordStore.closeRecordStore();
-        } catch (final Exception ex) {
+            final RecordStore recordStore;
+            recordData = (recordStore = RecordStore.openRecordStore(storeNameBuffer.toString(), (boolean) (0 != 0))).getRecord(1);
+            recordStore.closeRecordStore();
+        } catch (final Exception exception) {
             System.gc();
             return null;
         }
         System.gc();
-        return record;
+        return recordData;
     }
 
-    public static void saveData(final String str, final byte[] array, final String str2) {
-        final StringBuffer sb;
-        (sb = new StringBuffer(str2)).append(str);
+    /*
+     * Ý nghĩa: Lưu dữ liệu vào RecordStore
+     * Tạo hoặc cập nhật record đầu tiên trong RecordStore
+     * Nếu đã có record thì cập nhật, chưa có thì tạo mới
+     *
+     * @param cacheKey - key để lưu dữ liệu
+     * @param dataToSave - dữ liệu cần lưu dạng byte array
+     * @param storePrefix - prefix của RecordStore
+     */
+    public static void saveData(final String cacheKey, final byte[] dataToSave, final String storePrefix) {
+        final StringBuffer storeNameBuffer = new StringBuffer(storePrefix);
+        storeNameBuffer.append(cacheKey);
         try {
-            final RecordStore openRecordStore;
-            if ((openRecordStore = RecordStore.openRecordStore(sb.toString(), true)).getNumRecords() > 0) {
-                openRecordStore.setRecord(1, array, 0, array.length);
+            final RecordStore recordStore = RecordStore.openRecordStore(storeNameBuffer.toString(), true);
+            if (recordStore.getNumRecords() > 0) {
+                recordStore.setRecord(1, dataToSave, 0, dataToSave.length);
             } else {
-                openRecordStore.addRecord(array, 0, array.length);
+                recordStore.addRecord(dataToSave, 0, dataToSave.length);
             }
-            openRecordStore.closeRecordStore();
-        } catch (final Exception ex) {
+            recordStore.closeRecordStore();
+        } catch (final Exception exception) {
         }
         System.gc();
     }
@@ -340,12 +357,20 @@ public class Xuka extends MIDlet {
         saveData("xpam" + str, new byte[]{1}, "xkown");
     }
 
-    public static int loadIntData(final String s, final String s2) {
-        final byte[] a;
-        if ((a = loadData(s, s2)) == null || a.length != 4) {
+    /*
+     * Ý nghĩa: Tải dữ liệu integer từ RecordStore
+     * Đọc 4 bytes từ storage và chuyển đổi thành integer
+     *
+     * @param cacheKey - key để tìm dữ liệu trong cache
+     * @param storePrefix - prefix của RecordStore
+     * @return int value từ cache, -1 nếu không tìm thấy hoặc lỗi
+     */
+    public static int loadIntData(final String cacheKey, final String storePrefix) {
+        final byte[] rawData;
+        if ((rawData = loadData(cacheKey, storePrefix)) == null || rawData.length != 4) {
             return -1;
         }
-        return GameManager.bytesToInt(a[0], a[1], a[2], a[3]);
+        return GameManager.bytesToInt(rawData[0], rawData[1], rawData[2], rawData[3]);
     }
 
     public static long loadLongData(final String s) {

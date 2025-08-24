@@ -20,7 +20,7 @@ final class quyen_iq implements Action {
 
     public void action() {
         quyen_ip var1 = this.a;
-        PacketSender.a(this.b, FriendScreen.getActiveTextInput(this.a.a).getText());
+        PacketSender.requestReloadData(this.b, FriendScreen.getActiveTextInput(this.a.a).getText());
         var1 = this.a;
         FriendScreen.setActiveTextInput(this.a.a, (TextInputComponent) null);
         GameManager.instance.removeScreen(this.c);

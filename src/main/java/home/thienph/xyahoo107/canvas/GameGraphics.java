@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.canvas;
 
-import home.thienph.xyahoo107.connections.ChatPacketHandler;
-import home.thienph.xyahoo107.connections.GamePacketHandler;
+import home.thienph.xyahoo107.processors.ChatPacketProcesssor;
+import home.thienph.xyahoo107.processors.GamePacketProcessor;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
 import home.thienph.xyahoo107.managers.GameManager;
@@ -44,18 +44,18 @@ public final class GameGraphics extends Canvas implements Runnable {
         screenHeight = this.getHeight();
         gameState = 0;
         FontRenderer.initializeFonts();
-        GamePacketHandler gamePacketHandler = GamePacketHandler.getInstance();
-        ChatPacketHandler chatPacketHandler = ChatPacketHandler.getInstance();
-        NetworkManager.registerHandler(2, gamePacketHandler);
-        NetworkManager.registerHandler(4, chatPacketHandler);
-        NetworkManager.registerHandler(39, gamePacketHandler);
-        NetworkManager.registerHandler(5, gamePacketHandler);
-        NetworkManager.registerHandler(6, gamePacketHandler);
-        NetworkManager.registerHandler(37, gamePacketHandler);
-        NetworkManager.registerHandler(48, gamePacketHandler);
-        NetworkManager.packetHandler = gamePacketHandler;
-        GamePacketHandler.gameManager = GameManager.getInstance();
-        ChatPacketHandler.gameManager = GameManager.getInstance();
+        GamePacketProcessor gamePacketProcessor = GamePacketProcessor.getInstance();
+        ChatPacketProcesssor chatPacketProcesssor = ChatPacketProcesssor.getInstance();
+        NetworkManager.registerHandler(2, gamePacketProcessor);
+        NetworkManager.registerHandler(4, chatPacketProcesssor);
+        NetworkManager.registerHandler(39, gamePacketProcessor);
+        NetworkManager.registerHandler(5, gamePacketProcessor);
+        NetworkManager.registerHandler(6, gamePacketProcessor);
+        NetworkManager.registerHandler(37, gamePacketProcessor);
+        NetworkManager.registerHandler(48, gamePacketProcessor);
+        NetworkManager.packetHandler = gamePacketProcessor;
+        GamePacketProcessor.gameManager = GameManager.getInstance();
+        ChatPacketProcesssor.gameManager = GameManager.getInstance();
         NetworkManager.sendPacket(new Packet(2, 5));
         new Thread(this).start();
     }

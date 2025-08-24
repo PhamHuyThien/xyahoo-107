@@ -96,9 +96,9 @@ public final class ChatScreen extends Screen {
 
                 Object var5 = null;
                 if (this.isYahooChat) {
-                    PacketSender.a((String) (var5 = YahooScreen.yahooUsername), this.yahooContactId, this.textInputComponent.getText(), 2);
+                    PacketSender.requestReloadData((String) (var5 = YahooScreen.yahooUsername), this.yahooContactId, this.textInputComponent.getText(), 2);
                 } else {
-                    PacketSender.a(this.chatId, this.textInputComponent.getText());
+                    PacketSender.requestReloadData(this.chatId, this.textInputComponent.getText());
                 }
 
                 this.chatComponent.addPlayerMessage(this.isYahooChat ? YahooScreen.originalUsername : FriendScreen.currentUserName, this.textInputComponent.getText(), 0);

@@ -12,6 +12,6 @@ public final class quyen_j implements Action {
     }
 
     public void action() {
-        PacketSender.a(ContactListComponent.getSelectedItem(this.a).m, true);
+        PacketSender.requestReloadData(ContactListComponent.getSelectedItem(this.a).timestamp, true);
     }
 }

@@ -12,6 +12,6 @@ public final class quyen_d implements Action {
     }
 
     public void action() {
-        PacketSender.i(ContactListComponent.getSelectedItem(this.a).c);
+        PacketSender.i(ContactListComponent.getSelectedItem(this.a).groupName);
     }
 }

@@ -45,43 +45,81 @@ public final class GridComponent extends UIComponent {
     private int bounceOffset = 0;
     private int lastPointerY;
 
-    public GridComponent(int var1, int var2, int var3, int var4, int var5, String[] var6, int[] var7, Integer[] var8, int var9, int var10, boolean var11, int var12) {
+    /*
+     * Ý nghĩa: Constructor cho GridComponent - hiển thị danh sách items dưới dạng lưới
+     * Tính toán layout, spacing và vị trí cho từng item trong grid
+     *
+     * @param unused1 - tham số không sử dụng
+     * @param unused2 - tham số không sử dụng
+     * @param componentWidth - chiều rộng của component
+     * @param componentHeight - chiều cao của component
+     * @param totalItemCount - tổng số item trong grid
+     * @param itemTexts - mảng text cho từng item (phân tách bởi dấu '-')
+     * @param itemDataIds - mảng ID data cho từng item
+     * @param itemImageIds - mảng ID hình ảnh cho từng item
+     * @param itemWidth - chiều rộng của mỗi item
+     * @param itemImageHeight - chiều cao hình ảnh của item
+     * @param unusedBoolean - tham số boolean không sử dụng
+     * @param unusedInt - tham số int không sử dụng
+     */
+    public GridComponent(int unused1, int unused2, int componentWidth, int componentHeight,
+                         int totalItemCount, String[] itemTexts, int[] itemDataIds,
+                         Integer[] itemImageIds, int itemWidth, int itemImageHeight,
+                         boolean unusedBoolean, int unusedInt) {
         super.posX = 0;
         super.posY = 0;
-        super.width = var3;
-        super.height = var4;
+        super.width = componentWidth;
+        super.height = componentHeight;
         super.isFocused = true;
-        this.totalItemCount = var5;
-        this.itemTextLines = new Vector();
-        var1 = 0;
 
-        for (int var14 = var6.length; var1 < var14; var1++) {
-            String[] var17 = FontRenderer.splitStringByChar(var6[var1], '-');
-            this.itemTextLines.addElement(var17);
+        this.totalItemCount = totalItemCount;
+        this.itemTextLines = new Vector();
+
+        // Xử lý text cho từng item (split bởi dấu '-')
+        int itemIndex = 0;
+        for (int textCount = itemTexts.length; itemIndex < textCount; itemIndex++) {
+            String[] textLines = FontRenderer.splitStringByChar(itemTexts[itemIndex], '-');
+            this.itemTextLines.addElement(textLines);
         }
 
-        this.itemDataIds = var7;
-        this.itemImageIds = var8;
-        this.itemWidth = var9;
-        this.itemImageHeight = var10;
+        this.itemDataIds = itemDataIds;
+        this.itemImageIds = itemImageIds;
+        this.itemWidth = itemWidth;
+        this.itemImageHeight = itemImageHeight;
         this.hideImages = false;
         super.isPressed = true;
         this.displayMode = 2;
-        var2 = (this.itemWidth < 30 ? 30 : this.itemWidth) + (GameGraphics.screenWidth > 220 ? 25 : 23);
-        this.columnsPerRow = super.width / var2;
-        this.totalRows = this.totalItemCount % this.columnsPerRow == 0 ? this.totalItemCount / this.columnsPerRow : this.totalItemCount / this.columnsPerRow + 1;
+
+        // Tính toán layout grid
+        int effectiveItemWidth = (this.itemWidth < 30 ? 30 : this.itemWidth) + (GameGraphics.screenWidth > 220 ? 25 : 23);
+        this.columnsPerRow = super.width / effectiveItemWidth;
+        this.totalRows = this.totalItemCount % this.columnsPerRow == 0 ?
+                this.totalItemCount / this.columnsPerRow :
+                this.totalItemCount / this.columnsPerRow + 1;
+
+        // Tính spacing giữa các item
         this.itemSpacingX = (super.width - this.columnsPerRow * this.itemWidth) / (this.columnsPerRow + 1) + 3;
+
+        // Thiết lập kích thước item
         this.itemHeaderHeight = 28;
         this.itemFullHeight = this.itemHeaderHeight + this.itemImageHeight + 6;
+
+        // Tính vị trí bắt đầu grid
         this.gridStartX = (super.width - this.columnsPerRow * (this.itemWidth + this.itemSpacingX) >> 1) + (this.itemSpacingX >> 1);
         this.gridStartY = super.posY;
-        var2 = this.gridStartY + (this.totalRows + 1) * this.itemFullHeight - super.height;
-        this.scrollRowsNeeded = var2 / this.itemFullHeight;
+
+        // Tính toán scroll nếu cần
+        int totalGridHeight = this.gridStartY + (this.totalRows + 1) * this.itemFullHeight - super.height;
+        this.scrollRowsNeeded = totalGridHeight / this.itemFullHeight;
         this.scrollOffsetY = 0;
+
+        // Thiết lập selection
         this.selectedColumnIndex = 0;
         this.selectedRowIndex = 0;
         this.itemPadding = 11;
         this.selectionWidth = this.itemWidth + this.itemPadding;
+
+        // Đảm bảo selection width tối thiểu
         if (this.selectionWidth < 50) {
             this.selectionWidth = 50;
             this.itemPadding = this.selectionWidth - this.itemWidth;
