@@ -49,7 +49,7 @@ public final class YahooScreen extends Screen {
     private TextInputComponent statusMessageInput;
 
     public YahooScreen() {
-        super.dialogId = 11112;
+//        super.dialogId = 11112;
         String var1 = Xuka.loadYahooID();
         String var2 = Xuka.loadYahooPassword();
         super.title = "Yahoo!";

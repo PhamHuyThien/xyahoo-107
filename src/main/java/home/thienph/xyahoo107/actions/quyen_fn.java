@@ -19,7 +19,7 @@ public final class quyen_fn implements Action {
 
     public void action() {
         if (!this.b) {
-            this.a.friendManager.addToPendingList(this.c);
+            this.a.friendScreen.addToPendingList(this.c);
         }
 
         this.a.removeScreen(this.d);

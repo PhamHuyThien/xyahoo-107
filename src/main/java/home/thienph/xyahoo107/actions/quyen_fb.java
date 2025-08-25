@@ -11,6 +11,6 @@ public final class quyen_fb implements Action {
     }
 
     public void action() {
-        this.a.friendManager.showStatusDialog();
+        this.a.friendScreen.showStatusDialog();
     }
 }

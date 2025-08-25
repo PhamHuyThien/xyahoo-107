@@ -14,7 +14,6 @@ final class quyen_ix implements Action {
     }
 
     public void action() {
-        FriendClickChatWithAction var1 = this.a;
         String var5 = FriendScreen.getActiveTextInput(this.a.friendScreen).getText().trim();
         ChatScreen var2;
         if ((var2 = (ChatScreen) GameManager.instance.setActiveScreen(var5)) != null) {

@@ -517,7 +517,7 @@ public final class GameScreen extends Screen {
             System.gc();
 
             for (byte var1 = 0; var1 < this.playerComponents.length; var1++) {
-                if (!FriendScreen.currentUserId.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendManager.findContactById(this.playerComponents[var1].playerName) == null) {
+                if (!FriendScreen.currentUserId.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendScreen.findContactById(this.playerComponents[var1].playerName) == null) {
                     this.profileMenuItems.addElement(new ButtonAction(this.playerComponents[var1].playerName, new quyen_de(this, var1)));
                 }
             }

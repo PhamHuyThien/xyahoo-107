@@ -11,12 +11,8 @@ final class quyen_iv implements Action {
     }
 
     public void action() {
-        FriendClickAddContactAction var1 = this.a;
         if (FriendScreen.getActiveTextInput(this.a.friendScreen).getText() != null) {
-            var1 = this.a;
             if (FriendScreen.getActiveTextInput(this.a.friendScreen).getText().length() > 0) {
-                var1 = this.a;
-                var1 = this.a;
                 this.a.friendScreen.sendFriendRequest(FriendScreen.getActiveTextInput(this.a.friendScreen).getText());
             }
         }

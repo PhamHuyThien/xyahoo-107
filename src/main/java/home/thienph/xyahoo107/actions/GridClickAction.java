@@ -23,7 +23,7 @@ public final class GridClickAction implements Action {
             GameManager gameManager = GameManager.instance;
             int selectedItemId = this.gridComponent.getSelectedItemId();
             GridComponent var1 = this.gridComponent;
-            gameManager.joinGame(selectedItemId, this.checkedStates[this.gridComponent.selectedRowIndex * var1.columnsPerRow + var1.selectedColumnIndex]);
+            gameManager.joinScreenByActionId(selectedItemId, this.checkedStates[this.gridComponent.selectedRowIndex * var1.columnsPerRow + var1.selectedColumnIndex]);
         } else {
             GameProcessor.processMessage(this.selectActionData);
         }

@@ -15,7 +15,7 @@ public final class FriendClickChatWithAction implements Action {
     public void action() {
         if (this.friendScreen.isSearchMode) {
             FriendScreen.getSearchInput(this.friendScreen).setText("");
-            this.friendScreen.mainContactList.setSearchFilter("");
+            this.friendScreen.friendsComponent.setSearchFilter("");
             FriendScreen.exitSearchMode(this.friendScreen);
         }
 

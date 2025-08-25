@@ -5,6 +5,6 @@ import home.thienph.xyahoo107.managers.GameManager;
 
 public final class quyen_ha implements Action {
     public void action() {
-        GameManager.instance.joinGame(11115, false);
+        GameManager.instance.joinScreenByActionId(11115, false);
     }
 }

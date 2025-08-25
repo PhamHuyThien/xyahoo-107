@@ -110,11 +110,9 @@ public class GameProcessor {
                          * byte: dialogType - loại dialog hiện tại
                          */
                         int requestId = PacketUtils.readInt(packet);
-//                        System.out.println("A >>>>>>>>>>>>>>>>>>>>>>>>>"+requestId);
                         Packet responsePacket = new Packet(0, 0);
                         PacketUtils.writeInt(requestId, responsePacket);
                         int componentCount = PacketUtils.readInt(packet);
-//                        System.out.println("B >>>>>>>>>>>>>>>>>>>>>>>>>"+componentCount);
 
                         for (int componentIndex = 0; componentIndex < componentCount; componentIndex++) {
                             byte dataType = packet.getPayload().readByte();
@@ -667,7 +665,7 @@ public class GameProcessor {
                                 int itemHeight = PacketUtils.readInt(packet);
                                 boolean hasCheckboxes = PacketUtils.readBoolean(packet);
 
-                                int[] itemDataIds = new int[itemCount];
+                                int[] actionIds = new int[itemCount];
                                 Integer[] itemImageIds = new Integer[itemCount];
                                 String[] itemTexts = new String[itemCount];
                                 boolean[] checkedStates = null;
@@ -678,14 +676,14 @@ public class GameProcessor {
 
                                 for (int i = 0; i < itemCount; i++) {
                                     itemTexts[i] = PacketUtils.readString(packet);
-                                    itemDataIds[i] = PacketUtils.readInt(packet);
+                                    actionIds[i] = PacketUtils.readInt(packet);
                                     itemImageIds[i] = new Integer(PacketUtils.readInt(packet));
                                     if (hasCheckboxes) {
                                         checkedStates[i] = PacketUtils.readBoolean(packet);
                                     }
                                 }
 
-                                GridComponent gridComponent = new GridComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight, itemCount, itemTexts, itemDataIds, itemImageIds, itemWidth, itemHeight, false, 2);
+                                GridComponent gridComponent = new GridComponent(0, 0, Screen.screenWidth, Screen.screenHeight - GameManager.footerHeight, itemCount, itemTexts, actionIds, itemImageIds, itemWidth, itemHeight, false, 2);
                                 targetDialog.addComponent(gridComponent);
                                 UIUtils.focusComponent(targetDialog, gridComponent);
 
@@ -1282,7 +1280,7 @@ public class GameProcessor {
                     case 49:
                         String friendName = PacketUtils.readString(packet);
                         PacketUtils.readLong(packet);
-                        GameManager.instance.friendManager.sendFriendRequest(friendName);
+                        GameManager.instance.friendScreen.sendFriendRequest(friendName);
                         break;
 
                     /*

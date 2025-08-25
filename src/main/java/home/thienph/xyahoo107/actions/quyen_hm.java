@@ -24,7 +24,7 @@ public final class quyen_hm implements Action {
         if (this.b) {
             GameManager.instance.yahooChat.showAddFriendDialog(this.c);
         } else {
-            if (!GameManager.instance.friendManager.isUserOnline(this.a.chatId) && !GameManager.instance.friendManager.isUserBlocked(this.a.chatId) && !GameManager.instance.friendManager.isRequestPending(this.a.chatId)) {
+            if (!GameManager.instance.friendScreen.isUserOnline(this.a.chatId) && !GameManager.instance.friendScreen.isUserBlocked(this.a.chatId) && !GameManager.instance.friendScreen.isRequestPending(this.a.chatId)) {
                 PacketSender.b(this.d);
                 GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + this.d, (Image) null, 1);
             } else {

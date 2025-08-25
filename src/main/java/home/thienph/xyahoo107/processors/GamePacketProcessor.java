@@ -710,49 +710,49 @@ public final class GamePacketProcessor extends PacketHandler {
                 GameManager.handleGameUpdate(var138, var139, 0, var142, var140, var144, var145, var146, var147, var148, var149, var118);
                 return;
             case 5000009:
-                StringBuffer var189 = null;
-                BuddyGroupList var64 = new BuddyGroupList();
-                int var65;
-                BuddyInfo[] var66 = new BuddyInfo[var65 = PacketUtils.readInt(packet)];
-                String[] var67 = new String[var65];
+                StringBuffer scoreBuffer = null;
+                BuddyGroupList gameLobbyList = new BuddyGroupList();
+                int playerCount;
+                BuddyInfo[] playerInfos = new BuddyInfo[playerCount = PacketUtils.readInt(packet)];
+                String[] groupNames = new String[playerCount];
 
-                for (int var68 = 0; var68 < var65; var68++) {
+                for (int playerIndex = 0; playerIndex < playerCount; playerIndex++) {
                     try {
-                        var67[var68] = PacketUtils.readString(packet);
-                    } catch (Exception var171) {
-                        var67[var68] = "";
+                        groupNames[playerIndex] = PacketUtils.readString(packet);
+                    } catch (Exception readException) {
+                        groupNames[playerIndex] = "";
                     }
 
-                    String var69 = PacketUtils.readString(packet);
-                    String var70 = PacketUtils.readString(packet);
-                    int var72 = PacketUtils.readInt(packet);
-                    int var73 = PacketUtils.readInt(packet);
-                    if (var189 == null) {
-                        var189 = new StringBuffer(0);
+                    String playerUsername = PacketUtils.readString(packet);
+                    String playerDisplayName = PacketUtils.readString(packet);
+                    int currentScore = PacketUtils.readInt(packet);
+                    int maxScore = PacketUtils.readInt(packet);
+                    if (scoreBuffer == null) {
+                        scoreBuffer = new StringBuffer(0);
                     } else {
-                        var189.delete(0, var189.length());
+                        scoreBuffer.delete(0, scoreBuffer.length());
                     }
 
-                    var189.append(var72);
-                    var189.append("/");
-                    var189.append(var73);
-                    byte var71;
-                    int var74;
-                    if ((var74 = var72 * 100 / var73) < 30) {
-                        var71 = 2;
-                    } else if (var74 < 80) {
-                        var71 = 3;
+                    scoreBuffer.append(currentScore);
+                    scoreBuffer.append("/");
+                    scoreBuffer.append(maxScore);
+                    byte playerStatus;
+                    int scorePercentage;
+                    if ((scorePercentage = currentScore * 100 / maxScore) < 30) {
+                        playerStatus = 2;
+                    } else if (scorePercentage < 80) {
+                        playerStatus = 3;
                     } else {
-                        var71 = 4;
+                        playerStatus = 4;
                     }
 
-                    var66[var68] = new BuddyInfo(var69, var70, var71, null, null, -1, var68, var189.toString());
-                    var64.addContactToGroup(var67[var68], var66[var68]);
+                    playerInfos[playerIndex] = new BuddyInfo(playerUsername, playerDisplayName, playerStatus, null, null, -1, playerIndex, scoreBuffer.toString());
+                    gameLobbyList.addContactToGroup(groupNames[playerIndex], playerInfos[playerIndex]);
                 }
 
                 System.gc();
                 GameManager.instance.setLoadingState(false);
-                gameManager.showGameLobby(var64);
+                gameManager.showGameLobby(gameLobbyList);
                 return;
             case 5000011:
                 String var95 = PacketUtils.readString(packet);
@@ -857,18 +857,18 @@ public final class GamePacketProcessor extends PacketHandler {
                 BuddyInfo[] var224 = new BuddyInfo[commandId = PacketUtils.readInt(packet)];
                 BuddyGroupList var32 = new BuddyGroupList();
 
-                for (int var198 = 0; var198 < commandId; var198++) {
+                for (int i = 0; i < commandId; i++) {
                     long var226 = PacketUtils.readLong(packet);
                     String var207 = PacketUtils.readString(packet);
                     String var227 = PacketUtils.readString(packet);
-                    var224[var198] = new BuddyInfo(var207, "", 0, var227, new int[0], 0, var198, null);
-                    var224[var198].timestamp = var226;
+                    var224[i] = new BuddyInfo(var207, "", 0, var227, new int[0], 0, i, null);
+                    var224[i].timestamp = var226;
                     if (FriendScreen.currentViewMode == 1) {
-                        var32.addContactToGroup("Ban Be", var224[var198]);
+                        var32.addContactToGroup("Ban Be", var224[i]);
                     } else if (FriendScreen.currentViewMode == 2) {
-                        var32.addContactToGroup("Danh sách từ chối", var224[var198]);
+                        var32.addContactToGroup("Danh sách từ chối", var224[i]);
                     } else {
-                        var32.addContactToGroup("Danh sách kết bạn", var224[var198]);
+                        var32.addContactToGroup("Danh sách kết bạn", var224[i]);
                     }
                 }
 

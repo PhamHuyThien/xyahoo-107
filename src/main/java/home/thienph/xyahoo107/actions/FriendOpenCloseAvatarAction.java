@@ -13,7 +13,7 @@ public final class FriendOpenCloseAvatarAction implements Action {
 
     public void action() {
         if (FriendScreen.isAvatarEnabled = !FriendScreen.isAvatarEnabled) {
-            this.friendScreen.mainContactList.resetAnimation();
+            this.friendScreen.friendsComponent.resetAnimation();
         }
 
         Xuka.saveBooleanSetting("onavt", FriendScreen.isAvatarEnabled);

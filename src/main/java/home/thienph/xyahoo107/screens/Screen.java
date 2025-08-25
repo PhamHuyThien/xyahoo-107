@@ -45,8 +45,8 @@ public class Screen {
     private int dragStartY;
     private int maxScrollY;
 
-    public final void setSelectedIndex(int var1) {
-        this.selectedIndex = var1;
+    public final void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
         this.needsUpdate = true;
     }
 
@@ -54,9 +54,9 @@ public class Screen {
         return this.selectedIndex;
     }
 
-    public final void startSlideAnimation(int var1) {
+    public final void startSlideAnimation(int direction) {
         this.isAnimating = true;
-        if (var1 == -1) {
+        if (direction == -1) {
             this.animationOffset = screenWidth;
             this.animationStep = -screenWidth >> 2;
         } else {
@@ -70,17 +70,17 @@ public class Screen {
         this.setSelectedIndex(-1);
     }
 
-    public void render(Graphics var1) {
-        this.renderBackground(var1);
-        this.renderComponents(var1);
-        var1.setClip(0, 0, 1000, 1000);
-        this.renderSpecialComponent(var1);
-        this.renderSoftkeys(var1);
+    public void render(Graphics graphics) {
+        this.renderBackground(graphics);
+        this.renderComponents(graphics);
+        graphics.setClip(0, 0, 1000, 1000);
+        this.renderSpecialComponent(graphics);
+        this.renderSoftkeys(graphics);
     }
 
-    public final void renderSoftkeys(Graphics var1) {
-        var1.setClip(0, 0, 1000, 1000);
-        renderHeader(var1);
+    public final void renderSoftkeys(Graphics graphics) {
+        graphics.setClip(0, 0, 1000, 1000);
+        renderHeader(graphics);
         this.currentLeftText = this.currentCenterText = this.currentRightText = "";
         if (this.leftSoftkey != null) {
             this.currentLeftText = this.leftSoftkey.text;
@@ -95,17 +95,17 @@ public class Screen {
         }
 
         if (this.selectedIndex != -1) {
-            UIComponent var2;
-            if ((var2 = (UIComponent) this.components.elementAt(this.selectedIndex)).leftSoftKey != null) {
-                this.currentLeftText = var2.leftSoftKey.text;
+            UIComponent selectedComponent;
+            if ((selectedComponent = (UIComponent) this.components.elementAt(this.selectedIndex)).leftSoftKey != null) {
+                this.currentLeftText = selectedComponent.leftSoftKey.text;
             }
 
-            if (var2.rightSoftKey != null) {
-                this.currentCenterText = var2.rightSoftKey.text;
+            if (selectedComponent.rightSoftKey != null) {
+                this.currentCenterText = selectedComponent.rightSoftKey.text;
             }
 
-            if (var2.middleSoftKey != null) {
-                this.currentRightText = var2.middleSoftKey.text;
+            if (selectedComponent.middleSoftKey != null) {
+                this.currentRightText = selectedComponent.middleSoftKey.text;
             }
         }
 
@@ -114,37 +114,37 @@ public class Screen {
             UIUtils.calculateTextPositions(this.currentRightText, this.currentCenterText);
         }
 
-        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentLeftText, 4, softkeyY, var1);
-        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentCenterText, UIUtils.rightTextX, softkeyY, var1);
-        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentRightText, UIUtils.centerTextX, softkeyY, var1);
+        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentLeftText, 4, softkeyY, graphics);
+        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentCenterText, UIUtils.rightTextX, softkeyY, graphics);
+        FontRenderer.getFontInstance(FontRenderer.COLOR_WHITE).drawText(this.currentRightText, UIUtils.centerTextX, softkeyY, graphics);
     }
 
-    public final void renderComponents(Graphics var1) {
-        for (int var2 = 0; var2 < this.componentCount; var2++) {
-            var1.setClip(0, screenY, screenWidth, screenHeight - GameManager.footerHeight);
-            var1.translate(0, -this.currentScrollY);
-            var1.translate(0, screenY);
-            UIComponent var3;
-            if ((var3 = (UIComponent) this.components.elementAt(var2)).posY - this.currentScrollY + var3.height > 0 && var3.posY - this.currentScrollY < screenHeight - GameManager.footerHeight - 10) {
-                var3.render(var1);
+    public final void renderComponents(Graphics graphics) {
+        for (int componentIndex = 0; componentIndex < this.componentCount; componentIndex++) {
+            graphics.setClip(0, screenY, screenWidth, screenHeight - GameManager.footerHeight);
+            graphics.translate(0, -this.currentScrollY);
+            graphics.translate(0, screenY);
+            UIComponent currentComponent;
+            if ((currentComponent = (UIComponent) this.components.elementAt(componentIndex)).posY - this.currentScrollY + currentComponent.height > 0 && currentComponent.posY - this.currentScrollY < screenHeight - GameManager.footerHeight - 10) {
+                currentComponent.render(graphics);
             }
 
-            var1.translate(0, -screenY);
-            var1.translate(0, this.currentScrollY);
+            graphics.translate(0, -screenY);
+            graphics.translate(0, this.currentScrollY);
         }
 
-        var1.translate(-var1.getTranslateX(), -var1.getTranslateY());
+        graphics.translate(-graphics.getTranslateX(), -graphics.getTranslateY());
     }
 
-    public void renderBackground(Graphics var1) {
+    public void renderBackground(Graphics graphics) {
     }
 
-    public void addComponent(UIComponent var1) {
-        if (!this.components.contains(var1)) {
-            var1.parentScreen = this;
-            this.components.addElement(var1);
+    public void addComponent(UIComponent component) {
+        if (!this.components.contains(component)) {
+            component.parentScreen = this;
+            this.components.addElement(component);
             this.updateLayout();
-            if (var1 instanceof ListComponent || var1 instanceof GridComponent) {
+            if (component instanceof ListComponent || component instanceof GridComponent) {
                 this.hasSpecialComponent = true;
             }
         }
@@ -152,23 +152,23 @@ public class Screen {
 
     public final void updateLayout() {
         this.componentCount = this.components.size();
-        int var2 = 0;
+        int totalHeight = 0;
         if (this.componentCount > 1) {
-            UIComponent var3;
-            var2 = (var3 = (UIComponent) this.components.elementAt(this.componentCount - 1)).posY + var3.height + 6 + GameManager.footerHeight;
+            UIComponent lastComponent;
+            totalHeight = (lastComponent = (UIComponent) this.components.elementAt(this.componentCount - 1)).posY + lastComponent.height + 6 + GameManager.footerHeight;
         }
 
-        if (var2 > screenHeight) {
+        if (totalHeight > screenHeight) {
             ScrollBar.isVisible = true;
             ScrollBar.initialize(this.componentCount);
-            this.maxScrollY = var2 - screenHeight;
+            this.maxScrollY = totalHeight - screenHeight;
         } else {
             ScrollBar.isVisible = false;
         }
     }
 
-    public void removeComponent(UIComponent var1) {
-        this.components.removeElement(var1);
+    public void removeComponent(UIComponent component) {
+        this.components.removeElement(component);
         this.updateLayout();
     }
 
@@ -177,21 +177,21 @@ public class Screen {
         this.updateLayout();
     }
 
-    public final void scrollToComponent(int var1) {
-        UIComponent var4;
-        int var2 = (var4 = (UIComponent) this.components.elementAt(var1)).posY + screenY + var4.height;
-        if (var4.posY < this.targetScrollY + 6 && this.selectedIndex != 0) {
-            this.targetScrollY = var4.posY - (FontRenderer.lineHeight << 1);
+    public final void scrollToComponent(int componentIndex) {
+        UIComponent targetComponent;
+        int componentBottomY = (targetComponent = (UIComponent) this.components.elementAt(componentIndex)).posY + screenY + targetComponent.height;
+        if (targetComponent.posY < this.targetScrollY + 6 && this.selectedIndex != 0) {
+            this.targetScrollY = targetComponent.posY - (FontRenderer.lineHeight << 1);
             if (this.targetScrollY < 0) {
                 this.targetScrollY = 0;
             }
-        } else if (var2 > this.targetScrollY + screenHeight + 1 && !this.isAtBottom) {
-            this.targetScrollY = var2 - screenHeight + FontRenderer.lineHeight * 3 + 2;
+        } else if (componentBottomY > this.targetScrollY + screenHeight + 1 && !this.isAtBottom) {
+            this.targetScrollY = componentBottomY - screenHeight + FontRenderer.lineHeight * 3 + 2;
             if (this.targetScrollY > this.maxScrollY) {
                 this.targetScrollY = this.maxScrollY;
             }
-        } else if (var4.posY < this.currentScrollY) {
-            this.targetScrollY = var4.posY - 6;
+        } else if (targetComponent.posY < this.currentScrollY) {
+            this.targetScrollY = targetComponent.posY - 6;
         }
     }
 
@@ -205,41 +205,41 @@ public class Screen {
     }
 
     private void selectPreviousComponent() {
-        int var1 = this.selectedIndex;
-        if (!UIUtils.isTextInputWithHelpBox((UIComponent) this.components.elementAt(var1))) {
-            UIComponent var2;
+        int currentIndex = this.selectedIndex;
+        if (!UIUtils.isTextInputWithHelpBox((UIComponent) this.components.elementAt(currentIndex))) {
+            UIComponent targetComponent;
             do {
-                if (--var1 == -1) {
-                    var1 = this.componentCount - 1;
+                if (--currentIndex == -1) {
+                    currentIndex = this.componentCount - 1;
                 }
-            } while (UIUtils.isEmptyTextComponent(var2 = (UIComponent) this.components.elementAt(var1)) || !var2.isVisible);
+            } while (UIUtils.isEmptyTextComponent(targetComponent = (UIComponent) this.components.elementAt(currentIndex)) || !targetComponent.isVisible);
 
-            this.selectAndScrollTo(var1);
+            this.selectAndScrollTo(currentIndex);
         }
     }
 
     private void selectNextComponent() {
-        int var1 = this.selectedIndex;
-        if (!UIUtils.isTextInputWithHelpBox((UIComponent) this.components.elementAt(var1))) {
-            UIComponent var2;
+        int currentIndex = this.selectedIndex;
+        if (!UIUtils.isTextInputWithHelpBox((UIComponent) this.components.elementAt(currentIndex))) {
+            UIComponent targetComponent;
             do {
-                if (++var1 == this.componentCount) {
-                    var1 = 0;
+                if (++currentIndex == this.componentCount) {
+                    currentIndex = 0;
                 }
-            } while (UIUtils.isEmptyTextComponent(var2 = (UIComponent) this.components.elementAt(var1)) || !var2.isVisible);
+            } while (UIUtils.isEmptyTextComponent(targetComponent = (UIComponent) this.components.elementAt(currentIndex)) || !targetComponent.isVisible);
 
-            this.selectAndScrollTo(var1);
+            this.selectAndScrollTo(currentIndex);
         }
     }
 
-    private void selectAndScrollTo(int var1) {
-        this.setSelectedIndex(var1);
-        this.scrollToComponent(var1);
+    private void selectAndScrollTo(int componentIndex) {
+        this.setSelectedIndex(componentIndex);
+        this.scrollToComponent(componentIndex);
         ScrollBar.setScrolling(true);
     }
 
-    public boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
-        boolean var4 = false;
+    public boolean handleInput(boolean[] keyPressed, boolean[] keyHeld, int[] keyCode) {
+        boolean inputHandled = false;
         if (this.currentScrollY != this.targetScrollY) {
             this.scrollAcceleration = this.targetScrollY - this.currentScrollY << 2;
             this.scrollVelocity = this.scrollVelocity + this.scrollAcceleration;
@@ -248,102 +248,102 @@ public class Screen {
         }
 
         if (this.selectedIndex != -1) {
-            if (var3[0] > 0) {
-                ((UIComponent) this.components.elementAt(this.selectedIndex)).handleKeyPress(var3[0]);
-                var3[0] = 0;
+            if (keyCode[0] > 0) {
+                ((UIComponent) this.components.elementAt(this.selectedIndex)).handleKeyPress(keyCode[0]);
+                keyCode[0] = 0;
 
-                for (int var9 = 0; var9 < var1.length; var9++) {
-                    var1[var9] = false;
+                for (int i = 0; i < keyPressed.length; i++) {
+                    keyPressed[i] = false;
                 }
 
                 return false;
             }
 
-            for (int var7 = 0; var7 < 21; var7++) {
-                if (var2[var7] && ++keyRepeatCounter > 4) {
-                    if (((UIComponent) this.components.elementAt(this.selectedIndex)).handleDirectKeyPress(var7)) {
-                        if (var7 == 12) {
+            for (int currentKey = 0; currentKey < 21; currentKey++) {
+                if (keyHeld[currentKey] && ++keyRepeatCounter > 4) {
+                    if (((UIComponent) this.components.elementAt(this.selectedIndex)).handleDirectKeyPress(currentKey)) {
+                        if (currentKey == 12) {
                             this.selectPreviousComponent();
-                        } else if (var7 == 13) {
+                        } else if (currentKey == 13) {
                             this.selectNextComponent();
                         }
 
-                        var2[var7] = false;
+                        keyHeld[currentKey] = false;
                     }
 
                     keyRepeatCounter = 4;
-                } else if (var1[var7]) {
-                    if (((UIComponent) this.components.elementAt(this.selectedIndex)).handleKeyPress(var7)) {
-                        if (var7 == 12) {
+                } else if (keyPressed[currentKey]) {
+                    if (((UIComponent) this.components.elementAt(this.selectedIndex)).handleKeyPress(currentKey)) {
+                        if (currentKey == 12) {
                             this.selectPreviousComponent();
-                        } else if (var7 == 13) {
+                        } else if (currentKey == 13) {
                             this.selectNextComponent();
                         } else {
-                            Action var5 = null;
-                            if (var7 == 17) {
+                            Action actionToExecute = null;
+                            if (currentKey == 17) {
                                 if (this.leftSoftkey != null) {
-                                    var5 = this.leftSoftkey.action;
+                                    actionToExecute = this.leftSoftkey.action;
                                 }
 
-                                UIComponent var10;
-                                if (this.selectedIndex != -1 && (var10 = (UIComponent) this.components.elementAt(this.selectedIndex)).leftSoftKey != null) {
-                                    var5 = var10.leftSoftKey.action;
+                                UIComponent selectedComponent;
+                                if (this.selectedIndex != -1 && (selectedComponent = (UIComponent) this.components.elementAt(this.selectedIndex)).leftSoftKey != null) {
+                                    actionToExecute = selectedComponent.leftSoftKey.action;
                                 }
-                            } else if (var7 == 18) {
+                            } else if (currentKey == 18) {
                                 if (this.rightSoftkey != null) {
-                                    var5 = this.rightSoftkey.action;
+                                    actionToExecute = this.rightSoftkey.action;
                                 }
 
-                                UIComponent var11;
-                                if (this.selectedIndex != -1 && (var11 = (UIComponent) this.components.elementAt(this.selectedIndex)).rightSoftKey != null) {
-                                    var5 = var11.rightSoftKey.action;
+                                UIComponent selectedComponent;
+                                if (this.selectedIndex != -1 && (selectedComponent = (UIComponent) this.components.elementAt(this.selectedIndex)).rightSoftKey != null) {
+                                    actionToExecute = selectedComponent.rightSoftKey.action;
                                 }
-                            } else if (var7 == 16) {
+                            } else if (currentKey == 16) {
                                 if (this.centerSoftkey != null) {
-                                    var5 = this.centerSoftkey.action;
+                                    actionToExecute = this.centerSoftkey.action;
                                 }
 
-                                UIComponent var12;
-                                if (this.selectedIndex != -1 && (var12 = (UIComponent) this.components.elementAt(this.selectedIndex)).middleSoftKey != null) {
-                                    var5 = var12.middleSoftKey.action;
+                                UIComponent selectedComponent;
+                                if (this.selectedIndex != -1 && (selectedComponent = (UIComponent) this.components.elementAt(this.selectedIndex)).middleSoftKey != null) {
+                                    actionToExecute = selectedComponent.middleSoftKey.action;
                                 }
                             }
 
-                            if (var5 != null) {
-                                var5.action();
+                            if (actionToExecute != null) {
+                                actionToExecute.action();
                             }
                         }
 
-                        var4 = true;
+                        inputHandled = true;
                     } else {
-                        var4 = false;
+                        inputHandled = false;
                     }
 
-                    var1[var7] = false;
+                    keyPressed[currentKey] = false;
                 }
             }
         }
 
-        int var8 = this.componentCount;
+        int componentIndex = this.componentCount;
 
-        while (--var8 >= 0) {
-            ((UIComponent) this.components.elementAt(var8)).update();
+        while (--componentIndex >= 0) {
+            ((UIComponent) this.components.elementAt(componentIndex)).update();
         }
 
-        return var4;
+        return inputHandled;
     }
 
-    public void onPointerPressed(int var1, int var2) {
+    public void onPointerPressed(int touchX, int touchY) {
         if (this.isDragScrolling && !this.isScrollLocked) {
             this.isDragScrolling = false;
-            this.targetScrollY = this.targetScrollY - (var2 - this.dragStartY) * 5;
+            this.targetScrollY = this.targetScrollY - (touchY - this.dragStartY) * 5;
         } else {
-            int var3 = this.components.size();
+            int componentIndex = this.components.size();
 
-            while (--var3 >= 0) {
-                UIComponent var4 = (UIComponent) this.components.elementAt(var3);
-                if (var1 > var4.posX && var2 + this.currentScrollY > var4.posY && var1 < var4.posX + var4.width && var2 + this.currentScrollY < var4.posY + var4.height) {
-                    var4.handlePointerPress(var1 - var4.posX, var2 + this.currentScrollY - var4.posY);
+            while (--componentIndex >= 0) {
+                UIComponent currentComponent = (UIComponent) this.components.elementAt(componentIndex);
+                if (touchX > currentComponent.posX && touchY + this.currentScrollY > currentComponent.posY && touchX < currentComponent.posX + currentComponent.width && touchY + this.currentScrollY < currentComponent.posY + currentComponent.height) {
+                    currentComponent.handlePointerPress(touchX - currentComponent.posX, touchY + this.currentScrollY - currentComponent.posY);
                     return;
                 }
             }
@@ -352,20 +352,20 @@ public class Screen {
         }
     }
 
-    public void onPointerDragged(int var1, int var2) {
-        int var3 = this.componentCount;
+    public void onPointerDragged(int touchX, int touchY) {
+        int componentIndex = this.componentCount;
 
-        while (--var3 >= 0) {
-            UIComponent var4 = (UIComponent) this.components.elementAt(var3);
-            if (var1 > var4.posX && var2 + this.currentScrollY > var4.posY && var1 < var4.posX + var4.width && var2 + this.currentScrollY < var4.posY + var4.height && var4.isFocused) {
-                var4.handlePointerDrag(var1 - var4.posX, var2 + this.currentScrollY - var4.posY);
+        while (--componentIndex >= 0) {
+            UIComponent currentComponent = (UIComponent) this.components.elementAt(componentIndex);
+            if (touchX > currentComponent.posX && touchY + this.currentScrollY > currentComponent.posY && touchX < currentComponent.posX + currentComponent.width && touchY + this.currentScrollY < currentComponent.posY + currentComponent.height && currentComponent.isFocused) {
+                currentComponent.handlePointerDrag(touchX - currentComponent.posX, touchY + this.currentScrollY - currentComponent.posY);
                 return;
             }
         }
 
-        if (!this.isScrollLocked && ContactListComponent.abs(var2 - this.dragStartY) > 1) {
+        if (!this.isScrollLocked && ContactListComponent.abs(touchY - this.dragStartY) > 1) {
             this.isDragScrolling = true;
-            this.targetScrollY = this.targetScrollY - (var2 - this.dragStartY);
+            this.targetScrollY = this.targetScrollY - (touchY - this.dragStartY);
             if (this.targetScrollY < 0) {
                 this.targetScrollY = 0;
             } else if (this.targetScrollY > this.maxScrollY) {
@@ -373,47 +373,47 @@ public class Screen {
             }
 
             this.currentScrollY = this.targetScrollY;
-            this.dragStartY = var2;
+            this.dragStartY = touchY;
         }
 
         ScrollBar.setScrolling(true);
     }
 
-    public void onPointerReleased(int var1, int var2) {
-        int var3 = this.componentCount;
+    public void onPointerReleased(int touchX, int touchY) {
+        int componentIndex = this.componentCount;
 
-        while (--var3 >= 0) {
-            UIComponent var4 = (UIComponent) this.components.elementAt(var3);
-            if (var1 > var4.posX && var2 + this.currentScrollY > var4.posY && var1 < var4.posX + var4.width && var2 + this.currentScrollY < var4.posY + var4.height && var4.isFocused) {
-                var4.handlePointerRelease(var1 - var4.posX, var2 + this.currentScrollY - var4.posY);
+        while (--componentIndex >= 0) {
+            UIComponent currentComponent = (UIComponent) this.components.elementAt(componentIndex);
+            if (touchX > currentComponent.posX && touchY + this.currentScrollY > currentComponent.posY && touchX < currentComponent.posX + currentComponent.width && touchY + this.currentScrollY < currentComponent.posY + currentComponent.height && currentComponent.isFocused) {
+                currentComponent.handlePointerRelease(touchX - currentComponent.posX, touchY + this.currentScrollY - currentComponent.posY);
                 return;
             }
         }
 
         if (!this.isScrollLocked) {
-            this.dragStartY = var2;
+            this.dragStartY = touchY;
         }
     }
 
-    public final void onPointerMoved(int var1, int var2) {
+    public final void onPointerMoved(int touchX, int touchY) {
         if (!this.isScrollLocked) {
-            this.dragStartY = var2;
+            this.dragStartY = touchY;
         }
     }
 
-    public static void renderHeader(Graphics var0) {
+    public static void renderHeader(Graphics graphics) {
         if (FontRenderer.isCustomFontEnabled) {
-            var0.drawImage(GameManager.headerImage, 0, screenHeight + 2, 20);
+            graphics.drawImage(GameManager.headerImage, 0, screenHeight + 2, 20);
         }
     }
 
-    public UIComponent findComponentByID(int var1) {
-        int var2 = this.componentCount;
+    public UIComponent findComponentByID(int componentId) {
+        int componentIndex = this.componentCount;
 
-        while (--var2 >= 0) {
-            UIComponent var3;
-            if ((var3 = (UIComponent) this.components.elementAt(var2)).id == var1) {
-                return var3;
+        while (--componentIndex >= 0) {
+            UIComponent currentComponent;
+            if ((currentComponent = (UIComponent) this.components.elementAt(componentIndex)).id == componentId) {
+                return currentComponent;
             }
         }
 
@@ -426,11 +426,11 @@ public class Screen {
         }
     }
 
-    public void renderSpecialComponent(Graphics var1) {
+    public void renderSpecialComponent(Graphics graphics) {
         if (this.componentCount > 0 && this.hasSpecialComponent && ((UIComponent) this.components.elementAt(0)).isPressed) {
-            ((UIComponent) this.components.elementAt(0)).renderFocusIndicator(var1);
+            ((UIComponent) this.components.elementAt(0)).renderFocusIndicator(graphics);
         } else {
-            ScrollBar.render(var1, this.selectedIndex);
+            ScrollBar.render(graphics, this.selectedIndex);
         }
     }
 }

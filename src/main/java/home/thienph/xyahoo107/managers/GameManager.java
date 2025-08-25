@@ -61,7 +61,7 @@ public final class GameManager {
     private int screenHeight;
     public Action gameController;
     private int currentScreenIndex;
-    public FriendScreen friendManager;
+    public FriendScreen friendScreen;
     public YahooScreen yahooChat;
     public LoginScreen loginScreen;
     private RegistrationScreen registrationScreen;
@@ -831,9 +831,9 @@ public final class GameManager {
 
         this.addScreenToStack((Screen) this.loginScreen);
         this.loginScreen.startSlideAnimation(-1);
-        if (this.friendManager != null) {
-            this.friendManager.clearContactData();
-            this.friendManager = null;
+        if (this.friendScreen != null) {
+            this.friendScreen.clearContactData();
+            this.friendScreen = null;
         }
 
         if (this.yahooChat != null) {
@@ -1881,7 +1881,7 @@ public final class GameManager {
 
     public void receiveBuzz(long var1) {
         this.receiveMessage(var1, "BUZZ!");
-        if (!this.friendManager.isUserBlocked(var1)) {
+        if (!this.friendScreen.isUserBlocked(var1)) {
             this.vibrate();
         }
     }
@@ -1920,12 +1920,12 @@ public final class GameManager {
     }
 
     public void initializeFriendManager() {
-        if (this.friendManager == null) {
-            this.friendManager = new FriendScreen();
-            this.friendManager.dialogId = 11113;
+        if (this.friendScreen == null) {
+            this.friendScreen = new FriendScreen();
+            this.friendScreen.dialogId = 11113;
         }
 
-        this.friendManager.startSlideAnimation(1);
+        this.friendScreen.startSlideAnimation(1);
     }
 
     private void initializeYahooChat() {
@@ -1951,7 +1951,7 @@ public final class GameManager {
     public static void doNothing() {
     }
 
-    public void joinGame(int var1, boolean var2) {
+    public void joinScreenByActionId(int var1, boolean var2) {
         if (var1 == 11112) {
             this.initializeYahooChat();
             if (!this.containsScreenInstance(this.yahooChat)) {
@@ -1962,13 +1962,13 @@ public final class GameManager {
         } else {
             if (var1 == 11113) {
                 this.initializeFriendManager();
-                if (!this.containsScreenInstance(this.friendManager)) {
-                    if (this.friendManager.mainContactList.contactData != null) {
-                        this.friendManager.mainContactList.isLoading = false;
+                if (!this.containsScreenInstance(this.friendScreen)) {
+                    if (this.friendScreen.friendsComponent.contactData != null) {
+                        this.friendScreen.friendsComponent.isLoading = false;
                     }
 
-                    if (this.friendManager.onlineFriends.size() > 0) {
-                        long[] var6 = FriendScreen.vectorToLongArray(this.friendManager.onlineFriends);
+                    if (this.friendScreen.onlineFriends.size() > 0) {
+                        long[] var6 = FriendScreen.vectorToLongArray(this.friendScreen.onlineFriends);
                         Packet var3 = new Packet(5000029, 2);
                         PacketUtils.writeInt(var6.length, var3);
                         int var4 = 0;
@@ -1981,13 +1981,11 @@ public final class GameManager {
                     } else {
                         NetworkManager.sendPacket(new Packet(5000036, 2));
                     }
-
-                    this.addScreenToStack(this.friendManager);
-                    this.switchToScreen(this.friendManager);
+                    this.addScreenToStack(this.friendScreen);
+                    this.switchToScreen(this.friendScreen);
                     return;
                 }
-
-                this.switchToScreen(this.friendManager);
+                this.switchToScreen(this.friendScreen);
             } else if (var1 == 11114) {
                 if (gameRoom == null || !this.containsScreenInstance(gameRoom)) {
                     PacketSender.d();
@@ -2052,7 +2050,7 @@ public final class GameManager {
             this.mainMenuList = new ContextMenu(var6);
             Vector var8;
             (var8 = new Vector()).addElement(var4);
-            var8.addElement(this.friendManager.createPendingRequestsButton());
+            var8.addElement(this.friendScreen.createPendingRequestsButton());
             var8.addElement(new ButtonAction("Tải về", new quyen_fe(this)));
             this.gameMenuList = new ContextMenu(var8);
         }
@@ -2254,7 +2252,7 @@ public final class GameManager {
             FriendScreen.avatarData = var3;
         }
 
-        this.friendManager.updateContactAvatar(var1, var3);
+        this.friendScreen.updateContactAvatar(var1, var3);
     }
 
     public void handleFileSendResponse(String var1, int var2) {
@@ -2832,45 +2830,45 @@ public final class GameManager {
     }
 
     public void updateUserProfile(long var1, long[] var3, int var4) {
-        if (this.friendManager != null) {
+        if (this.friendScreen != null) {
             FriendScreen.currentUserTimestamp = var1;
             String var7 = FriendScreen.currentUserId;
             Xuka.saveData("xkmyid" + var7, longToBytes(var1), "xkown");
             if (var3 != null) {
                 if (loadContactStatus(false) != var4) {
                     saveContactStatus(var4, false);
-                    FriendScreen.setVectorFromArray(var3, this.friendManager.onlineFriends);
-                    this.friendManager.sendBulkRequest(this.friendManager.onlineFriends);
+                    FriendScreen.setVectorFromArray(var3, this.friendScreen.onlineFriends);
+                    this.friendScreen.sendBulkRequest(this.friendScreen.onlineFriends);
                 }
             } else {
-                this.friendManager.mainContactList.isLoading = false;
-                if (this.friendManager.mainContactList.contactData != null) {
-                    this.friendManager.mainContactList.contactData = null;
+                this.friendScreen.friendsComponent.isLoading = false;
+                if (this.friendScreen.friendsComponent.contactData != null) {
+                    this.friendScreen.friendsComponent.contactData = null;
                 }
             }
         }
     }
 
     public void setEmptyContactMessage(String var1) {
-        if (this.friendManager != null) {
-            this.friendManager.mainContactList.emptyMessageLines = FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30);
+        if (this.friendScreen != null) {
+            this.friendScreen.friendsComponent.emptyMessageLines = FontRenderer.wrapTextToLines(var1, GameGraphics.screenWidth - 30);
         }
     }
 
     public void loadContactData(BuddyGroupList var1) {
-        this.friendManager.mainContactList.setContactData(var1, -1);
+        this.friendScreen.friendsComponent.setContactData(var1, -1);
         saveBuddyList(var1, false, FriendScreen.currentUserId);
-        this.friendManager.mainContactList.isLoading = false;
+        this.friendScreen.friendsComponent.isLoading = false;
     }
 
     public void handleFriendRequests(long[] var1, String[] var2) {
-        if (this.friendManager != null && var1 != null) {
-            if (this.friendManager.isInitialized) {
+        if (this.friendScreen != null && var1 != null) {
+            if (this.friendScreen.isInitialized) {
                 Vector var7 = new Vector();
                 int var8 = var1.length;
 
                 while (--var8 >= 0) {
-                    if (!this.friendManager.isUserOnline(var1[var8]) && !this.friendManager.isUserBlocked(var1[var8])) {
+                    if (!this.friendScreen.isUserOnline(var1[var8]) && !this.friendScreen.isUserBlocked(var1[var8])) {
                         var7.addElement(new Long(var1[var8]));
                     }
                 }
@@ -2886,21 +2884,21 @@ public final class GameManager {
                     }
                 }
 
-                FriendScreen.setVectorFromArray(var1, this.friendManager.pendingRequests);
+                FriendScreen.setVectorFromArray(var1, this.friendScreen.pendingRequests);
                 if (var1.length > 0) {
                     int var6 = var1.length;
                     this.showNotification("Bạn có " + var6 + " lời mời kết bạn. Xin vào Quản lý => Chờ kết bạn", (Image) null, 1);
-                    this.friendManager.updatePendingRequestsButton();
+                    this.friendScreen.updatePendingRequestsButton();
                 }
 
-                this.friendManager.isInitialized = false;
+                this.friendScreen.isInitialized = false;
                 return;
             }
 
             int var3 = 0;
 
             for (int var4 = var1.length; var3 < var4; var3++) {
-                if (!this.friendManager.isUserOnline(var1[var3]) && !this.friendManager.isUserBlocked(var1[var3]) && !this.friendManager.isRequestPending(var1[var3])) {
+                if (!this.friendScreen.isUserOnline(var1[var3]) && !this.friendScreen.isUserBlocked(var1[var3]) && !this.friendScreen.isRequestPending(var1[var3])) {
                     this.showAddFriendDialog(var2[var3], var1[var3], false);
                     this.showNotification(var2[var3] + " muốn kết bạn với bạn.", (Image) null, 1);
                 }
@@ -2910,33 +2908,33 @@ public final class GameManager {
 
     public void loadSecondaryContactsMode3(BuddyGroupList var1) {
         if (FriendScreen.currentViewMode == 3) {
-            this.friendManager.secondaryContactList.setContactData(var1, -1);
-            this.friendManager.secondaryContactList.isLoading = false;
+            this.friendScreen.friendsRequestComponent.setContactData(var1, -1);
+            this.friendScreen.friendsRequestComponent.isLoading = false;
         }
     }
 
     public void setBlockedUsers(long[] var1) {
-        if (this.friendManager != null && var1 != null) {
-            FriendScreen.setVectorFromArray(var1, this.friendManager.blockedUsers);
+        if (this.friendScreen != null && var1 != null) {
+            FriendScreen.setVectorFromArray(var1, this.friendScreen.blockedUsers);
         }
     }
 
     public void loadSecondaryContactsMode2(BuddyGroupList var1) {
         if (FriendScreen.currentViewMode == 2) {
-            this.friendManager.secondaryContactList.setContactData(var1, -1);
-            this.friendManager.secondaryContactList.isLoading = false;
+            this.friendScreen.friendsRequestComponent.setContactData(var1, -1);
+            this.friendScreen.friendsRequestComponent.isLoading = false;
         }
     }
 
     public void storeUserAndProcessInvite(long var1, String var3) {
-        this.friendManager.storeUserData(var1, var3);
-        if (this.friendManager.pendingInvitations.size() > 0) {
-            this.friendManager.processPendingInvitation(var1);
+        this.friendScreen.storeUserData(var1, var3);
+        if (this.friendScreen.pendingInvitations.size() > 0) {
+            this.friendScreen.processPendingInvitation(var1);
         }
     }
 
     public void openChatWithUser(long var1, String var3) {
-        this.friendManager.storeUserData(var1, var3);
+        this.friendScreen.storeUserData(var1, var3);
         ChatScreen var4;
         (var4 = new ChatScreen(var3, false, null, null)).chatTitle = var3;
         var4.setChatId(var1);
@@ -2946,21 +2944,21 @@ public final class GameManager {
     }
 
     public void handleFriendAccepted(long var1, String var3, int var4, int var5) {
-        if (this.friendManager != null) {
-            if (this.friendManager.isUserBlocked(var1)) {
-                this.friendManager.removeFromBlockedAndRefresh(var1);
+        if (this.friendScreen != null) {
+            if (this.friendScreen.isUserBlocked(var1)) {
+                this.friendScreen.removeFromBlockedAndRefresh(var1);
             } else {
                 this.showNotification(UIUtils.concatStrings(var3, " đồng ý kết bạn với bạn.", null, null), (Image) null, 1);
             }
 
             BuddyInfo var10;
             (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
-            FriendScreen.addContactToList("Ban Be", var10, this.friendManager.mainContactList);
-            saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
-            this.friendManager.addToOnlineList(var1);
+            FriendScreen.addContactToList("Ban Be", var10, this.friendScreen.friendsComponent);
+            saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
+            this.friendScreen.addToOnlineList(var1);
             saveContactStatus(var5, false);
-            if (this.friendManager.isRequestPending(var1)) {
-                this.friendManager.removeFromPendingList(var1);
+            if (this.friendScreen.isRequestPending(var1)) {
+                this.friendScreen.removeFromPendingList(var1);
             }
 
             System.gc();
@@ -2968,13 +2966,13 @@ public final class GameManager {
     }
 
     public void removeFriend(long var1, int var3) {
-        if (this.friendManager != null) {
-            String var4 = this.friendManager.getUserNameById(var1);
-            FriendScreen.removeContactFromList(var1, this.friendManager.mainContactList);
-            this.friendManager.removeFromOnlineList(var1);
-            this.friendManager.removeFromBlockedList(var1);
-            if (this.friendManager.onlineFriends.size() > 0) {
-                saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
+        if (this.friendScreen != null) {
+            String var4 = this.friendScreen.getUserNameById(var1);
+            FriendScreen.removeContactFromList(var1, this.friendScreen.friendsComponent);
+            this.friendScreen.removeFromOnlineList(var1);
+            this.friendScreen.removeFromBlockedList(var1);
+            if (this.friendScreen.onlineFriends.size() > 0) {
+                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
             } else {
                 var3 = -1;
             }
@@ -2989,12 +2987,12 @@ public final class GameManager {
     }
 
     public void blockUser(long var1, int var3) {
-        if (this.friendManager != null) {
-            FriendScreen.removeContactFromList(var1, this.friendManager.mainContactList);
-            this.friendManager.removeFromOnlineList(var1);
-            this.friendManager.addToBlockedList(var1);
-            if (this.friendManager.onlineFriends.size() > 0) {
-                saveBuddyList(this.friendManager.mainContactList.contactData, false, FriendScreen.currentUserId);
+        if (this.friendScreen != null) {
+            FriendScreen.removeContactFromList(var1, this.friendScreen.friendsComponent);
+            this.friendScreen.removeFromOnlineList(var1);
+            this.friendScreen.addToBlockedList(var1);
+            if (this.friendScreen.onlineFriends.size() > 0) {
+                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
             } else {
                 var3 = -1;
             }
@@ -3006,10 +3004,10 @@ public final class GameManager {
     }
 
     public void receiveMessage(long var1, String var3) {
-        if (!this.friendManager.isUserBlocked(var1)) {
+        if (!this.friendScreen.isUserBlocked(var1)) {
             String var4;
-            if ((var4 = this.friendManager.getUserNameById(var1)) == null) {
-                this.friendManager.addPendingInvitation(var1, var3);
+            if ((var4 = this.friendScreen.getUserNameById(var1)) == null) {
+                this.friendScreen.addPendingInvitation(var1, var3);
             } else {
                 ChatScreen var5;
                 (var5 = this.getOrCreateChatScreen(var4)).setChatId(var1);
@@ -3044,17 +3042,17 @@ public final class GameManager {
     }
 
     public void updateContactsStatus(long[] var1, String[] var2) {
-        if (this.friendManager != null) {
-            this.friendManager.updateContactsStatus(var1, var2);
+        if (this.friendScreen != null) {
+            this.friendScreen.updateContactsStatus(var1, var2);
         }
     }
 
     public void handleUserStatusChange(long var1, int var3) {
-        if (this.friendManager != null && this.friendManager.mainContactList.updateContactStatus(var1, var3)) {
-            this.friendManager.updateFavoriteStatus(var1, var3);
+        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactStatus(var1, var3)) {
+            this.friendScreen.updateFavoriteStatus(var1, var3);
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
             BuddyInfo var6;
-            if ((var6 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1)) != null) {
+            if ((var6 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, var1)) != null) {
                 String var2 = UIUtils.concatStrings(var6.username, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
                 this.showNotification(var2, var3 == 1 ? statusIcons[1] : statusIcons[0], var4);
 
@@ -3071,9 +3069,9 @@ public final class GameManager {
     }
 
     public void updateUserStatusMessage(long var1, String var3) {
-        if (this.friendManager != null && this.friendManager.mainContactList.updateContactSubtext(var1, var3)) {
+        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactSubtext(var1, var3)) {
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            BuddyInfo var5 = this.friendManager.mainContactList.contactData.findDownloadFile(null, null, var1);
+            BuddyInfo var5 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, var1);
             String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
             this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
             if (var1 == FriendScreen.currentUserTimestamp) {
@@ -3084,14 +3082,14 @@ public final class GameManager {
     }
 
     public void addOfflineMessage(String var1, String var2) {
-        this.friendManager.addOfflineMessage(var1, var2);
+        this.friendScreen.addOfflineMessage(var1, var2);
     }
 
     public void showOfflineMessages(BuddyGroupList var1) {
-        this.friendManager.createOfflineMessageScreen(var1);
-        this.friendManager.offlineMessageScreen.startSlideAnimation(1);
-        this.addScreenToStack(this.friendManager.offlineMessageScreen);
-        this.switchToScreen(this.friendManager.offlineMessageScreen);
+        this.friendScreen.createOfflineMessageScreen(var1);
+        this.friendScreen.offlineMessageScreen.startSlideAnimation(1);
+        this.addScreenToStack(this.friendScreen.offlineMessageScreen);
+        this.switchToScreen(this.friendScreen.offlineMessageScreen);
     }
 
     public void showChatWithMessages(String var1, Vector var2, long var3) {

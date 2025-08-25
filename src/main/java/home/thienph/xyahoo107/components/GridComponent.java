@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public final class GridComponent extends UIComponent {
     private final Integer[] itemImageIds;
-    private final int[] itemDataIds;
+    private final int[] actionIds;
     private final Vector itemTextLines;
     private final int itemSpacingX;
     private final int itemHeaderHeight;
@@ -63,7 +63,7 @@ public final class GridComponent extends UIComponent {
      * @param unusedInt - tham số int không sử dụng
      */
     public GridComponent(int unused1, int unused2, int componentWidth, int componentHeight,
-                         int totalItemCount, String[] itemTexts, int[] itemDataIds,
+                         int totalItemCount, String[] itemTexts, int[] actionIds,
                          Integer[] itemImageIds, int itemWidth, int itemImageHeight,
                          boolean unusedBoolean, int unusedInt) {
         super.posX = 0;
@@ -82,7 +82,7 @@ public final class GridComponent extends UIComponent {
             this.itemTextLines.addElement(textLines);
         }
 
-        this.itemDataIds = itemDataIds;
+        this.actionIds = actionIds;
         this.itemImageIds = itemImageIds;
         this.itemWidth = itemWidth;
         this.itemImageHeight = itemImageHeight;
@@ -139,7 +139,7 @@ public final class GridComponent extends UIComponent {
     }
 
     public int getSelectedItemId() {
-        return this.itemDataIds[this.selectedRowIndex * this.columnsPerRow + this.selectedColumnIndex];
+        return this.actionIds[this.selectedRowIndex * this.columnsPerRow + this.selectedColumnIndex];
     }
 
     private void drawCenteredText(Graphics var1, String var2, int var3, int var4) {

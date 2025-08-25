@@ -77,9 +77,9 @@ public final class LoginHandlerAction implements Action {
         if (contactListVersion != -1) {
             BuddyGroupList buddyGroupList = GameManager.loadBuddyList(false, FriendScreen.currentUserId);
             if (buddyGroupList != null) {
-                GameManager.instance.friendManager.mainContactList.setContactData(buddyGroupList, -1);
-                GameManager.instance.friendManager.mainContactList.isLoading = false;
-                GameManager.instance.friendManager.addAllFriendsToOnline();
+                GameManager.instance.friendScreen.friendsComponent.setContactData(buddyGroupList, -1);
+                GameManager.instance.friendScreen.friendsComponent.isLoading = false;
+                GameManager.instance.friendScreen.addAllFriendsToOnline();
                 FriendScreen.currentUserTimestamp = GameManager.getUserId(FriendScreen.currentUserId);
             } else {
                 contactListVersion = -1;

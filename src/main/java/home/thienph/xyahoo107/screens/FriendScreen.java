@@ -22,15 +22,15 @@ import java.util.Vector;
 
 public final class FriendScreen extends Screen {
     public static int[] avatarData;
-    public ContactListComponent mainContactList;
-    public ContactListComponent secondaryContactList;
+    public ContactListComponent friendsComponent;
+    public ContactListComponent friendsRequestComponent;
     public static String currentUserId;
     public static long currentUserTimestamp;
     public static String currentUserName;
     public static int userStatus;
     public static boolean isAvatarEnabled;
     public static String statusMessage = "";
-    private final Vector contextMenuItems;
+    public final Vector contextMenuItems;
     public ContextMenu contextMenu;
     public boolean isSearchMode;
     private final TextInputComponent searchInput;
@@ -55,22 +55,22 @@ public final class FriendScreen extends Screen {
     public Hashtable pendingInvitations;
 
     public void clearContactData() {
-        if (this.mainContactList != null) {
-            if (this.mainContactList.displayItems != null) {
-                this.mainContactList.displayItems.removeAllElements();
+        if (this.friendsComponent != null) {
+            if (this.friendsComponent.displayItems != null) {
+                this.friendsComponent.displayItems.removeAllElements();
             }
 
-            this.mainContactList.displayItems = null;
-            this.mainContactList.contactData = null;
+            this.friendsComponent.displayItems = null;
+            this.friendsComponent.contactData = null;
         }
 
-        if (this.secondaryContactList != null) {
-            if (this.secondaryContactList.displayItems != null) {
-                this.secondaryContactList.displayItems.removeAllElements();
+        if (this.friendsRequestComponent != null) {
+            if (this.friendsRequestComponent.displayItems != null) {
+                this.friendsRequestComponent.displayItems.removeAllElements();
             }
 
-            this.secondaryContactList.displayItems = null;
-            this.secondaryContactList.contactData = null;
+            this.friendsRequestComponent.displayItems = null;
+            this.friendsRequestComponent.contactData = null;
         }
     }
 
@@ -91,12 +91,13 @@ public final class FriendScreen extends Screen {
         this.searchInput = new TextInputComponent();
         this.searchInput.isNavigationMode = true;
         this.searchInput.setBounds(1, Screen.screenHeight - GameManager.footerHeight - FontRenderer.fontHeight - 11, Screen.screenWidth - 2, FontRenderer.fontHeight + 6);
-        this.mainContactList = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true);
-        this.mainContactList.isChatMode = false;
-        this.mainContactList.isFilterActive = Xuka.loadBooleanSetting("hideOffline", false);
-        this.mainContactList.isLoading = true;
-        toggleOfflineFilter(this.mainContactList);
-        UIUtils.focusComponent(this, this.mainContactList);
+        this.friendsComponent = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true);
+        this.friendsComponent.isChatMode = false;
+        this.friendsComponent.isFilterActive = Xuka.loadBooleanSetting("hideOffline", false);
+        this.friendsComponent.isLoading = true;
+        toggleOfflineFilter(this.friendsComponent);
+        this.addComponent(this.friendsComponent);
+        UIUtils.focusComponent(this, this.friendsComponent);
         this.contextMenuItems = new Vector();
         this.contextMenu = new ContextMenu(this.contextMenuItems);
         this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new FriendClickStatusAction(this)));
@@ -123,14 +124,14 @@ public final class FriendScreen extends Screen {
     }
 
     public void updateContactAvatar(long var1, int[] var3) {
-        this.mainContactList.updateContactAvatar(var1, var3);
-        if (this.secondaryContactList != null) {
-            this.secondaryContactList.updateContactAvatar(var1, var3);
+        this.friendsComponent.updateContactAvatar(var1, var3);
+        if (this.friendsRequestComponent != null) {
+            this.friendsRequestComponent.updateContactAvatar(var1, var3);
         }
     }
 
     public ButtonAction createPendingRequestsButton() {
-        return new ButtonAction("Chờ kết bạn" + (this.pendingRequests.size() > 0 ? " (+" + this.pendingRequests.size() + ")" : ""), new quyen_ie(this));
+        return new ButtonAction("Chờ kết bạn" + (this.pendingRequests.size() > 0 ? " (+" + this.pendingRequests.size() + ")" : ""), new ClickFriendRequestAction(this));
     }
 
     public static void updateStatusMessage(String var0) {
@@ -161,8 +162,8 @@ public final class FriendScreen extends Screen {
     }
 
     public void addAllFriendsToOnline() {
-        if (this.mainContactList.contactData != null) {
-            BuddyGroup var1 = this.mainContactList.contactData.findBuddyContactByName("Ban Be");
+        if (this.friendsComponent.contactData != null) {
+            BuddyGroup var1 = this.friendsComponent.contactData.findBuddyContactByName("Ban Be");
             int var2 = 0;
 
             for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
@@ -179,13 +180,13 @@ public final class FriendScreen extends Screen {
     }
 
     private void exitSearchMode() {
-        UIUtils.focusComponent(this, this.mainContactList);
+        UIUtils.focusComponent(this, this.friendsComponent);
         this.removeComponent(this.searchInput);
         this.isSearchMode = false;
     }
 
     public boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
-        if (var3[0] > 32 && !this.isSearchMode && super.components.contains(this.mainContactList) && (this.activeTextInput == null || !UIUtils.isComponentSelected(this, (UIComponent) this.activeTextInput))) {
+        if (var3[0] > 32 && !this.isSearchMode && super.components.contains(this.friendsComponent) && (this.activeTextInput == null || !UIUtils.isComponentSelected(this, (UIComponent) this.activeTextInput))) {
             this.enterSearchMode();
         }
 
@@ -193,13 +194,13 @@ public final class FriendScreen extends Screen {
         if (this.isSearchMode) {
             if (var1[12]) {
                 var1[12] = false;
-                this.mainContactList.handleKeyPress(12);
+                this.friendsComponent.handleKeyPress(12);
             } else if (var1[13]) {
                 var1[13] = false;
-                this.mainContactList.handleKeyPress(13);
+                this.friendsComponent.handleKeyPress(13);
             } else if (var1[16]) {
                 var1[16] = false;
-                this.mainContactList.handleKeyPress(16);
+                this.friendsComponent.handleKeyPress(16);
             }
 
             var4 = this.searchInput.getText();
@@ -212,7 +213,7 @@ public final class FriendScreen extends Screen {
             }
 
             if (!this.searchInput.getText().equals(var4)) {
-                this.mainContactList.setSearchFilter(this.searchInput.getText());
+                this.friendsComponent.setSearchFilter(this.searchInput.getText());
             }
         }
 
@@ -329,10 +330,10 @@ public final class FriendScreen extends Screen {
         if (GameManager.instance.hasScreen("Gửi tin nhóm")) {
             GameManager.instance.switchToScreenByTitle("Gửi tin nhóm");
         } else {
-            DialogScreen var1;
-            (var1 = new DialogScreen()).title = "Gửi tin nhóm";
-            ContactListComponent var2;
-            (var2 = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true)).setContactData(this.mainContactList.contactData, -1);
+            DialogScreen var1 = new DialogScreen();
+            var1.title = "Gửi tin nhóm";
+            ContactListComponent var2 = new ContactListComponent(0, 1, Screen.screenWidth - 2, Screen.screenHeight - 4 - GameManager.footerHeight, true);
+            var2.setContactData(this.friendsComponent.contactData, -1);
             var2.removeContact("Favorite");
             var2.setMultiSelectMode(true);
             var2.selectAll();
@@ -367,7 +368,7 @@ public final class FriendScreen extends Screen {
     }
 
     public BuddyInfo findContactById(String var1) {
-        return this.mainContactList.contactData == null ? null : this.mainContactList.contactData.findDownloadFile(var1, null, 0L);
+        return this.friendsComponent.contactData == null ? null : this.friendsComponent.contactData.findDownloadFile(var1, null, 0L);
     }
 
     public boolean isUserBlocked(long var1) {
@@ -387,13 +388,13 @@ public final class FriendScreen extends Screen {
             return (String) this.userStorage.get(new Long(var1));
         } else {
             BuddyInfo var3;
-            return this.mainContactList.contactData != null && (var3 = this.mainContactList.contactData.findDownloadFile(null, null, var1)) != null ? var3.username : null;
+            return this.friendsComponent.contactData != null && (var3 = this.friendsComponent.contactData.findDownloadFile(null, null, var1)) != null ? var3.username : null;
         }
     }
 
     public long getUserTimestampById(String var1) {
         BuddyInfo var2;
-        return this.mainContactList != null && this.mainContactList.contactData != null && (var2 = this.mainContactList.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.timestamp : 0L;
+        return this.friendsComponent != null && this.friendsComponent.contactData != null && (var2 = this.friendsComponent.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.timestamp : 0L;
     }
 
     public void addToOnlineList(long var1) {
@@ -421,46 +422,46 @@ public final class FriendScreen extends Screen {
         removeFromVector(var1, this.pendingRequests);
         this.updatePendingRequestsButton();
         if (currentViewMode == 3) {
-            this.secondaryContactList.contactData.removeContact(null, var1);
-            this.secondaryContactList.refreshDisplayList();
+            this.friendsRequestComponent.contactData.removeContact(null, var1);
+            this.friendsRequestComponent.refreshDisplayList();
         }
     }
 
     public void removeFromBlockedAndRefresh(long var1) {
         removeFromVector(var1, this.blockedUsers);
         if (currentViewMode == 2) {
-            this.secondaryContactList.contactData.removeContact(null, var1);
-            this.secondaryContactList.refreshDisplayList();
+            this.friendsRequestComponent.contactData.removeContact(null, var1);
+            this.friendsRequestComponent.refreshDisplayList();
             GameManager.instance.showWrappedTextDialog("Xóa ID thành công");
         }
     }
 
     public void addToFavorites(long var1) {
-        if (this.mainContactList.contactData != null && !this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
-            ContactListComponent var7 = this.mainContactList;
+        if (this.friendsComponent.contactData != null && !this.friendsComponent.contactData.isDownloadExists("Favorite", var1)) {
+            ContactListComponent var7 = this.friendsComponent;
             BuddyInfo var8;
             if ((var8 = var7.contactData == null ? null : var7.contactData.findDownloadFile(null, null, var1)) == null) {
                 return;
             }
 
-            this.mainContactList.contactData.insertContactToGroup("Favorite", var8);
+            this.friendsComponent.contactData.insertContactToGroup("Favorite", var8);
             BuddyGroup var9;
-            if ((var9 = this.mainContactList.contactData.findBuddyContactByName("Favorite")) != null && var9.contacts.size() > 9) {
+            if ((var9 = this.friendsComponent.contactData.findBuddyContactByName("Favorite")) != null && var9.contacts.size() > 9) {
                 var9.contacts.removeElementAt(var9.contacts.size() - 1);
             }
 
-            GameManager.saveBuddyList(this.mainContactList.contactData, false, currentUserId);
-            this.mainContactList.refreshDisplayList();
+            GameManager.saveBuddyList(this.friendsComponent.contactData, false, currentUserId);
+            this.friendsComponent.refreshDisplayList();
         }
     }
 
     public void updateFavoriteStatus(long var1, int var3) {
-        if (this.mainContactList.contactData.findBuddyContactByName("Favorite") != null && this.mainContactList.contactData.isDownloadExists("Favorite", var1)) {
+        if (this.friendsComponent.contactData.findBuddyContactByName("Favorite") != null && this.friendsComponent.contactData.isDownloadExists("Favorite", var1)) {
             int var4 = 0;
 
-            for (int var5 = this.mainContactList.displayItems.size(); var4 < var5; var4++) {
+            for (int var5 = this.friendsComponent.displayItems.size(); var4 < var5; var4++) {
                 BuddyListItem var6;
-                if ((var6 = (BuddyListItem) this.mainContactList.displayItems.elementAt(var4)).itemType == 0 && var6.timestamp == var1) {
+                if ((var6 = (BuddyListItem) this.friendsComponent.displayItems.elementAt(var4)).itemType == 0 && var6.timestamp == var1) {
                     var6.statusCode = var3;
                     return;
                 }
@@ -470,22 +471,22 @@ public final class FriendScreen extends Screen {
 
     public void updateContactsStatus(long[] var1, String[] var2) {
         if (currentViewMode == 1) {
-            if (this.mainContactList.contactData != null) {
-                this.mainContactList.contactData.updateDownloadStatus("Ban Be", var1, var2);
-                this.mainContactList.refreshDisplayList();
+            if (this.friendsComponent.contactData != null) {
+                this.friendsComponent.contactData.updateDownloadStatus("Ban Be", var1, var2);
+                this.friendsComponent.refreshDisplayList();
                 String[] var3 = var2;
                 long[] var9 = var1;
                 FriendScreen var8 = this;
-                if (this.mainContactList.contactData.findBuddyContactByName("Favorite") != null) {
+                if (this.friendsComponent.contactData.findBuddyContactByName("Favorite") != null) {
                     int var4 = var1.length;
 
                     while (--var4 >= 0) {
-                        if (var8.mainContactList.contactData.isDownloadExists("Favorite", var9[var4])) {
+                        if (var8.friendsComponent.contactData.isDownloadExists("Favorite", var9[var4])) {
                             int var5 = 0;
 
-                            for (int var6 = var8.mainContactList.displayItems.size(); var5 < var6; var5++) {
+                            for (int var6 = var8.friendsComponent.displayItems.size(); var5 < var6; var5++) {
                                 BuddyListItem var7;
-                                if ((var7 = (BuddyListItem) var8.mainContactList.displayItems.elementAt(var5)).itemType == 0 && var7.timestamp == var9[var4]) {
+                                if ((var7 = (BuddyListItem) var8.friendsComponent.displayItems.elementAt(var5)).itemType == 0 && var7.timestamp == var9[var4]) {
                                     var7.statusCode = 1;
                                     var7.statusText = var3[var4];
                                     if (var3[var4] != null && var3[var4].length() > 0) {
@@ -499,21 +500,21 @@ public final class FriendScreen extends Screen {
                     }
                 }
             }
-        } else if (this.secondaryContactList.contactData != null) {
+        } else if (this.friendsRequestComponent.contactData != null) {
             if (currentViewMode == 2) {
-                this.secondaryContactList.contactData.updateDownloadStatus("Danh sách từ chối", var1, var2);
+                this.friendsRequestComponent.contactData.updateDownloadStatus("Danh sách từ chối", var1, var2);
             } else {
-                this.secondaryContactList.contactData.updateDownloadStatus("Danh sách kết bạn", var1, var2);
+                this.friendsRequestComponent.contactData.updateDownloadStatus("Danh sách kết bạn", var1, var2);
             }
 
-            this.secondaryContactList.refreshDisplayList();
+            this.friendsRequestComponent.refreshDisplayList();
         }
     }
 
     public void sendFriendRequest(String var1) {
         if (var1.equals("")) {
             GameManager.getInstance().showWrappedTextDialog("ID không hợp lệ.");
-        } else if (!this.mainContactList.hasContact(var1)) {
+        } else if (!this.friendsComponent.hasContact(var1)) {
             PacketSender.b(var1);
             this.switchToMainView();
             GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + var1, (Image) null, 1);
@@ -524,9 +525,10 @@ public final class FriendScreen extends Screen {
 
     private void switchToMainView() {
         this.removeAllComponents();
-        this.secondaryContactList = null;
-        toggleOfflineFilter(this.mainContactList);
-        UIUtils.focusComponent(this, this.mainContactList);
+        this.friendsRequestComponent = null;
+        toggleOfflineFilter(this.friendsComponent);
+        super.addComponent(this.friendsComponent);
+        UIUtils.focusComponent(this, this.friendsComponent);
         super.leftSoftkey = new ButtonAction("Menu", new FriendSwitchMainMenuAction(this));
         UIUtils.setScreenSubtitleText(instance, "Bạn Bè");
         currentViewMode = 1;
@@ -621,7 +623,7 @@ public final class FriendScreen extends Screen {
 
     public static ButtonAction getBackButton(FriendScreen var0) {
         if (var0.backButton == null) {
-            var0.backButton = new ButtonAction(TextConstant.close(), new quyen_ih(var0));
+            var0.backButton = new ButtonAction(TextConstant.close(), new FriendBackToFriendScreenAction(var0));
         }
 
         return var0.backButton;
