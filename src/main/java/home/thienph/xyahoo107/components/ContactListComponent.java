@@ -119,7 +119,7 @@ public final class ContactListComponent extends UIComponent {
                 while (true) {
                     while (--size >= 0) {
                         final BuddyInfo BuddyInfo;
-                        if ((BuddyInfo = (BuddyInfo) ContactGroup.contacts.elementAt(size)).timestamp == n) {
+                        if ((BuddyInfo = (BuddyInfo) ContactGroup.contacts.elementAt(size)).contactId == n) {
                             final BuddyInfo buddyInfo3;
                             final BuddyInfo buddyInfo2 = buddyInfo3 = BuddyInfo;
                             final BuddyInfo buddyInfo4 = buddyInfo3;
@@ -187,7 +187,7 @@ public final class ContactListComponent extends UIComponent {
                     for (int var7 = 0; var7 < var4; var7++) {
                         BuddyInfo var8 = (BuddyInfo) var13.elementAt(var7);
                         BuddyListItem var9;
-                        (var9 = new BuddyListItem()).timestamp = var8.timestamp;
+                        (var9 = new BuddyListItem()).timestamp = var8.contactId;
                         var9.rawData = var8.getRawDataArray();
                         var9.groupName = var8.username;
                         var9.statusCode = var8.statusCode;
@@ -701,7 +701,7 @@ public final class ContactListComponent extends UIComponent {
 
                 while (--var11 >= 0) {
                     BuddyInfo var12;
-                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).timestamp == var8) {
+                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).contactId == var8) {
                         var12.statusCode = var5;
                         if (++var6 > 1) {
                             break label45;
@@ -750,7 +750,7 @@ public final class ContactListComponent extends UIComponent {
 
                 while (--var11 >= 0) {
                     BuddyInfo var12;
-                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).timestamp == var8) {
+                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).contactId == var8) {
                         var12.description = var5;
                         if (++var6 > 1) {
                             break label46;

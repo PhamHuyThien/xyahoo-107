@@ -164,8 +164,8 @@ public final class ListComponent extends UIComponent {
                     currentContact.getDefaultColor();
                     contactItem.textColor = null;
                     contactItem.textColor = new Integer(currentContact.getDefaultColor());
-                    contactItem.timestamp = currentContact.timestamp;
-                    contactItem.fileName = currentContact.fileName;
+                    contactItem.timestamp = currentContact.contactId;
+                    contactItem.fileName = currentContact.mediaExtension;
                     contactItem.description = currentContact.statusDescription;
                     contactItem.imageSourceId = currentContact.imageSourceId;
                     contactItem.thumbnailImage = currentContact.thumbnailImage;

@@ -376,7 +376,7 @@ public class GameProcessor {
                          *     int: contactCount - số lượng contacts
                          *     [contactCount lần]:
                          *         string: groupName - tên nhóm
-                         *         string: fileName - tên file
+                         *         string: mediaType - tên file
                          *         string: displayName - tên hiển thị
                          *         string: extraField - field phụ (nếu displayMode = 1)
                          *         int/bytes: iconData - dữ liệu icon (tùy iconType)
@@ -628,7 +628,7 @@ public class GameProcessor {
                                     }
 
                                     contacts[i] = new BuddyInfo("", displayName, status, description, null, -1, i, statusDescription);
-                                    contacts[i].fileName = fileName;
+                                    contacts[i].mediaExtension = fileName;
                                     contacts[i].imageSourceId = imageSourceId;
                                     contacts[i].thumbnailImage = thumbnailImage;
                                     buddyManager.addContactToGroup(groupNames[i], contacts[i]);

@@ -53,12 +53,12 @@ public final class DownloadScreen extends Screen {
         while (--var3 >= 0) {
             BuddyInfo var4 = ((BuddyListItem) this.downloadListComponent.listItems.elementAt(var3)).contactRef;
             if (var1 == 0) {
-                if (var4.downloadType == 0) {
+                if (var4.mediaType == 0) {
                     if (++var2 > 4) {
                         this.buddyGroupList.removeContact(var4.username, 0L);
                     }
                 }
-            } else if (var4.downloadType == 1) {
+            } else if (var4.mediaType == 1) {
                 if (++var2 > 3) {
                     this.buddyGroupList.removeContact(var4.username, 0L);
                 }

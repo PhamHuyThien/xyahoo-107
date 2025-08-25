@@ -862,7 +862,7 @@ public final class GamePacketProcessor extends PacketHandler {
                     String var207 = PacketUtils.readString(packet);
                     String var227 = PacketUtils.readString(packet);
                     var224[i] = new BuddyInfo(var207, "", 0, var227, new int[0], 0, i, null);
-                    var224[i].timestamp = var226;
+                    var224[i].contactId = var226;
                     if (FriendScreen.currentViewMode == 1) {
                         var32.addContactToGroup("Ban Be", var224[i]);
                     } else if (FriendScreen.currentViewMode == 2) {
@@ -917,7 +917,7 @@ public final class GamePacketProcessor extends PacketHandler {
                         long var52 = PacketUtils.readLong(packet);
                         if (!var45.contains(var4)) {
                             BuddyInfo var6;
-                            (var6 = new BuddyInfo(var4, "", 0, var50[0] + (var50.length > 1 ? ".." : ""), new int[0], 0, 0, null)).timestamp = var52;
+                            (var6 = new BuddyInfo(var4, "", 0, var50[0] + (var50.length > 1 ? ".." : ""), new int[0], 0, 0, null)).contactId = var52;
                             var183.addContactToGroup("", var6);
                             var45.addElement(var4);
                         }

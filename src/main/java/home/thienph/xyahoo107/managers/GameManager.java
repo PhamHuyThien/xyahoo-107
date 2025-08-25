@@ -1622,7 +1622,7 @@ public final class GameManager {
                     writeStringToStream(var3, var7.displayName);
                     writeIntToStream(var3, var7.dataSize);
                     if (!var1) {
-                        writeLongToStream(var3, var7.timestamp);
+                        writeLongToStream(var3, var7.contactId);
                     }
                 }
             }
@@ -1658,7 +1658,7 @@ public final class GameManager {
                         var8.displayName = readStringFromStream(var11);
                         var8.dataSize = readIntFromStream(var11);
                         if (!var0) {
-                            var8.timestamp = readLongFromStream(var11);
+                            var8.contactId = readLongFromStream(var11);
                         }
 
                         var12.addContact(var8);
@@ -2441,14 +2441,14 @@ public final class GameManager {
                 BuddyListItem var4;
                 BuddyInfo var5;
                 if ((var5 = (var4 = (BuddyListItem) this.downloadManager.downloadListComponent.listItems.elementAt(var3)).contactRef).username.equals(var1)) {
-                    var5.imageBytes = var2;
+                    var5.mediaData = var2;
                     var5.isSelected = true;
                     var4.statusText = UIUtils.concatStrings(Integer.toString(var5.statusCode), " KBs", null, null);
                     if (this.hasDownloaded) {
-                        this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.fileName, null, null), (Image) null, 1);
+                        this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.mediaExtension, null, null), (Image) null, 1);
                     } else {
                         this.hasDownloaded = true;
-                        this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.fileName, ". Vào Quản lý > Tải về. ", null), (Image) null, 1);
+                        this.showNotification(UIUtils.concatStrings("Đã tải xong ", var5.mediaExtension, ". Vào Quản lý > Tải về. ", null), (Image) null, 1);
                     }
                 }
             }
@@ -2484,9 +2484,9 @@ public final class GameManager {
         }
 
         BuddyInfo var6 = new BuddyInfo(var1, var5, var3, null, null, -1, -1, null);
-        var6.downloadType = var4;
+        var6.mediaType = var4;
         var6.description = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
-        var6.fileName = var2;
+        var6.mediaExtension = var2;
         this.downloadManager.buddyGroupList.insertContactToGroup("", var6);
         this.downloadManager.downloadListComponent.buildListItems();
     }
@@ -2952,7 +2952,7 @@ public final class GameManager {
             }
 
             BuddyInfo var10;
-            (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).timestamp = var1;
+            (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).contactId = var1;
             FriendScreen.addContactToList("Ban Be", var10, this.friendScreen.friendsComponent);
             saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
             this.friendScreen.addToOnlineList(var1);

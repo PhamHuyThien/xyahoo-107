@@ -167,7 +167,7 @@ public final class FriendScreen extends Screen {
             int var2 = 0;
 
             for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
-                this.addToOnlineList(((BuddyInfo) var1.contacts.elementAt(var2)).timestamp);
+                this.addToOnlineList(((BuddyInfo) var1.contacts.elementAt(var2)).contactId);
             }
         }
     }
@@ -394,7 +394,7 @@ public final class FriendScreen extends Screen {
 
     public long getUserTimestampById(String var1) {
         BuddyInfo var2;
-        return this.friendsComponent != null && this.friendsComponent.contactData != null && (var2 = this.friendsComponent.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.timestamp : 0L;
+        return this.friendsComponent != null && this.friendsComponent.contactData != null && (var2 = this.friendsComponent.contactData.findDownloadFile(var1, null, 0L)) != null ? var2.contactId : 0L;
     }
 
     public void addToOnlineList(long var1) {
@@ -437,7 +437,7 @@ public final class FriendScreen extends Screen {
     }
 
     public void addToFavorites(long var1) {
-        if (this.friendsComponent.contactData != null && !this.friendsComponent.contactData.isDownloadExists("Favorite", var1)) {
+        if (this.friendsComponent.contactData != null && !this.friendsComponent.contactData.isContatcExists("Favorite", var1)) {
             ContactListComponent var7 = this.friendsComponent;
             BuddyInfo var8;
             if ((var8 = var7.contactData == null ? null : var7.contactData.findDownloadFile(null, null, var1)) == null) {
@@ -456,7 +456,7 @@ public final class FriendScreen extends Screen {
     }
 
     public void updateFavoriteStatus(long var1, int var3) {
-        if (this.friendsComponent.contactData.findBuddyContactByName("Favorite") != null && this.friendsComponent.contactData.isDownloadExists("Favorite", var1)) {
+        if (this.friendsComponent.contactData.findBuddyContactByName("Favorite") != null && this.friendsComponent.contactData.isContatcExists("Favorite", var1)) {
             int var4 = 0;
 
             for (int var5 = this.friendsComponent.displayItems.size(); var4 < var5; var4++) {
@@ -481,7 +481,7 @@ public final class FriendScreen extends Screen {
                     int var4 = var1.length;
 
                     while (--var4 >= 0) {
-                        if (var8.friendsComponent.contactData.isDownloadExists("Favorite", var9[var4])) {
+                        if (var8.friendsComponent.contactData.isContatcExists("Favorite", var9[var4])) {
                             int var5 = 0;
 
                             for (int var6 = var8.friendsComponent.displayItems.size(); var5 < var6; var5++) {

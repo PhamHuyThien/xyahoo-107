@@ -5,13 +5,13 @@ import java.util.Vector;
 public final class BuddyGroupList {
     public Vector contactGroups = new Vector();
 
-    public boolean isDownloadExists(String var1, long var2) {
+    public boolean isContatcExists(String var1, long var2) {
         BuddyGroup var5;
         if ((var5 = this.findBuddyContactByName(var1)) != null) {
             int var4 = var5.contacts.size();
 
             while (--var4 >= 0) {
-                if (((BuddyInfo) var5.contacts.elementAt(var4)).timestamp == var2) {
+                if (((BuddyInfo) var5.contacts.elementAt(var4)).contactId == var2) {
                     return true;
                 }
             }
@@ -47,10 +47,10 @@ public final class BuddyGroupList {
                         return var8;
                     }
                 } else if (var2 != null) {
-                    if (var8.fileName.equals(var2)) {
+                    if (var8.mediaExtension.equals(var2)) {
                         return var8;
                     }
-                } else if (var8.timestamp == var3) {
+                } else if (var8.contactId == var3) {
                     return var8;
                 }
             }
@@ -88,7 +88,7 @@ public final class BuddyGroupList {
     }
 
     private static void cleanupDownloadData(BuddyInfo var0) {
-        var0.imageBytes = null;
+        var0.mediaData = null;
         var0.processedDataArray = null;
         System.gc();
     }
@@ -103,7 +103,7 @@ public final class BuddyGroupList {
                         var5.contacts.removeElementAt(var6);
                         cleanupDownloadData(var7);
                     }
-                } else if (var7.timestamp == var2) {
+                } else if (var7.contactId == var2) {
                     var5.contacts.removeElementAt(var6);
                     cleanupDownloadData(var7);
                 }
@@ -123,7 +123,7 @@ public final class BuddyGroupList {
 
                     for (int var8 = var6.contacts.size(); var7 < var8; var7++) {
                         BuddyInfo var9;
-                        if ((var9 = (BuddyInfo) var6.contacts.elementAt(var7)).timestamp == var2[var4]) {
+                        if ((var9 = (BuddyInfo) var6.contacts.elementAt(var7)).contactId == var2[var4]) {
                             var9.statusCode = 1;
                             var9.description = var3[var4];
                             if (var4 < var2.length - 1) {

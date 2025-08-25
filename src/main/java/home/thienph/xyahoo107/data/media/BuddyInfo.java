@@ -5,19 +5,20 @@ import home.thienph.xyahoo107.data.game.CardInfo;
 import javax.microedition.lcdui.Image;
 
 public final class BuddyInfo {
+    public String groupName;
     public String username;
     public String displayName;
     public int statusCode;
     public String statusDescription;
-    public int downloadType;
+    public int mediaType;
     public String description;
     public boolean isSelected;
-    public String fileName;
+    public String mediaExtension;
     private int[] rawDataArray;
     public Integer[] processedDataArray;
-    public byte[] imageBytes;
+    public byte[] mediaData;
     public int dataSize;
-    public long timestamp;
+    public long contactId;
     public Integer imageSourceId;
     private final int defaultColor = 16777215;
     public Image thumbnailImage;
@@ -41,7 +42,7 @@ public final class BuddyInfo {
     public BuddyInfo() {
     }
 
-    public BuddyInfo(String username, String displayName, int statusCode, String description, int[] rawDataArray, int downloadType, int dataSize, String statusDescription) {
+    public BuddyInfo(String username, String displayName, int statusCode, String description, int[] rawDataArray, int mediaType, int dataSize, String statusDescription) {
         this.username = username;
         this.displayName = !displayName.equals("") && displayName != null ? displayName : username;
         this.statusCode = statusCode;
