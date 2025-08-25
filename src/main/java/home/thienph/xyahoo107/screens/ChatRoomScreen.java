@@ -94,7 +94,7 @@ public final class ChatRoomScreen extends DialogScreen {
                     return false;
                 }
             } else {
-                PacketSender.requestReloadData(this.roomId, this.textInputComponent.getText());
+                PacketSender.requestSendDataUIComponent(this.roomId, this.textInputComponent.getText());
                 this.textInputComponent.setText("");
                 return false;
             }

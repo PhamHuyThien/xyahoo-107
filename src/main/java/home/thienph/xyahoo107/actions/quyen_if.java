@@ -22,9 +22,9 @@ public final class quyen_if implements Action {
                 var2 = 1;
             }
 
-            PacketSender.requestReloadData(var2, 1);
+            PacketSender.requestSendDataUIComponent(var2, 1);
         } else if (var2 != FriendScreen.userStatus) {
-            PacketSender.requestReloadData(var2, 1);
+            PacketSender.requestSendDataUIComponent(var2, 1);
         }
 
         FriendScreen.userStatus = var2;

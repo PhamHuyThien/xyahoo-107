@@ -969,7 +969,7 @@ public final class GamePacketProcessor extends PacketHandler {
                 UIUtils.clearRecordStores(true);
                 return;
             case 6000000:
-                PacketSender.requestReloadData(Xuka.refCode);
+                PacketSender.requestSendDataUIComponent(Xuka.refCode);
                 return;
             case 11712001:
                 GameManager.instance.setLoadingState(false);

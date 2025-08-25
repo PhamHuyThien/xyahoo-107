@@ -531,7 +531,7 @@ public final class GameScreen extends Screen {
     public void exitGame(boolean var1) {
         this.returnToLobby();
         this.startSlideAnimation(var1 ? -1 : 1);
-        PacketSender.requestReloadData(totalRooms, currentRoomId, FriendScreen.currentUserId, this.isGameStarted);
+        PacketSender.requestSendDataUIComponent(totalRooms, currentRoomId, FriendScreen.currentUserId, this.isGameStarted);
     }
 
     public void handlePlayerMove(String var1, int var2, byte[] var3, String var4, boolean var5) {

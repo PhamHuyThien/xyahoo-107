@@ -10,7 +10,7 @@ import home.thienph.xyahoo107.utils.PacketUtils;
 
 public class PacketSender {
 
-    public static void requestReloadData(String var0, int var1) {
+    public static void requestSendDataUIComponent(String var0, int var1) {
         Packet var2 = null;
         if (var1 == 0) {
             var2 = new Packet(3418, 39);
@@ -20,7 +20,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void requestReloadData(String var0) {
+    public static void requestSendDataUIComponent(String var0) {
         Packet var1 = new Packet(6000000, 2);
         PacketUtils.writeString(var0, var1);
         NetworkManager.sendPacket(var1);
@@ -49,14 +49,14 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(long var0, boolean var2) {
+    public static void requestSendDataUIComponent(long var0, boolean var2) {
         Packet var3 = new Packet(5000017, 2);
         PacketUtils.writeLong(var0, var3);
         PacketUtils.writeBoolean(var2, var3);
         NetworkManager.sendPacket(var3);
     }
 
-    public static void requestReloadData(long var0) {
+    public static void requestSendDataUIComponent(long var0) {
         Packet var2 = new Packet(5000022, 2);
         PacketUtils.writeLong(var0, var2);
         NetworkManager.sendPacket(var2);
@@ -68,14 +68,14 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(long var0, String var2) {
+    public static void requestSendDataUIComponent(long var0, String var2) {
         Packet var3 = new Packet(5000023, 2);
         PacketUtils.writeLong(var0, var3);
         PacketUtils.writeString(var2, var3);
         NetworkManager.sendPacket(var3);
     }
 
-    public static void requestReloadData(long[] var0, String var1) {
+    public static void requestSendDataUIComponent(long[] var0, String var1) {
         Packet var2 = new Packet(5000041, 2);
         PacketUtils.writeInt(var0.length, var2);
         int var3 = 0;
@@ -94,7 +94,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(String var0, String var1) {
+    public static void requestSendDataUIComponent(String var0, String var1) {
         Packet var2 = new Packet(4804, 48);
         PacketUtils.writeString(var0, var2);
         PacketUtils.writeString(var1, var2);
@@ -126,7 +126,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(int var0) {
+    public static void requestSendDataUIComponent(int var0) {
         Packet var1 = new Packet(123, 2);
         PacketUtils.writeInt(var0, var1);
         NetworkManager.sendPacket(var1);
@@ -173,7 +173,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void requestReloadData(String var0, String var1, int var2, byte[] var3) {
+    public static void requestSendDataUIComponent(String var0, String var1, int var2, byte[] var3) {
         Packet var4 = new Packet(3408, 39);
         PacketUtils.writeString(var0, var4);
         PacketUtils.writeString(var1, var4);
@@ -188,7 +188,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var4);
     }
 
-    public static void requestReloadData(String var0, String var1, String var2) {
+    public static void requestSendDataUIComponent(String var0, String var1, String var2) {
         Packet var3 = new Packet(3412, 39);
         PacketUtils.writeString(var0, var3);
         PacketUtils.writeString(var1, var3);
@@ -196,7 +196,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var3);
     }
 
-    public static void requestReloadData(int var0, String var1, String var2, boolean var3) {
+    public static void requestSendDataUIComponent(int var0, String var1, String var2, boolean var3) {
         Packet var4 = new Packet();
         if (var0 == 0) {
             var4 = new Packet(3409, 39);
@@ -211,7 +211,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var4);
     }
 
-    public static void requestReloadData(int var0, String var1, String var2, String var3) {
+    public static void requestSendDataUIComponent(int var0, String var1, String var2, String var3) {
         Packet var4 = new Packet();
         if (var0 == 0) {
             var4 = new Packet(3411, 39);
@@ -226,7 +226,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var4);
     }
 
-    public static void requestReloadData(int var0, String var1, String var2, long var3) {
+    public static void requestSendDataUIComponent(int var0, String var1, String var2, long var3) {
         Packet var5 = new Packet();
         if (var0 == 0) {
             var5 = new Packet(3410, 39);
@@ -261,7 +261,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(long var0, String var2, int var3) {
+    public static void requestSendDataUIComponent(long var0, String var2, int var3) {
         Packet var4 = new Packet(var3 == 1 ? 5000016 : 22, var3 == 1 ? 2 : 4);
         if (var2 == null) {
             PacketUtils.writeLong(var0, var4);
@@ -288,7 +288,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void requestReloadData(int var0, int var1) {
+    public static void requestSendDataUIComponent(int var0, int var1) {
         Packet var2 = new Packet(var1 == 1 ? 5000031 : 28, var1 == 1 ? 2 : 4);
         PacketUtils.writeInt(var0, var2);
         NetworkManager.sendPacket(var2);
@@ -340,7 +340,7 @@ public class PacketSender {
         NetworkManager.sendPacket(loginPacket);
     }
 
-    public static void requestReloadData(String var0, String var1, String var2, int var3) {
+    public static void requestSendDataUIComponent(String var0, String var1, String var2, int var3) {
         Packet var4 = new Packet(34, 4);
         PacketUtils.writeString(var0, var4);
         PacketUtils.writeString(var1, var4);
@@ -354,7 +354,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void requestReloadData(String var0, String var1, byte var2) {
+    public static void requestSendDataUIComponent(String var0, String var1, byte var2) {
         Packet var3 = new Packet(31, 4);
         PacketUtils.writeString(var0, var3);
         PacketUtils.writeByte(var2, var3);
@@ -366,7 +366,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var3);
     }
 
-    public static void requestReloadData(int var0, String var1, int var2, int var3) {
+    public static void requestSendDataUIComponent(int var0, String var1, int var2, int var3) {
         Packet var4 = new Packet(501, 2);
         PacketUtils.writeInt(0, var4);
         PacketUtils.writeString(var1, var4);
@@ -375,13 +375,13 @@ public class PacketSender {
         NetworkManager.sendPacket(var4);
     }
 
-    public static void requestReloadData(byte[] var0) {
+    public static void requestSendDataUIComponent(byte[] var0) {
         Packet var1 = new Packet(115, 2);
         PacketUtils.writeBytes(var0, 0, var0.length, var1);
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestReloadData(int var0, byte var1, String var2) {
+    public static void requestSendDataUIComponent(int var0, byte var1, String var2) {
         Packet var3 = new Packet(5002, 37);
         PacketUtils.writeInt(var0, var3);
         PacketUtils.writeByte(var1, var3);
@@ -389,7 +389,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var3);
     }
 
-    public static void requestReloadData(String var0, byte[] var1, int var2, int var3, boolean var4) {
+    public static void requestSendDataUIComponent(String var0, byte[] var1, int var2, int var3, boolean var4) {
         Packet var5 = new Packet(5003, 37);
         PacketUtils.writeString(var0, var5);
         PacketUtils.writeBytes(var1, var2, var3, var5);

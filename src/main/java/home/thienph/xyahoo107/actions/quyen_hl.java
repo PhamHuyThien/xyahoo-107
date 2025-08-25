@@ -18,9 +18,9 @@ public final class quyen_hl implements Action {
 
     public void action() {
         if (this.b) {
-            PacketSender.requestReloadData(0L, ChatScreen.getYahooContactId(this.a), 2);
+            PacketSender.requestSendDataUIComponent(0L, ChatScreen.getYahooContactId(this.a), 2);
         } else {
-            PacketSender.requestReloadData(this.a.chatId, null, 1);
+            PacketSender.requestSendDataUIComponent(this.a.chatId, null, 1);
         }
 
         this.a.chatComponent.addPlayerMessage(this.b ? YahooScreen.originalUsername : FriendScreen.currentUserName, "BUZZ!", 0);

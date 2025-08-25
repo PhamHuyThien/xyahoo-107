@@ -17,7 +17,7 @@ public final class quyen_fl implements Action {
     }
 
     public void action() {
-        PacketSender.requestReloadData(this.b, false);
+        PacketSender.requestSendDataUIComponent(this.b, false);
         this.a.removeScreen(this.c);
     }
 }

@@ -23,7 +23,7 @@ public final class quyen_fk implements Action {
     public void action() {
         if (!this.b.getText().equals("")) {
             BuddyInfo var1 = new BuddyInfo(this.c, "", 0, "", new int[0], 0, 0, null);
-            PacketSender.requestReloadData(this.c, this.b.getText(), (byte) 1);
+            PacketSender.requestSendDataUIComponent(this.c, this.b.getText(), (byte) 1);
             if (this.a.yahooChat.contactList.getContactData().findDownloadFile(this.c, null, 0L) == null) {
                 this.a.yahooChat.contactList.getContactData().addContactToGroup(this.b.getText(), var1);
                 this.a.yahooChat.contactList.refreshDisplayList();

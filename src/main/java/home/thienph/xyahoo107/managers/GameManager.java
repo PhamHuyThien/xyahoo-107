@@ -193,7 +193,7 @@ public final class GameManager {
         if (var3 != null && var3.cardInfo != null) {
             return var3.cardInfo;
         } else {
-            PacketSender.requestReloadData(var1, 0);
+            PacketSender.requestSendDataUIComponent(var1, 0);
             return null;
         }
     }
@@ -1351,7 +1351,7 @@ public final class GameManager {
                     if (this.currentScreen == GameScreen.instance && GameScreen.isInGame) {
                         String var30 = FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX];
                         if (GameScreen.totalRooms == 0) {
-                            PacketSender.requestReloadData(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
+                            PacketSender.requestSendDataUIComponent(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
                         }
                     }
 
@@ -2013,7 +2013,7 @@ public final class GameManager {
                     return;
                 }
 
-                PacketSender.requestReloadData(var1);
+                PacketSender.requestSendDataUIComponent(var1);
             }
         }
     }
@@ -2227,7 +2227,7 @@ public final class GameManager {
                 Xuka.platform = "null";
             }
 
-            PacketSender.requestReloadData(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
+            PacketSender.requestSendDataUIComponent(0, Xuka.platform, GameGraphics.screenHeight, Xuka.versionCode);
         }
 
         PacketSender.sendAppInfo();
@@ -2322,14 +2322,14 @@ public final class GameManager {
         try {
             if (this.isFileSending && this.uploadData != null) {
                 if (this.fileSentBytes < this.uploadData.length - this.fileBufferSize) {
-                    PacketSender.requestReloadData(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
+                    PacketSender.requestSendDataUIComponent(instance.currentFileName, this.uploadData, this.fileSentBytes, this.fileBufferSize, false);
                     this.fileSentBytes = this.fileSentBytes + this.fileBufferSize;
                     this.fileProgress = 100 * this.fileSentBytes / this.uploadData.length;
                     if (this.fileSentBytes >= this.uploadData.length) {
                         this.completeFileSend();
                     }
                 } else {
-                    PacketSender.requestReloadData(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
+                    PacketSender.requestSendDataUIComponent(instance.currentFileName, this.uploadData, this.fileSentBytes, this.uploadData.length - this.fileSentBytes, true);
                     this.completeFileSend();
                     this.fileProgress = 100;
                 }
@@ -2380,7 +2380,7 @@ public final class GameManager {
     public void startFileSend() {
         if (!this.isFileSending) {
             this.isFileSending = true;
-            PacketSender.requestReloadData(this.uploadData.length, this.uploadType, this.uploadFileName);
+            PacketSender.requestSendDataUIComponent(this.uploadData.length, this.uploadType, this.uploadFileName);
             this.showNotification("Đang gửi file..", (Image) null, 2);
         } else {
             this.createSimpleDialog("Đang gửi file khác.\nBạn có muốn hủy bỏ file đang gửi?", new ButtonAction("Hủy bỏ", new quyen_fz(this)), null, this.createBackButton(TextConstant.close()));
@@ -2793,7 +2793,7 @@ public final class GameManager {
         if (serverDataVersion == dataVersion && cachedData != null) {
             this.processDataInThread(cachedData);
         } else {
-            PacketSender.requestReloadData(dataId);
+            PacketSender.requestSendDataUIComponent(dataId);
         }
     }
 

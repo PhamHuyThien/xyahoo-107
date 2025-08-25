@@ -13,7 +13,7 @@ public final class quyen_k implements Action {
     }
 
     public void action() {
-        PacketSender.requestReloadData(ContactListComponent.getSelectedItem(this.a).timestamp, false);
+        PacketSender.requestSendDataUIComponent(ContactListComponent.getSelectedItem(this.a).timestamp, false);
         if (FriendScreen.instance.isRequestPending(ContactListComponent.getSelectedItem(this.a).timestamp)) {
             FriendScreen.instance.removeFromPendingList(ContactListComponent.getSelectedItem(this.a).timestamp);
         }

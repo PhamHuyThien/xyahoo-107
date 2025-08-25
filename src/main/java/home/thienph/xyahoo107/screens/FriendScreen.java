@@ -256,7 +256,7 @@ public final class FriendScreen extends Screen {
             this.pendingInvitations = new Hashtable();
         }
 
-        PacketSender.requestReloadData(var1);
+        PacketSender.requestSendDataUIComponent(var1);
         this.pendingInvitations.put(new Long(var1), var3);
     }
 

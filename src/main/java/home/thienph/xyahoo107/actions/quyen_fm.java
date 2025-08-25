@@ -17,7 +17,7 @@ public final class quyen_fm implements Action {
     }
 
     public void action() {
-        PacketSender.requestReloadData(this.b, true);
+        PacketSender.requestSendDataUIComponent(this.b, true);
         this.a.removeScreen(this.c);
     }
 }

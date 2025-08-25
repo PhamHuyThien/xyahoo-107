@@ -44,8 +44,8 @@ public class GameProcessor {
                 System.out.println("[MessageProcessor.processMessage] commandId = " + commandId + ", length = " + packet.getPayload().getRemaining());
                 switch (commandId) {
                     case 0:
-                        int var170 = PacketUtils.readInt(packet);
-                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(var170));
+                        int screenIdRemove = PacketUtils.readInt(packet);
+                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(screenIdRemove));
                         break;
                     case 1:
                         boolean var217 = PacketUtils.readBoolean(packet);
@@ -110,9 +110,11 @@ public class GameProcessor {
                          * byte: dialogType - loại dialog hiện tại
                          */
                         int requestId = PacketUtils.readInt(packet);
+//                        System.out.println("A >>>>>>>>>>>>>>>>>>>>>>>>>"+requestId);
                         Packet responsePacket = new Packet(0, 0);
                         PacketUtils.writeInt(requestId, responsePacket);
                         int componentCount = PacketUtils.readInt(packet);
+//                        System.out.println("B >>>>>>>>>>>>>>>>>>>>>>>>>"+componentCount);
 
                         for (int componentIndex = 0; componentIndex < componentCount; componentIndex++) {
                             byte dataType = packet.getPayload().readByte();
@@ -219,7 +221,7 @@ public class GameProcessor {
                         }
 
                         PacketUtils.writeByte(dialogType, responsePacket);
-                        PacketSender.requestReloadData(responsePacket.getPayload().getBuffer());
+                        PacketSender.requestSendDataUIComponent(responsePacket.getPayload().getBuffer());
                         break;
                     case 4:
                         /*
@@ -943,7 +945,7 @@ public class GameProcessor {
                         Packet responsePacket2 = new Packet(0, 0);
                         PacketUtils.writeInt(0, responsePacket2);
                         PacketUtils.writeString(responseData, responsePacket2);
-                        PacketSender.requestReloadData(responsePacket2.getPayload().getBuffer());
+                        PacketSender.requestSendDataUIComponent(responsePacket2.getPayload().getBuffer());
                         break;
 
                     case 22:
