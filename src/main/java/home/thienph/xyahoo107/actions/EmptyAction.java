@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.actions;
 
 
-public final class quyen_ex implements Action {
+public final class EmptyAction implements Action {
     public void action() {
     }
 }

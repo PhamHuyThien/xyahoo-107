@@ -3,6 +3,7 @@ package home.thienph.xyahoo107.components;
 import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.constants.TextConstant;
+import home.thienph.xyahoo107.data.game.BuddyListItem;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
 import home.thienph.xyahoo107.data.media.BuddyInfo;
@@ -350,7 +351,7 @@ public final class ContactListComponent extends UIComponent {
                     var8.contactRef.isSelected = !var8.contactRef.isSelected;
                 } else {
                     if (this.chatAction == null) {
-                        this.chatAction = new ButtonAction("Chat", new quyen_c(this));
+                        this.chatAction = new ButtonAction("Chat", new ContactListClickChatAction(this));
                     }
 
                     if (this.isChatMode) {
@@ -358,23 +359,23 @@ public final class ContactListComponent extends UIComponent {
                     } else {
                         if (this.contextMenu == null) {
                             Vector var7 = new Vector();
-                            ButtonAction var2 = new ButtonAction("Hồ sơ", new quyen_d(this));
-                            ButtonAction var3 = new ButtonAction("Media", new quyen_e(this));
+                            ButtonAction var2 = new ButtonAction("Hồ sơ", new ContactListClickProfileAction(this));
+                            ButtonAction var3 = new ButtonAction("Media", new ContactListClickMediaAction(this));
                             if (FriendScreen.currentViewMode == 1) {
-                                ButtonAction var4 = new ButtonAction("Từ chối ID", new quyen_f(this));
-                                ButtonAction var5 = new ButtonAction("Xóa ID", new quyen_g(this));
+                                ButtonAction var4 = new ButtonAction("Từ chối ID", new ContactListBlockAction(this));
+                                ButtonAction var5 = new ButtonAction("Xóa ID", new ContactListDeleteAction(this));
                                 var7.addElement(this.chatAction);
                                 var7.addElement(var3);
                                 var7.addElement(var2);
                                 var7.addElement(var5);
                                 var7.addElement(var4);
                             } else if (FriendScreen.currentViewMode == 2) {
-                                ButtonAction var9 = new ButtonAction("Bỏ từ chối", new quyen_i(this));
+                                ButtonAction var9 = new ButtonAction("Bỏ từ chối", new ContactListRemoveBlockAction(this));
                                 var7.addElement(var2);
                                 var7.addElement(var9);
                             } else {
-                                ButtonAction var10 = new ButtonAction("Đồng ý", new quyen_j(this));
-                                ButtonAction var11 = new ButtonAction(TextConstant.decline(), new quyen_k(this));
+                                ButtonAction var10 = new ButtonAction("Đồng ý", new ContactListClickAcceptAction(this));
+                                ButtonAction var11 = new ButtonAction(TextConstant.decline(), new ContactListRejectAction(this));
                                 var7.addElement(var2);
                                 var7.addElement(var10);
                                 var7.addElement(var11);

@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.quyen_ct;
+import home.thienph.xyahoo107.actions.TextInputDeleteAction;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.forms.TextBoxCommandListener;
@@ -57,7 +57,7 @@ public final class TextInputComponent extends UIComponent {
     public static MIDlet parentMidlet;
     private boolean isDirty;
     public static int keyboardLayout;
-    private final ButtonAction clearAction = new ButtonAction("Xóa", new quyen_ct(this));
+    private final ButtonAction clearAction = new ButtonAction("Xóa", new TextInputDeleteAction(this));
     public Action onCompleteAction;
     public int marginOffset = 26;
     private int textRenderX;

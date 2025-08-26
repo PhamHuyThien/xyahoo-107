@@ -1,4 +1,4 @@
-package home.thienph.xyahoo107.actions;
+package home.thienph.xyahoo107.data.game;
 
 import home.thienph.xyahoo107.data.media.BuddyInfo;
 

@@ -314,7 +314,8 @@ public final class GamePacketProcessor extends PacketHandler {
              */
             case 1009:
                 String friendUsername = PacketUtils.readString(packet);
-                gameManager.showAddFriendDialog(friendUsername, 0L, false);
+                long friendId = PacketUtils.readLong(packet);
+                gameManager.showAddFriendDialog(friendUsername, friendId, false);
                 return;
 
             /*
@@ -865,7 +866,7 @@ public final class GamePacketProcessor extends PacketHandler {
                     var224[i] = new BuddyInfo(var207, "", 0, var227, new int[0], 0, i, null);
                     var224[i].contactId = var226;
                     if (FriendScreen.currentViewMode == 1) {
-                        var32.addContactToGroup("Ban Be", var224[i]);
+                        var32.addContactToGroup("Bạn Bè", var224[i]);
                     } else if (FriendScreen.currentViewMode == 2) {
                         var32.addContactToGroup("Danh sách từ chối", var224[i]);
                     } else {

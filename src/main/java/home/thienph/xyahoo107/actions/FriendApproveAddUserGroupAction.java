@@ -17,7 +17,7 @@ public final class FriendApproveAddUserGroupAction implements Action {
     }
 
     public void action() {
-        PacketSender.requestSendDataUIComponent(this.userId, true);
+        PacketSender.approveOrRejectFriendRequest(this.userId, true);
         this.gameManager.removeScreen(this.screen);
     }
 }

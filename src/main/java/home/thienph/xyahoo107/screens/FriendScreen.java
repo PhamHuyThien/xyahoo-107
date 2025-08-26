@@ -4,6 +4,7 @@ import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
+import home.thienph.xyahoo107.data.game.BuddyListItem;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
 import home.thienph.xyahoo107.data.media.BuddyInfo;
@@ -51,7 +52,7 @@ public final class FriendScreen extends Screen {
     private DropdownComponent statusDropdown;
     private TextInputComponent statusMessageInput;
     private ButtonAction backButton;
-    private final ButtonAction defaultRightSoftkey = new ButtonAction(TextConstant.close(), new quyen_ib(this));
+    private final ButtonAction defaultRightSoftkey = new ButtonAction(TextConstant.close(), new FriendMainClickCloseAction(this));
     public Hashtable pendingInvitations;
 
     public void clearContactData() {
@@ -150,8 +151,8 @@ public final class FriendScreen extends Screen {
             this.statusDropdown = ButtonAction.createChoiceBox(this.statusDialog, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
             this.statusMessageInput = ButtonAction.createLabeledTextInput(this.statusDialog, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
             UIUtils.focusComponent(this.statusDialog, this.statusDropdown);
-            this.statusDialog.centerSoftkey = new ButtonAction("OK", new quyen_if(this));
-            this.statusDialog.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_ig(this));
+            this.statusDialog.centerSoftkey = new ButtonAction("OK", new FriendClickOKAction(this));
+            this.statusDialog.rightSoftkey = new ButtonAction(TextConstant.close(), new FriendClickCloseAction(this));
             System.gc();
         }
 
@@ -163,7 +164,7 @@ public final class FriendScreen extends Screen {
 
     public void addAllFriendsToOnline() {
         if (this.friendsComponent.contactData != null) {
-            BuddyGroup var1 = this.friendsComponent.contactData.findBuddyContactByName("Ban Be");
+            BuddyGroup var1 = this.friendsComponent.contactData.findBuddyContactByName("Bạn Bè");
             int var2 = 0;
 
             for (int var3 = var1.contacts.size(); var2 < var3; var2++) {
@@ -472,7 +473,7 @@ public final class FriendScreen extends Screen {
     public void updateContactsStatus(long[] contactIds, String[] statusMessages) {
         if (currentViewMode == 1) {
             if (this.friendsComponent.contactData != null) {
-                this.friendsComponent.contactData.updateStatus("Ban Be", contactIds, statusMessages);
+                this.friendsComponent.contactData.updateStatus("Bạn Bè", contactIds, statusMessages);
                 this.friendsComponent.refreshDisplayList();
                 String[] messages = statusMessages;
                 long[] ids = contactIds;
@@ -511,13 +512,13 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public void sendFriendRequest(String var1) {
-        if (var1.equals("")) {
+    public void sendFriendRequest(String username) {
+        if (username.equals("")) {
             GameManager.getInstance().showWrappedTextDialog("ID không hợp lệ.");
-        } else if (!this.friendsComponent.hasContact(var1)) {
-            PacketSender.b(var1);
+        } else if (!this.friendsComponent.hasContact(username)) {
+            PacketSender.requestAddFriend(username);
             this.switchToMainView();
-            GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + var1, (Image) null, 1);
+            GameManager.getInstance().showNotification("Đã gửi yêu cầu kết bạn đến " + username, (Image) null, 1);
         } else {
             GameManager.getInstance().showWrappedTextDialog("ID đã tồn tại.");
         }

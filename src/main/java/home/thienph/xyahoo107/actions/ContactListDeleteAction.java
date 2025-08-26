@@ -7,10 +7,10 @@ import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.utils.UIUtils;
 
-public final class quyen_g implements Action {
+public final class ContactListDeleteAction implements Action {
     final ContactListComponent a;
 
-    public quyen_g(ContactListComponent var1) {
+    public ContactListDeleteAction(ContactListComponent var1) {
         this.a = var1;
     }
 

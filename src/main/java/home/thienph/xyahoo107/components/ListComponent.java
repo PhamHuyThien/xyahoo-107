@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.BuddyListItem;
+import home.thienph.xyahoo107.data.game.BuddyListItem;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
 import home.thienph.xyahoo107.data.media.BuddyInfo;

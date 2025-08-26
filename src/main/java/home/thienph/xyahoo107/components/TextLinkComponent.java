@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.quyen_cg;
+import home.thienph.xyahoo107.actions.TextLinkClickAction;
 import home.thienph.xyahoo107.screens.Screen;
 import home.thienph.xyahoo107.utils.FontRenderer;
 import home.thienph.xyahoo107.utils.UIUtils;
@@ -100,7 +100,7 @@ public final class TextLinkComponent extends UIComponent {
 
     public void setLinkAction(Action var1) {
         this.linkAction = var1;
-        super.middleSoftKey.action = new quyen_cg(this);
+        super.middleSoftKey.action = new TextLinkClickAction(this);
     }
 
     public void update() {

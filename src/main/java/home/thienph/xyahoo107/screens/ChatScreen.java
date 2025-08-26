@@ -29,11 +29,11 @@ public final class ChatScreen extends Screen {
     private final ContextMenu contextMenu;
     private final Vector menuItems;
 
-    public ChatScreen(String var1, boolean var2, int[] var3, String var4) {
+    public ChatScreen(String chatTitle, boolean isYahooChat, int[] colorArray, String contactId) {
         super.isScrollLocked = true;
-        this.isYahooChat = var2;
-        super.title = var1;
-        this.yahooContactId = var4;
+        this.isYahooChat = isYahooChat;
+        super.title = chatTitle;
+        this.yahooContactId = contactId;
         this.textInputComponent = new TextInputComponent();
         this.textInputComponent.isEnabled = false;
         this.textInputComponent.setBounds(1, screenHeight - GameManager.footerHeight - FontRenderer.paragraphSpacing - 1, screenWidth - 3, FontRenderer.fontHeight + 6);
@@ -44,21 +44,21 @@ public final class ChatScreen extends Screen {
         this.addComponent(this.textInputComponent);
         UIUtils.focusComponent(this, (UIComponent) this.textInputComponent);
         this.menuItems = new Vector();
-        this.menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_hk(this)));
-        this.menuItems.addElement(new ButtonAction("BUZZ!", new quyen_hl(this, var2)));
-        if ((var2 ? !GameManager.instance.yahooChat.contactList.hasContact(var4) : !GameManager.instance.friendScreen.friendsComponent.hasContact(var1)) && !var1.equals(FriendScreen.username)) {
-            this.menuItems.addElement(new ButtonAction("Thêm bạn", new quyen_hm(this, var2, var4, var1)));
+        this.menuItems.addElement(new ButtonAction("Biểu cảm", new ChatClickSmileyAction(this)));
+        this.menuItems.addElement(new ButtonAction("BUZZ!", new ChatClickBuzzAction(this, isYahooChat)));
+        if ((isYahooChat ? !GameManager.instance.yahooChat.contactList.hasContact(contactId) : !GameManager.instance.friendScreen.friendsComponent.hasContact(chatTitle)) && !chatTitle.equals(FriendScreen.username)) {
+            this.menuItems.addElement(new ButtonAction("Thêm bạn", new FriendAddFriendAction(this, isYahooChat, contactId, chatTitle)));
         }
 
-        if (!var2) {
-            this.menuItems.addElement(new ButtonAction("Media", new quyen_hn(this, var1)));
-            this.menuItems.addElement(new ButtonAction("Hồ sơ", new quyen_ho(this, var1)));
+        if (!isYahooChat) {
+            this.menuItems.addElement(new ButtonAction("Media", new ChatViewMediaAction(this, chatTitle)));
+            this.menuItems.addElement(new ButtonAction("Hồ sơ", new ChatClickProfileAction(this, chatTitle)));
         }
 
-        this.menuItems.addElement(new ButtonAction("Copy", new quyen_hp(this)));
-        this.menuItems.addElement(new ButtonAction("Dán", new quyen_hq(this)));
+        this.menuItems.addElement(new ButtonAction("Copy", new ChatClickCopyAction(this)));
+        this.menuItems.addElement(new ButtonAction("Dán", new ChatClickPasteAction(this)));
         this.contextMenu = new ContextMenu(this.menuItems);
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_hi(this));
+        super.leftSoftkey = new ButtonAction("Menu", new ChatClickMenuAction(this));
         super.centerSoftkey = new ButtonAction("Chat", null);
         if (GameManager.currentMessage != null) {
             this.chatComponent.addSystemMessage(GameManager.currentMessage, 2);

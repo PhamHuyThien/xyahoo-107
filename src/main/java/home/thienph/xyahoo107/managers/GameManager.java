@@ -6,10 +6,7 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
-import home.thienph.xyahoo107.data.game.CardInfo;
-import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.game.GameRoom;
-import home.thienph.xyahoo107.data.game.Notification;
+import home.thienph.xyahoo107.data.game.*;
 import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
 import home.thienph.xyahoo107.data.media.BuddyGroupList;
@@ -1773,9 +1770,9 @@ public final class GameManager {
         this.closeDialog();
         this.showNotification("Đăng ký thành công", (Image) null, 0);
         this.loginScreen.usernameInput.setText(this.registrationScreen.finalUsername);
-        this.loginScreen.passwordInput.setText(this.registrationScreen.c);
+        this.loginScreen.passwordInput.setText(this.registrationScreen.finalPassword);
         Xuka.saveUserID(this.registrationScreen.finalUsername);
-        Xuka.savePassword(this.registrationScreen.c);
+        Xuka.savePassword(this.registrationScreen.finalPassword);
         this.addScreenToStack((Screen) this.loginScreen);
         UIUtils.focusComponent(this.loginScreen, (UIComponent) this.loginScreen.usernameInput);
         this.removeScreen(this.registrationScreen);
@@ -1979,7 +1976,7 @@ public final class GameManager {
 
                         NetworkManager.sendPacket(statusRequestPacket);
                     } else {
-                        NetworkManager.sendPacket(new Packet(5000036, 2));
+                        PacketSender.requestGetListContactByType(1);
                     }
                     this.addScreenToStack(this.friendScreen);
                     this.switchToScreen(this.friendScreen);
@@ -2050,12 +2047,12 @@ public final class GameManager {
             Vector var8;
             (var8 = new Vector()).addElement(var4);
             var8.addElement(this.friendScreen.createPendingRequestsButton());
-            var8.addElement(new ButtonAction("Tải về", new quyen_fe(this)));
+            var8.addElement(new ButtonAction("Tải về", new GameManagerClickDownloadAction(this)));
             this.gameMenuList = new ContextMenu(var8);
         }
 
-        this.mainMenu.leftSoftkey = new ButtonAction("Menu", new quyen_fg(this));
-        this.mainMenu.rightSoftkey = new ButtonAction("Quản lý", new quyen_fh(this));
+        this.mainMenu.leftSoftkey = new ButtonAction("Menu", new GameManagerClickMenuAction(this));
+        this.mainMenu.rightSoftkey = new ButtonAction("Quản lý", new GameManagerClickManagerAction(this));
         this.removeScreen(this.loginScreen);
         this.loginScreen = null;
         boolean var7 = false;
@@ -2073,7 +2070,7 @@ public final class GameManager {
 
     public static ButtonAction createCloseButton() {
         if (closeButton == null) {
-            closeButton = new ButtonAction("", new quyen_ex());
+            closeButton = new ButtonAction("", new EmptyAction());
         }
 
         return closeButton;
@@ -2952,7 +2949,7 @@ public final class GameManager {
 
             BuddyInfo var10;
             (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).contactId = var1;
-            FriendScreen.addContactToList("Ban Be", var10, this.friendScreen.friendsComponent);
+            FriendScreen.addContactToList("Bạn Bè", var10, this.friendScreen.friendsComponent);
             saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
             this.friendScreen.addToOnlineList(var1);
             saveContactStatus(var5, false);

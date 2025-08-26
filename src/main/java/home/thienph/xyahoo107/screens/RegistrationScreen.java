@@ -3,7 +3,7 @@ package home.thienph.xyahoo107.screens;
 import home.thienph.xyahoo107.actions.quyen_gv;
 import home.thienph.xyahoo107.actions.quyen_gw;
 import home.thienph.xyahoo107.actions.quyen_gx;
-import home.thienph.xyahoo107.actions.quyen_gy;
+import home.thienph.xyahoo107.actions.RegisterAction;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
@@ -23,7 +23,7 @@ public final class RegistrationScreen extends DialogScreen {
     public TextInputComponent passwordInput;
     private TextInputComponent confirmPasswordInput;
     private String suggestedUsername;
-    public String c;
+    public String finalPassword;
     public String finalUsername;
 
     public RegistrationScreen() {
@@ -98,7 +98,7 @@ public final class RegistrationScreen extends DialogScreen {
                         }
 
                         GameManager.getInstance().createSimpleDialog("Đang đăng ký..", null, new ButtonAction(TextConstant.close(), new quyen_gx(this)), null).setLoadingVisible(true);
-                        GameManager.getInstance().gameController = new quyen_gy(this);
+                        GameManager.getInstance().gameController = new RegisterAction(this);
                     } else {
                         GameManager.getInstance().showNotification("Nhập lại mật khẩu", (Image) null, 1);
                         UIUtils.focusComponent(this, (UIComponent) this.confirmPasswordInput);

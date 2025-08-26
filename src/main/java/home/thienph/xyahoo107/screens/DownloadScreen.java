@@ -3,6 +3,7 @@ package home.thienph.xyahoo107.screens;
 import home.thienph.xyahoo107.actions.*;
 import home.thienph.xyahoo107.components.ListComponent;
 import home.thienph.xyahoo107.components.ButtonAction;
+import home.thienph.xyahoo107.data.game.BuddyListItem;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.media.BuddyGroupList;

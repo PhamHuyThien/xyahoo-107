@@ -2,6 +2,7 @@ package home.thienph.xyahoo107.actions;
 
 
 import home.thienph.xyahoo107.components.ContactListComponent;
+import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.Screen;
@@ -32,5 +33,6 @@ public final class FriendListUserRefuseAction implements Action {
         } else {
             this.friendScreen.friendsRequestComponent.isLoading = false;
         }
+        PacketSender.requestGetListContactByType(2);
     }
 }

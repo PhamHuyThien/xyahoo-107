@@ -7,14 +7,14 @@ import home.thienph.xyahoo107.managers.NetworkManager;
 import home.thienph.xyahoo107.utils.PacketUtils;
 
 final class quyen_h implements Action {
-    private final quyen_g a;
+    private final ContactListDeleteAction a;
 
-    quyen_h(quyen_g var1) {
+    quyen_h(ContactListDeleteAction var1) {
         this.a = var1;
     }
 
     public void action() {
-        quyen_g var1 = this.a;
+        ContactListDeleteAction var1 = this.a;
         long var4 = ContactListComponent.getSelectedItem(this.a.a).contactId;
         Packet var3 = new Packet(5000024, 2);
         PacketUtils.writeLong(var4, var3);

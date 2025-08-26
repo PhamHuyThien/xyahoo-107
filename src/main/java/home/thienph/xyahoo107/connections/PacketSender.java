@@ -43,16 +43,16 @@ public class PacketSender {
         NetworkManager.sendPacket(new Packet(var0, 2));
     }
 
-    public static void b(String var0) {
-        Packet var1 = new Packet(5000025, 2);
-        PacketUtils.writeString(var0, var1);
-        NetworkManager.sendPacket(var1);
+    public static void requestAddFriend(String username) {
+        Packet packet = new Packet(5000025, 2);
+        PacketUtils.writeString(username, packet);
+        NetworkManager.sendPacket(packet);
     }
 
-    public static void requestSendDataUIComponent(long var0, boolean var2) {
+    public static void approveOrRejectFriendRequest(long userId, boolean status) {
         Packet var3 = new Packet(5000017, 2);
-        PacketUtils.writeLong(var0, var3);
-        PacketUtils.writeBoolean(var2, var3);
+        PacketUtils.writeLong(userId, var3);
+        PacketUtils.writeBoolean(status, var3);
         NetworkManager.sendPacket(var3);
     }
 
@@ -279,13 +279,13 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void h(String var0, String var1) {
-        Packet var2 = new Packet(5000010, 2);
-        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var0), var2);
-        PacketUtils.writeString(Base64Encoder.encodeWithReverse(var1), var2);
-        PacketUtils.writeInt(Xuka.partnerID, var2);
-        PacketUtils.writeInt(Xuka.appID, var2);
-        NetworkManager.sendPacket(var2);
+    public static void registerUser(String username, String password) {
+        Packet packet = new Packet(5000010, 2);
+        PacketUtils.writeString(Base64Encoder.encodeWithReverse(username), packet);
+        PacketUtils.writeString(Base64Encoder.encodeWithReverse(password), packet);
+        PacketUtils.writeInt(Xuka.partnerID, packet);
+        PacketUtils.writeInt(Xuka.appID, packet);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void requestSendDataUIComponent(int var0, int var1) {
@@ -397,4 +397,9 @@ public class PacketSender {
         NetworkManager.sendPacket(var5);
     }
 
+    public static void requestGetListContactByType(int type) {
+        Packet packet = new Packet(5000036, 2);
+        PacketUtils.writeInt(type, packet);
+        NetworkManager.sendPacket(packet);
+    }
 }

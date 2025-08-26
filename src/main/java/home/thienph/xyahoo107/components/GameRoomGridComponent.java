@@ -1,6 +1,6 @@
 package home.thienph.xyahoo107.components;
 
-import home.thienph.xyahoo107.actions.quyen_cy;
+import home.thienph.xyahoo107.actions.GameRoomGridClickJoinDeskAction;
 import home.thienph.xyahoo107.data.game.GameRoom;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.GameScreen;
@@ -41,7 +41,7 @@ public final class GameRoomGridComponent extends UIComponent {
         this.iconHeight = GameManager.friendListIcon.getHeight();
         this.iconHalfWidth = this.iconWidth >> 1;
         this.iconHalfHeight = this.iconHeight >> 1;
-        super.middleSoftKey = new ButtonAction("Vào bàn", new quyen_cy(this));
+        super.middleSoftKey = new ButtonAction("Vào bàn", new GameRoomGridClickJoinDeskAction(this));
     }
 
     public void setRoomData(GameRoom[] var1) {
