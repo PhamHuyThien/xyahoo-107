@@ -25,10 +25,9 @@ public class ButtonAction {
         this.action = action;
     }
 
-    public static TextInputComponent createPopupDialog(Screen screen, String helpText, int inputConstraint, Action confirmAction) {
-        TextInputComponent inputComponent;
-        (inputComponent = new TextInputComponent("", inputConstraint))
-                .setBounds(10, GameGraphics.screenHeight + 1000, Screen.screenWidth - 21, FontRenderer.paragraphSpacing);
+    public static TextInputComponent createTextInputPopup(Screen screen, String helpText, int inputConstraint, Action confirmAction) {
+        TextInputComponent inputComponent = new TextInputComponent("", inputConstraint);
+        inputComponent.setBounds(10, GameGraphics.screenHeight + 1000, Screen.screenWidth - 21, FontRenderer.paragraphSpacing);
         inputComponent.showHelpText(helpText);
         inputComponent.alternateAction = confirmAction;
         inputComponent.isVisible = false;

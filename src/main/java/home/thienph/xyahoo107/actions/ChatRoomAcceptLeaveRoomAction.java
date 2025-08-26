@@ -15,7 +15,7 @@ final class ChatRoomAcceptLeaveRoomAction implements Action {
         ChatRoomClickLeaveRoomAction var1 = this.chatRoomClickLeaveRoomAction;
         GameManager.instance.destroyScreen(this.chatRoomClickLeaveRoomAction.chatRoomScreen);
         var1 = this.chatRoomClickLeaveRoomAction;
-        PacketSender.d(this.chatRoomClickLeaveRoomAction.chatRoomScreen.roomId);
+        PacketSender.leaveRoomChat(this.chatRoomClickLeaveRoomAction.chatRoomScreen.roomId);
         GameManager.instance.currentChatRoom = null;
     }
 }

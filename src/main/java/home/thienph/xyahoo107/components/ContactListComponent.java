@@ -144,7 +144,7 @@ public final class ContactListComponent extends UIComponent {
                 int size2 = this.displayItems.size();
                 while (--size2 >= 0) {
                     final BuddyListItem buddyListItem = (BuddyListItem) this.displayItems.elementAt(size2);
-                    if (buddyListItem.timestamp == n) {
+                    if (buddyListItem.contactId == n) {
                         buddyListItem2 = (buddyListItem3 = buddyListItem);
                         break Label_0200;
                     }
@@ -187,7 +187,7 @@ public final class ContactListComponent extends UIComponent {
                     for (int var7 = 0; var7 < var4; var7++) {
                         BuddyInfo var8 = (BuddyInfo) var13.elementAt(var7);
                         BuddyListItem var9;
-                        (var9 = new BuddyListItem()).timestamp = var8.contactId;
+                        (var9 = new BuddyListItem()).contactId = var8.contactId;
                         var9.rawData = var8.getRawDataArray();
                         var9.groupName = var8.username;
                         var9.statusCode = var8.statusCode;
@@ -496,7 +496,7 @@ public final class ContactListComponent extends UIComponent {
                             String var17 = var4.groupName;
                             if (var4.groupName != null && !this.requestedContacts.contains(var17)) {
                                 this.requestedContacts.addElement(var17);
-                                long var8 = var4.timestamp;
+                                long var8 = var4.contactId;
                                 Packet var10 = new Packet(3, 6);
                                 PacketUtils.writeLong(var8, var10);
                                 NetworkManager.sendPacket(var10);
@@ -718,7 +718,7 @@ public final class ContactListComponent extends UIComponent {
 
                 while (--var5 >= 0) {
                     BuddyListItem var15;
-                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var5)).itemType == 0 && var15.timestamp == var1 && var15.statusCode != var3) {
+                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var5)).itemType == 0 && var15.contactId == var1 && var15.statusCode != var3) {
                         var15.statusCode = var3;
                         var13 = true;
                     }
@@ -767,7 +767,7 @@ public final class ContactListComponent extends UIComponent {
 
                 while (--var14 >= 0) {
                     BuddyListItem var15;
-                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var14)).itemType == 0 && var15.timestamp == var1) {
+                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var14)).itemType == 0 && var15.contactId == var1) {
                         var15.statusText = var3;
                         if (var3 != null && var3.length() > 0) {
                             var15.extraField = var15.displayName + " - " + var3;
@@ -894,7 +894,7 @@ public final class ContactListComponent extends UIComponent {
                 final BuddyListItem buddyListItem;
                 if ((buddyListItem = (BuddyListItem) this.displayItems.elementAt(i)).itemType == 0 && buddyListItem.isSelected) {
                     buddyListItem.isSelected = false;
-                    vector.addElement(new Long(buddyListItem.timestamp));
+                    vector.addElement(new Long(buddyListItem.contactId));
                 }
             }
         }

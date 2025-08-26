@@ -14,7 +14,7 @@ public final class quyen_i implements Action {
     }
 
     public void action() {
-        long var1 = ContactListComponent.getSelectedItem(this.a).timestamp;
+        long var1 = ContactListComponent.getSelectedItem(this.a).contactId;
         Packet var3 = new Packet(5000020, 2);
         PacketUtils.writeLong(var1, var3);
         NetworkManager.sendPacket(var3);

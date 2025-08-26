@@ -271,7 +271,7 @@ public final class GameScreen extends Screen {
         byte var8 = 0;
 
         for (byte var9 = 0; var9 < var1; var9++) {
-            if (FriendScreen.currentUserId.equals(var2[var9])) {
+            if (FriendScreen.username.equals(var2[var9])) {
                 var7 = var9;
                 break;
             }
@@ -296,7 +296,7 @@ public final class GameScreen extends Screen {
                 }
             }
 
-            if (FriendScreen.currentUserId.equals(this.playerComponents[var12].playerName)) {
+            if (FriendScreen.username.equals(this.playerComponents[var12].playerName)) {
                 this.playerBaseX = this.playerComponents[var12].baseX;
                 this.playerBaseY = this.playerComponents[var12].baseY;
                 var5 = this.playerComponents[var12].isReady();
@@ -310,17 +310,17 @@ public final class GameScreen extends Screen {
         this.initGameMenu();
         this.gameMenuItems.addElement(this.emotionButton);
         this.gameMenuItems.addElement(this.chatButton);
-        if (FriendScreen.currentUserId.equals(this.roomOwner)) {
+        if (FriendScreen.username.equals(this.roomOwner)) {
             this.gameMenuItems.addElement(this.betButton);
         }
 
         this.gameMenuItems.addElement(GameLobbyScreen.buyCoinsButton);
-        if (FriendScreen.currentUserId.equals(this.roomOwner) && this.playerComponents.length > 1) {
+        if (FriendScreen.username.equals(this.roomOwner) && this.playerComponents.length > 1) {
             this.kickPlayerMenuItems.removeAllElements();
             System.gc();
 
             for (byte var13 = 0; var13 < this.playerComponents.length; var13++) {
-                if (!FriendScreen.currentUserId.equals(this.playerComponents[var13].playerName)) {
+                if (!FriendScreen.username.equals(this.playerComponents[var13].playerName)) {
                     this.kickPlayerMenuItems.addElement(new ButtonAction(this.playerComponents[var13].playerName, new quyen_dx(this, var13)));
                 }
             }
@@ -336,7 +336,7 @@ public final class GameScreen extends Screen {
             super.centerSoftkey = new ButtonAction("", new quyen_dd(this));
         }
 
-        if (FriendScreen.currentUserId.equals(this.roomOwner)) {
+        if (FriendScreen.username.equals(this.roomOwner)) {
             super.centerSoftkey.text = "Chơi ngay!";
         } else if (!var5) {
             super.centerSoftkey.text = "Sẵn sàng";
@@ -449,7 +449,7 @@ public final class GameScreen extends Screen {
         CardGameComponent.isAnimating = var4;
         this.cardGameComponent.currentPlayer = var2;
         this.currentPlayerTurn = var2;
-        if (FriendScreen.currentUserId.equals(var2)) {
+        if (FriendScreen.username.equals(var2)) {
             this.isFirstMove = var3;
             this.cardGameComponent.isFirstMove = var3;
         }
@@ -517,7 +517,7 @@ public final class GameScreen extends Screen {
             System.gc();
 
             for (byte var1 = 0; var1 < this.playerComponents.length; var1++) {
-                if (!FriendScreen.currentUserId.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendScreen.findContactById(this.playerComponents[var1].playerName) == null) {
+                if (!FriendScreen.username.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendScreen.findContactById(this.playerComponents[var1].playerName) == null) {
                     this.profileMenuItems.addElement(new ButtonAction(this.playerComponents[var1].playerName, new quyen_de(this, var1)));
                 }
             }
@@ -531,7 +531,7 @@ public final class GameScreen extends Screen {
     public void exitGame(boolean var1) {
         this.returnToLobby();
         this.startSlideAnimation(var1 ? -1 : 1);
-        PacketSender.requestSendDataUIComponent(totalRooms, currentRoomId, FriendScreen.currentUserId, this.isGameStarted);
+        PacketSender.requestSendDataUIComponent(totalRooms, currentRoomId, FriendScreen.username, this.isGameStarted);
     }
 
     public void handlePlayerMove(String var1, int var2, byte[] var3, String var4, boolean var5) {

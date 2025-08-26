@@ -18,7 +18,7 @@ public final class quyen_ii implements Action {
 
     public void action() {
         String var1 = this.b.getSelectedItem().groupName;
-        long var2 = this.b.getSelectedItem().timestamp;
+        long var2 = this.b.getSelectedItem().contactId;
         Vector var4 = (Vector) this.a.offlineMessages.get(var1);
         this.a.offlineMessages.remove(var1);
         GameManager.instance.showChatWithMessages(var1, var4, var2);

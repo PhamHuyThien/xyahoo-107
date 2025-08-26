@@ -20,7 +20,7 @@ public final class FriendClickChatWithAction implements Action {
         }
 
         if (FriendScreen.getActiveTextInput(this.friendScreen) == null) {
-            FriendScreen.setActiveTextInput(this.friendScreen, ButtonAction.createPopupDialog(this.friendScreen, "Vui lòng nhập Xubi ID", 0, null));
+            FriendScreen.setActiveTextInput(this.friendScreen, ButtonAction.createTextInputPopup(this.friendScreen, "Vui lòng nhập Xubi ID", 0, null));
         }
 
         if (FriendScreen.getSecondaryAction(this.friendScreen) == null) {
@@ -29,6 +29,6 @@ public final class FriendClickChatWithAction implements Action {
 
         FriendScreen.getActiveTextInput(this.friendScreen).alternateAction = FriendScreen.getSecondaryAction(this.friendScreen);
         this.friendScreen.addComponent(FriendScreen.getActiveTextInput(this.friendScreen));
-        UIUtils.showTextInput(this.friendScreen, FriendScreen.getActiveTextInput(this.friendScreen));
+        UIUtils.showTextInputPopup(this.friendScreen, FriendScreen.getActiveTextInput(this.friendScreen));
     }
 }

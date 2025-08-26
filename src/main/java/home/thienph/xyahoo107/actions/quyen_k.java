@@ -13,9 +13,9 @@ public final class quyen_k implements Action {
     }
 
     public void action() {
-        PacketSender.requestSendDataUIComponent(ContactListComponent.getSelectedItem(this.a).timestamp, false);
-        if (FriendScreen.instance.isRequestPending(ContactListComponent.getSelectedItem(this.a).timestamp)) {
-            FriendScreen.instance.removeFromPendingList(ContactListComponent.getSelectedItem(this.a).timestamp);
+        PacketSender.requestSendDataUIComponent(ContactListComponent.getSelectedItem(this.a).contactId, false);
+        if (FriendScreen.instance.isRequestPending(ContactListComponent.getSelectedItem(this.a).contactId)) {
+            FriendScreen.instance.removeFromPendingList(ContactListComponent.getSelectedItem(this.a).contactId);
         }
     }
 }

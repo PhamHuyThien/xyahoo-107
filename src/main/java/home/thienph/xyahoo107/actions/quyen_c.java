@@ -23,8 +23,8 @@ public final class quyen_c implements Action {
                 var2 = new ChatScreen(var1, this.a.isChatMode, null, ContactListComponent.getSelectedItem(this.a).groupName);
             } else {
                 (var2 = new ChatScreen(var1, this.a.isChatMode, ContactListComponent.getSelectedItem(this.a).rawData, null)).chatTitle = ContactListComponent.getSelectedItem(this.a).displayName.equals("") ? ContactListComponent.getSelectedItem(this.a).groupName : ContactListComponent.getSelectedItem(this.a).displayName;
-                var2.setChatId(ContactListComponent.getSelectedItem(this.a).timestamp);
-                GameManager.instance.friendScreen.addToFavorites(ContactListComponent.getSelectedItem(this.a).timestamp);
+                var2.setChatId(ContactListComponent.getSelectedItem(this.a).contactId);
+                GameManager.instance.friendScreen.addToFavorites(ContactListComponent.getSelectedItem(this.a).contactId);
             }
 
             var2.startSlideAnimation(1);

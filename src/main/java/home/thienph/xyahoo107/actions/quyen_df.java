@@ -17,9 +17,9 @@ public final class quyen_df implements Action {
             this.a.cardGameComponent.isFirstMove = false;
         }
 
-        if (FriendScreen.currentUserId.equals(this.a.currentPlayerTurn)) {
+        if (FriendScreen.username.equals(this.a.currentPlayerTurn)) {
             this.a.cardGameComponent.gameEnded = true;
-            PacketSender.f(GameScreen.currentRoomId, FriendScreen.currentUserId);
+            PacketSender.f(GameScreen.currentRoomId, FriendScreen.username);
         }
     }
 }

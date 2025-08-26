@@ -73,7 +73,7 @@ public final class UIUtils {
         return false;
     }
 
-    public static void showTextInput(final Screen Screen, final TextInputComponent TextInputComponent) {
+    public static void showTextInputPopup(final Screen Screen, final TextInputComponent TextInputComponent) {
         TextInputComponent.isVisible = true;
         TextInputComponent.posY = home.thienph.xyahoo107.screens.Screen.screenHeight - GameManager.footerHeight - (FontRenderer.fontHeight << 1);
         focusComponent(Screen, (UIComponent) TextInputComponent);

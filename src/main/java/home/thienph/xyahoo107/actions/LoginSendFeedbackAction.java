@@ -14,9 +14,9 @@ public final class LoginSendFeedbackAction implements Action {
 
     public void action() {
         if (this.loginScreen.feedbackInput == null) {
-            this.loginScreen.feedbackInput = ButtonAction.createPopupDialog(this.loginScreen, "Gửi góp ý", 0, new quyen_em(this));
+            this.loginScreen.feedbackInput = ButtonAction.createTextInputPopup(this.loginScreen, "Gửi góp ý", 0, new quyen_em(this));
         }
 
-        UIUtils.showTextInput(this.loginScreen, this.loginScreen.feedbackInput);
+        UIUtils.showTextInputPopup(this.loginScreen, this.loginScreen.feedbackInput);
     }
 }

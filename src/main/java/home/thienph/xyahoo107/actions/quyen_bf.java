@@ -14,8 +14,8 @@ public final class quyen_bf implements Action {
     }
 
     public void action() {
-        BuddyInfo var1;
-        if ((var1 = this.a.downloadListComponent.getSelectedItem().contactRef).mediaType == 0) {
+        BuddyInfo var1 = this.a.downloadListComponent.getSelectedItem().contactRef;
+        if (var1.mediaType == 0) {
             GameManager.instance.showPhotoViewer(var1.mediaData, var1.mediaExtension, true, new PhotoViewerScreen());
         } else {
             GameManager.playMediaFile(var1.mediaData, var1.mediaExtension, true, 2);

@@ -1351,7 +1351,7 @@ public final class GameManager {
                     if (this.currentScreen == GameScreen.instance && GameScreen.isInGame) {
                         String var30 = FontRenderer.emoticons[this.emojiSelectedY * 6 + this.emojiSelectedX];
                         if (GameScreen.totalRooms == 0) {
-                            PacketSender.requestSendDataUIComponent(0, GameScreen.currentRoomId, FriendScreen.currentUserId, var30);
+                            PacketSender.requestSendDataUIComponent(0, GameScreen.currentRoomId, FriendScreen.username, var30);
                         }
                     }
 
@@ -1596,11 +1596,11 @@ public final class GameManager {
     }
 
     private static void saveContactStatus(int data, boolean isYahoo) {
-        Xuka.saveData(isYahoo ? "yahoocs" : "xubics" + FriendScreen.currentUserId, intToBytes(data), "xkown");
+        Xuka.saveData(isYahoo ? "yahoocs" : "xubics" + FriendScreen.username, intToBytes(data), "xkown");
     }
 
-    public static int loadContactStatus(boolean var0) {
-        return Xuka.loadIntData(var0 ? "yahoocs" : "xubics" + FriendScreen.currentUserId, "xkown");
+    public static int loadContactStatus(boolean isYahooContact) {
+        return Xuka.loadIntData(isYahooContact ? "yahoocs" : "xubics" + FriendScreen.username, "xkown");
     }
 
     public static boolean saveBuddyList(BuddyGroupList var0, boolean var1, String var2) {
@@ -1951,8 +1951,8 @@ public final class GameManager {
     public static void doNothing() {
     }
 
-    public void joinScreenByActionId(int var1, boolean var2) {
-        if (var1 == 11112) {
+    public void joinScreenByActionId(int actionId, boolean shouldSendPacket) {
+        if (actionId == 11112) {
             this.initializeYahooChat();
             if (!this.containsScreenInstance(this.yahooChat)) {
                 this.addScreenToStack(this.yahooChat);
@@ -1960,7 +1960,7 @@ public final class GameManager {
 
             this.switchToScreen(this.yahooChat);
         } else {
-            if (var1 == 11113) {
+            if (actionId == 11113) {
                 this.initializeFriendManager();
                 if (!this.containsScreenInstance(this.friendScreen)) {
                     if (this.friendScreen.friendsComponent.contactData != null) {
@@ -1968,16 +1968,16 @@ public final class GameManager {
                     }
 
                     if (this.friendScreen.onlineFriends.size() > 0) {
-                        long[] var6 = FriendScreen.vectorToLongArray(this.friendScreen.onlineFriends);
-                        Packet var3 = new Packet(5000029, 2);
-                        PacketUtils.writeInt(var6.length, var3);
-                        int var4 = 0;
+                        long[] onlineFriendIds = FriendScreen.vectorToLongArray(this.friendScreen.onlineFriends);
+                        Packet statusRequestPacket = new Packet(5000029, 2);
+                        PacketUtils.writeInt(onlineFriendIds.length, statusRequestPacket);
+                        int friendIndex = 0;
 
-                        for (int var5 = var6.length; var4 < var5; var4++) {
-                            PacketUtils.writeLong(var6[var4], var3);
+                        for (int totalFriends = onlineFriendIds.length; friendIndex < totalFriends; friendIndex++) {
+                            PacketUtils.writeLong(onlineFriendIds[friendIndex], statusRequestPacket);
                         }
 
-                        NetworkManager.sendPacket(var3);
+                        NetworkManager.sendPacket(statusRequestPacket);
                     } else {
                         NetworkManager.sendPacket(new Packet(5000036, 2));
                     }
@@ -1986,7 +1986,7 @@ public final class GameManager {
                     return;
                 }
                 this.switchToScreen(this.friendScreen);
-            } else if (var1 == 11114) {
+            } else if (actionId == 11114) {
                 if (gameRoom == null || !this.containsScreenInstance(gameRoom)) {
                     PacketSender.d();
                     return;
@@ -1995,23 +1995,22 @@ public final class GameManager {
                 gameRoom.startSlideAnimation(1);
                 this.switchToScreen(gameRoom);
             } else {
-                Screen var8;
-                if ((var8 = this.findScreenById(var1)) != null) {
-                    var8.startSlideAnimation(1);
-                    this.switchToScreen(var8);
+                Screen targetScreen;
+                if ((targetScreen = this.findScreenById(actionId)) != null) {
+                    targetScreen.startSlideAnimation(1);
+                    this.switchToScreen(targetScreen);
                     return;
                 }
 
-                boolean var9 = true;
-                this.isLoading = var9;
-                if (var2) {
-                    Packet var7 = new Packet(122, 2);
-                    PacketUtils.writeInt(var1, var7);
-                    NetworkManager.sendPacket(var7);
+                this.isLoading = true;
+                if (shouldSendPacket) {
+                    Packet screenRequestPacket = new Packet(122, 2);
+                    PacketUtils.writeInt(actionId, screenRequestPacket);
+                    NetworkManager.sendPacket(screenRequestPacket);
                     return;
                 }
 
-                PacketSender.requestSendDataUIComponent(var1);
+                PacketSender.requestSendDataUIComponent(actionId);
             }
         }
     }
@@ -2137,39 +2136,39 @@ public final class GameManager {
         System.gc();
     }
 
-    public void showAddFriendDialog(String var1, long var2, boolean var4) {
-        if (var4) {
+    public void showAddFriendDialog(String username, long userId, boolean isYahoo) {
+        if (isYahoo) {
             if (this.yahooChat == null || this.yahooChat.contactList.isLoading) {
                 return;
             }
-        } else if (var2 == 0L) {
+        } else if (userId == 0L) {
             return;
         }
 
-        DialogScreen var5;
-        (var5 = new DialogScreen()).showInNavigation = true;
-        var5.title = "Thêm bạn";
-        ButtonAction.createSimpleText(var5, UIUtils.concatStrings(var1, " thêm bạn vào danh sách. Bạn có đồng ý?", null, null));
-        if (var4) {
-            TextInputComponent var6 = ButtonAction.createTextInput(var5, "Vào nhóm mới:", 0);
-            DropdownComponent var7;
-            (var7 = ButtonAction.createChoiceBox(var5, "hoặc đã có:", this.yahooChat.contactList.getGroupNames())).setChangeAction(new quyen_fi(this, var7, var6));
-            if (var7.optionList != null && var7.optionList.length != 0) {
-                var6.setText(var7.getSelectedText());
+        DialogScreen dialogScreenAddFriend = new DialogScreen();
+        dialogScreenAddFriend.showInNavigation = true;
+        dialogScreenAddFriend.title = "Thêm bạn";
+        ButtonAction.createSimpleText(dialogScreenAddFriend, UIUtils.concatStrings(username, " thêm bạn vào danh sách. Bạn có đồng ý?", null, null));
+        if (isYahoo) {
+            TextInputComponent textInputNewGroupName = ButtonAction.createTextInput(dialogScreenAddFriend, "Vào nhóm mới:", 0);
+            DropdownComponent dropdownOtherGroup = ButtonAction.createChoiceBox(dialogScreenAddFriend, "hoặc đã có:", this.yahooChat.contactList.getGroupNames());
+            dropdownOtherGroup.setChangeAction(new quyen_fi(this, dropdownOtherGroup, textInputNewGroupName));
+            if (dropdownOtherGroup.optionList != null && dropdownOtherGroup.optionList.length != 0) {
+                textInputNewGroupName.setText(dropdownOtherGroup.getSelectedText());
             } else {
-                var6.setText("Friends");
+                textInputNewGroupName.setText("Friends");
             }
 
-            var5.leftSoftkey = new ButtonAction(TextConstant.decline(), new quyen_fj(this, var1, var6, var5));
-            var5.centerSoftkey = new ButtonAction("OK", new quyen_fk(this, var6, var1, var5));
+            dialogScreenAddFriend.leftSoftkey = new ButtonAction(TextConstant.decline(), new YahooRejectAddContactGroupAction(this, username, textInputNewGroupName, dialogScreenAddFriend));
+            dialogScreenAddFriend.centerSoftkey = new ButtonAction("OK", new YahooDoneAddContactGroupAction(this, textInputNewGroupName, username, dialogScreenAddFriend));
         } else {
-            var5.leftSoftkey = new ButtonAction(TextConstant.decline(), new quyen_fl(this, var2, var5));
-            var5.centerSoftkey = new ButtonAction("OK", new quyen_fm(this, var2, var5));
+            dialogScreenAddFriend.leftSoftkey = new ButtonAction(TextConstant.decline(), new FriendRejectAddUserGroupAction(this, userId, dialogScreenAddFriend));
+            dialogScreenAddFriend.centerSoftkey = new ButtonAction("OK", new FriendApproveAddUserGroupAction(this, userId, dialogScreenAddFriend));
         }
 
-        var5.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_fn(this, var4, var2, var5));
-        UIUtils.focusComponent(var5, (UIComponent) var5.components.elementAt(0));
-        this.addScreen(var5);
+        dialogScreenAddFriend.rightSoftkey = new ButtonAction(TextConstant.close(), new FriendCloseAddUserGroupAction(this, isYahoo, userId, dialogScreenAddFriend));
+        UIUtils.focusComponent(dialogScreenAddFriend, (UIComponent) dialogScreenAddFriend.components.elementAt(0));
+        this.addScreen(dialogScreenAddFriend);
     }
 
     public void showPasswordChangeResult(boolean var1) {
@@ -2248,7 +2247,7 @@ public final class GameManager {
     }
 
     public void updateUserAvatar(long var1, int[] var3) {
-        if (var1 == FriendScreen.currentUserTimestamp) {
+        if (var1 == FriendScreen.currentUserAccountId) {
             FriendScreen.avatarData = var3;
         }
 
@@ -2520,7 +2519,7 @@ public final class GameManager {
 
             for (int var9 = 0; var9 < var3.length; var9++) {
                 GameScreen.instance.playerReadyStates[var9] = false;
-                if (var3[var9].equals(FriendScreen.currentUserId)) {
+                if (var3[var9].equals(FriendScreen.username)) {
                     for (int var10 = 0; var10 < var3.length; var10++) {
                         if (GameScreen.instance.playerComponents[var10].playerName.equals(var3[var9])) {
                             GameScreen.instance.playerComponents[var10].cardData = var7[var9];
@@ -2549,7 +2548,7 @@ public final class GameManager {
     public void handlePlayerMove(String var1, String var2, int var3, byte[] var4, String var5, boolean var6) {
         if (GameScreen.currentRoomId.equals(var1)) {
             updateSpecialModeText(var2);
-            if (FriendScreen.currentUserId.equals(var2)) {
+            if (FriendScreen.username.equals(var2)) {
                 GameScreen.instance.cardGameComponent.removeCards(var4);
             }
 
@@ -2576,7 +2575,7 @@ public final class GameManager {
                 if (GameScreen.instance.playerComponents[var8].playerName.equals(var2)) {
                     GameScreen.instance.playerComponents[var8].gameState = var7;
                     GameScreen.instance.playerComponents[var8].isActive = true;
-                    if (var2.equals(FriendScreen.currentUserId)) {
+                    if (var2.equals(FriendScreen.username)) {
                         GameScreen.instance.isSpectating = true;
                     }
                 }
@@ -2593,7 +2592,7 @@ public final class GameManager {
     public void handlePlayerLeaveRoom(String var1, String var2, String var3, String[] var4, String var5) {
         if (GameScreen.instance != null) {
             if (GameScreen.currentRoomId.equals(var1)) {
-                if (var2.equals(FriendScreen.currentUserId)) {
+                if (var2.equals(FriendScreen.username)) {
                     if (var5 != null && var5.length() > 0) {
                         this.showNotification(var5, (Image) null, 1);
                     }
@@ -2679,7 +2678,7 @@ public final class GameManager {
                     if (GameScreen.instance.playerComponents[var4].playerName.equals(var1[var3])) {
                         GameScreen.instance.playerActiveStates[var4] = var2[var3];
                         GameScreen.instance.playerComponents[var4].setReady(var2[var3]);
-                        if (FriendScreen.currentUserId.equals(var1[var3]) && !var2[var3] && !FriendScreen.currentUserId.equals(GameScreen.instance.roomOwner) && GameScreen.instance.centerSoftkey != null) {
+                        if (FriendScreen.username.equals(var1[var3]) && !var2[var3] && !FriendScreen.username.equals(GameScreen.instance.roomOwner) && GameScreen.instance.centerSoftkey != null) {
                             GameScreen.instance.centerSoftkey.text = "Sẵn sàng";
                         }
                     }
@@ -2829,15 +2828,15 @@ public final class GameManager {
         this.switchToScreen(gameRoom);
     }
 
-    public void updateUserProfile(long var1, long[] var3, int var4) {
+    public void updateUserProfile(long userAccountId, long[] onlineFriendIds, int contactStatus) {
         if (this.friendScreen != null) {
-            FriendScreen.currentUserTimestamp = var1;
-            String var7 = FriendScreen.currentUserId;
-            Xuka.saveData("xkmyid" + var7, longToBytes(var1), "xkown");
-            if (var3 != null) {
-                if (loadContactStatus(false) != var4) {
-                    saveContactStatus(var4, false);
-                    FriendScreen.setVectorFromArray(var3, this.friendScreen.onlineFriends);
+            FriendScreen.currentUserAccountId = userAccountId;
+            String currentUsername = FriendScreen.username;
+            Xuka.saveData("xkmyid" + currentUsername, longToBytes(userAccountId), "xkown");
+            if (onlineFriendIds != null) {
+                if (loadContactStatus(false) != contactStatus) {
+                    saveContactStatus(contactStatus, false);
+                    FriendScreen.setVectorFromArray(onlineFriendIds, this.friendScreen.onlineFriends);
                     this.friendScreen.sendBulkRequest(this.friendScreen.onlineFriends);
                 }
             } else {
@@ -2857,37 +2856,37 @@ public final class GameManager {
 
     public void loadContactData(BuddyGroupList var1) {
         this.friendScreen.friendsComponent.setContactData(var1, -1);
-        saveBuddyList(var1, false, FriendScreen.currentUserId);
+        saveBuddyList(var1, false, FriendScreen.username);
         this.friendScreen.friendsComponent.isLoading = false;
     }
 
-    public void handleFriendRequests(long[] var1, String[] var2) {
-        if (this.friendScreen != null && var1 != null) {
+    public void handleFriendRequests(long[] UserIds, String[] requesterNames) {
+        if (this.friendScreen != null && UserIds != null) {
             if (this.friendScreen.isInitialized) {
-                Vector var7 = new Vector();
-                int var8 = var1.length;
+                Vector filteredRequests = new Vector();
+                int userIdCount = UserIds.length;
 
-                while (--var8 >= 0) {
-                    if (!this.friendScreen.isUserOnline(var1[var8]) && !this.friendScreen.isUserBlocked(var1[var8])) {
-                        var7.addElement(new Long(var1[var8]));
+                while (--userIdCount >= 0) {
+                    if (!this.friendScreen.isUserOnline(UserIds[userIdCount]) && !this.friendScreen.isUserBlocked(UserIds[userIdCount])) {
+                        filteredRequests.addElement(new Long(UserIds[userIdCount]));
                     }
                 }
 
-                if (var7.size() > 0) {
-                    Long[] var9 = new Long[var7.size()];
-                    var7.copyInto(var9);
-                    var1 = new long[var7.size()];
-                    int var5 = var7.size();
+                if (filteredRequests.size() > 0) {
+                    Long[] longArray = new Long[filteredRequests.size()];
+                    filteredRequests.copyInto(longArray);
+                    UserIds = new long[filteredRequests.size()];
+                    int arrayIndex = filteredRequests.size();
 
-                    while (--var5 >= 0) {
-                        var1[var5] = var9[var5].longValue();
+                    while (--arrayIndex >= 0) {
+                        UserIds[arrayIndex] = longArray[arrayIndex].longValue();
                     }
                 }
 
-                FriendScreen.setVectorFromArray(var1, this.friendScreen.pendingRequests);
-                if (var1.length > 0) {
-                    int var6 = var1.length;
-                    this.showNotification("Bạn có " + var6 + " lời mời kết bạn. Xin vào Quản lý => Chờ kết bạn", (Image) null, 1);
+                FriendScreen.setVectorFromArray(UserIds, this.friendScreen.pendingRequests);
+                if (UserIds.length > 0) {
+                    int totalRequests = UserIds.length;
+                    this.showNotification("Bạn có " + totalRequests + " lời mời kết bạn. Xin vào Quản lý => Chờ kết bạn", (Image) null, 1);
                     this.friendScreen.updatePendingRequestsButton();
                 }
 
@@ -2895,12 +2894,12 @@ public final class GameManager {
                 return;
             }
 
-            int var3 = 0;
+            int requestIndex = 0;
 
-            for (int var4 = var1.length; var3 < var4; var3++) {
-                if (!this.friendScreen.isUserOnline(var1[var3]) && !this.friendScreen.isUserBlocked(var1[var3]) && !this.friendScreen.isRequestPending(var1[var3])) {
-                    this.showAddFriendDialog(var2[var3], var1[var3], false);
-                    this.showNotification(var2[var3] + " muốn kết bạn với bạn.", (Image) null, 1);
+            for (int totalRequestCount = UserIds.length; requestIndex < totalRequestCount; requestIndex++) {
+                if (!this.friendScreen.isUserOnline(UserIds[requestIndex]) && !this.friendScreen.isUserBlocked(UserIds[requestIndex]) && !this.friendScreen.isRequestPending(UserIds[requestIndex])) {
+                    this.showAddFriendDialog(requesterNames[requestIndex], UserIds[requestIndex], false);
+                    this.showNotification(requesterNames[requestIndex] + " muốn kết bạn với bạn.", (Image) null, 1);
                 }
             }
         }
@@ -2954,7 +2953,7 @@ public final class GameManager {
             BuddyInfo var10;
             (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).contactId = var1;
             FriendScreen.addContactToList("Ban Be", var10, this.friendScreen.friendsComponent);
-            saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
+            saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
             this.friendScreen.addToOnlineList(var1);
             saveContactStatus(var5, false);
             if (this.friendScreen.isRequestPending(var1)) {
@@ -2972,7 +2971,7 @@ public final class GameManager {
             this.friendScreen.removeFromOnlineList(var1);
             this.friendScreen.removeFromBlockedList(var1);
             if (this.friendScreen.onlineFriends.size() > 0) {
-                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
+                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
             } else {
                 var3 = -1;
             }
@@ -2992,7 +2991,7 @@ public final class GameManager {
             this.friendScreen.removeFromOnlineList(var1);
             this.friendScreen.addToBlockedList(var1);
             if (this.friendScreen.onlineFriends.size() > 0) {
-                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.currentUserId);
+                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
             } else {
                 var3 = -1;
             }
@@ -3074,9 +3073,9 @@ public final class GameManager {
             BuddyInfo var5 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, var1);
             String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
             this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
-            if (var1 == FriendScreen.currentUserTimestamp) {
+            if (var1 == FriendScreen.currentUserAccountId) {
                 FriendScreen.statusMessage = var3;
-                Xuka.saveStringData(FriendScreen.currentUserId, var3, false);
+                Xuka.saveStringData(FriendScreen.username, var3, false);
             }
         }
     }
@@ -3108,73 +3107,73 @@ public final class GameManager {
         this.switchToScreen(var6);
     }
 
-    public void handleChatRoomInvite(String var1, String var2, long var3) {
-        if (var1.equals(this.currentChatRoom)) {
-            this.switchToScreenByTitle(var1);
+    public void handleChatRoomInvite(String roomName, String roomId, long accountId) {
+        if (roomName.equals(this.currentChatRoom)) {
+            this.switchToScreenByTitle(roomName);
         } else if (this.currentChatRoom != null) {
-            this.showConfirmDialog("Bạn có muốn thoát phòng đang chat?", new quyen_gg(this, var1, var2, var3));
+            this.showConfirmDialog("Bạn có muốn thoát phòng đang chat?", new ClickLeaveRoomAction(this, roomName, roomId, accountId));
         } else {
-            this.joinChatRoom(var1, var2, var3);
+            this.joinChatRoom(roomName, roomId, accountId);
         }
     }
 
-    public void joinChatRoom(String var1, String var2, long var3) {
-        if ((ChatRoomScreen) this.setActiveScreen(var1) == null) {
-            ChatRoomScreen var5 = new ChatRoomScreen(var1, var2, var3 == FriendScreen.currentUserTimestamp);
-            this.currentChatRoom = var1;
+    public void joinChatRoom(String roomName, String roomId, long accountId) {
+        if ((ChatRoomScreen) this.setActiveScreen(roomName) == null) {
+            ChatRoomScreen var5 = new ChatRoomScreen(roomName, roomId, accountId == FriendScreen.currentUserAccountId);
+            this.currentChatRoom = roomName;
             var5.startSlideAnimation(1);
             this.addScreenToStack((Screen) var5);
             this.switchToScreen(var5);
             this.removeScreen(this.findScreenById(910001));
         } else {
-            this.switchToScreenByTitle(var1);
+            this.switchToScreenByTitle(roomName);
         }
     }
 
-    public void showChatRoomInviteDialog(String var1, String var2, String var3, String var4) {
-        String var5 = UIUtils.concatStrings(var1, " mời bạn", null, null);
+    public void showChatRoomInviteDialog(String usernameInvite, String roomName, String var3, String var4) {
+        String var5 = UIUtils.concatStrings(usernameInvite, " mời bạn", null, null);
         if (this.hasScreen(var5)) {
             this.setActiveScreen(var5).showInNavigation = true;
         } else {
-            DialogScreen var6;
-            (var6 = new DialogScreen()).title = var5;
-            var6.showInNavigation = true;
-            var1 = UIUtils.concatStrings(var1, " mời bạn tham gia phòng chat ", var2, null);
-            ButtonAction.createSimpleText(var6, var1);
-            this.showNotification(var1, (Image) null, 1);
-            var6.leftSoftkey = new ButtonAction("Đồng ý", new quyen_gh(this, var3, var4, var6));
-            var6.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_gi(this, var6));
-            UIUtils.focusComponent(var6, (UIComponent) var6.components.elementAt(0));
-            this.addScreen(var6);
+            DialogScreen dialogScreen = new DialogScreen();
+            dialogScreen.title = var5;
+            dialogScreen.showInNavigation = true;
+            usernameInvite = UIUtils.concatStrings(usernameInvite, " mời bạn tham gia phòng chat ", roomName, null);
+            ButtonAction.createSimpleText(dialogScreen, usernameInvite);
+            this.showNotification(usernameInvite, (Image) null, 1);
+            dialogScreen.leftSoftkey = new ButtonAction("Đồng ý", new quyen_gh(this, var3, var4, dialogScreen));
+            dialogScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_gi(this, dialogScreen));
+            UIUtils.focusComponent(dialogScreen, (UIComponent) dialogScreen.components.elementAt(0));
+            this.addScreen(dialogScreen);
         }
     }
 
-    public void receiveChatRoomMessage(String var1, String var2, int var3) {
+    public void receiveChatRoomMessage(String senderName, String messageContent, int messageType) {
         if (this.currentChatRoom != null) {
             try {
-                ChatRoomScreen var4;
-                if ((var4 = (ChatRoomScreen) this.setActiveScreen(this.currentChatRoom)) != null) {
-                    if (!var4.title.equals(this.currentScreen.title)) {
-                        String var5 = FontRenderer.getFirstLineWrapped(var2, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
-                        this.showNotification(UIUtils.concatStrings(var1, ": ", var5, ".."), (Image) null, 1);
-                        var4.showInNavigation = true;
+                ChatRoomScreen chatRoomScreen;
+                if ((chatRoomScreen = (ChatRoomScreen) this.setActiveScreen(this.currentChatRoom)) != null) {
+                    if (!chatRoomScreen.title.equals(this.currentScreen.title)) {
+                        String truncatedMessage = FontRenderer.getFirstLineWrapped(messageContent, GameGraphics.screenWidth - GameGraphics.screenWidth / 3);
+                        this.showNotification(UIUtils.concatStrings(senderName, ": ", truncatedMessage, ".."), (Image) null, 1);
+                        chatRoomScreen.showInNavigation = true;
                         this.vibrate();
                         System.gc();
                     }
 
-                    if (var4.showWelcomeMessage) {
-                        var4.hideWelcomeAndShowChat();
+                    if (chatRoomScreen.showWelcomeMessage) {
+                        chatRoomScreen.hideWelcomeAndShowChat();
                     }
 
-                    boolean var7 = var4.chatComponent.isNearBottom();
-                    var4.chatComponent.addPlayerMessage(var1, var2, var3 != 3 ? (var1.equals(FriendScreen.currentUserId) ? 0 : 1) : var3);
-                    if (var7) {
-                        var4.chatComponent.scrollToBottom();
+                    boolean wasNearBottom = chatRoomScreen.chatComponent.isNearBottom();
+                    chatRoomScreen.chatComponent.addPlayerMessage(senderName, messageContent, messageType != 3 ? (senderName.equals(FriendScreen.username) ? 0 : 1) : messageType);
+                    if (wasNearBottom) {
+                        chatRoomScreen.chatComponent.scrollToBottom();
                     }
 
-                    var4.isActive = true;
+                    chatRoomScreen.isActive = true;
                 }
-            } catch (Exception var6) {
+            } catch (Exception exception) {
             }
         }
     }

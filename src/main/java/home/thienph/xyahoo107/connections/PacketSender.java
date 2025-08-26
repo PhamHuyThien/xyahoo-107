@@ -88,17 +88,17 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void d(String var0) {
-        Packet var1 = new Packet(4802, 48);
-        PacketUtils.writeString(var0, var1);
-        NetworkManager.sendPacket(var1);
+    public static void leaveRoomChat(String roomId) {
+        Packet packet = new Packet(4802, 48);
+        PacketUtils.writeString(roomId, packet);
+        NetworkManager.sendPacket(packet);
     }
 
-    public static void requestSendDataUIComponent(String var0, String var1) {
-        Packet var2 = new Packet(4804, 48);
-        PacketUtils.writeString(var0, var2);
-        PacketUtils.writeString(var1, var2);
-        NetworkManager.sendPacket(var2);
+    public static void sendMessage(String roomId, String content) {
+        Packet packet = new Packet(4804, 48);
+        PacketUtils.writeString(roomId, packet);
+        PacketUtils.writeString(content, packet);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void b(String var0, String var1) {

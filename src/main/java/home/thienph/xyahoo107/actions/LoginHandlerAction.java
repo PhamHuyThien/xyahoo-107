@@ -24,7 +24,7 @@ public final class LoginHandlerAction implements Action {
     public void action() {
         System.gc();
         this.loginScreen.usernameInput.setText(this.loginScreen.usernameInput.getText().toLowerCase());
-        FriendScreen.currentUserId = this.loginScreen.usernameInput.getText();
+        FriendScreen.username = this.loginScreen.usernameInput.getText();
         FriendScreen.userStatus = this.loginScreen.invisibleLoginCheckbox.isChecked ? 0 : 1;
         GameManager.loginType = (byte) this.loginScreen.accountTypeDropdown.getSelectedIndex();
 
@@ -32,7 +32,7 @@ public final class LoginHandlerAction implements Action {
         if (GameManager.loginType == 1) {
             String usernameText = this.loginScreen.usernameInput.getText();
             if (usernameText.indexOf("@") == -1) {
-                FriendScreen.currentUserId = FriendScreen.currentUserId + "@yahoo.com";
+                FriendScreen.username = FriendScreen.username + "@yahoo.com";
             }
 
             String yahooUsername = usernameText;
@@ -69,25 +69,25 @@ public final class LoginHandlerAction implements Action {
         Xuka.saveIDType(this.loginScreen.accountTypeDropdown.getSelectedIndex());
         Xuka.saveBooleanSetting("status", this.loginScreen.invisibleLoginCheckbox.isChecked);
 
-        FriendScreen.currentUserName = FriendScreen.currentUserId;
+        FriendScreen.currentUserName = FriendScreen.username;
         GameManager.getInstance().initializeFriendManager();
 
         // Tải danh sách bạn bè từ cache
         int contactListVersion = GameManager.loadContactStatus(false);
         if (contactListVersion != -1) {
-            BuddyGroupList buddyGroupList = GameManager.loadBuddyList(false, FriendScreen.currentUserId);
+            BuddyGroupList buddyGroupList = GameManager.loadBuddyList(false, FriendScreen.username);
             if (buddyGroupList != null) {
                 GameManager.instance.friendScreen.friendsComponent.setContactData(buddyGroupList, -1);
                 GameManager.instance.friendScreen.friendsComponent.isLoading = false;
                 GameManager.instance.friendScreen.addAllFriendsToOnline();
-                FriendScreen.currentUserTimestamp = GameManager.getUserId(FriendScreen.currentUserId);
+                FriendScreen.currentUserAccountId = GameManager.getUserId(FriendScreen.username);
             } else {
                 contactListVersion = -1;
             }
         }
 
         // Tải status message
-        String savedStatusMessage = Xuka.loadStringData(FriendScreen.currentUserId, false);
+        String savedStatusMessage = Xuka.loadStringData(FriendScreen.username, false);
         FriendScreen.statusMessage = savedStatusMessage == null ? "" : savedStatusMessage;
         if (savedStatusMessage != null && savedStatusMessage.length() > 0) {
             FriendScreen.updateStatusMessage(FriendScreen.statusMessage);
@@ -97,7 +97,7 @@ public final class LoginHandlerAction implements Action {
         GameGraphics.instance.initializeConnection();
 
         // Gửi login request
-        PacketSender.sendLogin(FriendScreen.currentUserId,
+        PacketSender.sendLogin(FriendScreen.username,
                 this.loginScreen.passwordInput.getText(),
                 FriendScreen.userStatus,
                 1,

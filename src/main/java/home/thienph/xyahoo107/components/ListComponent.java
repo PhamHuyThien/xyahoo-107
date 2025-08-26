@@ -164,7 +164,7 @@ public final class ListComponent extends UIComponent {
                     currentContact.getDefaultColor();
                     contactItem.textColor = null;
                     contactItem.textColor = new Integer(currentContact.getDefaultColor());
-                    contactItem.timestamp = currentContact.contactId;
+                    contactItem.contactId = currentContact.contactId;
                     contactItem.fileName = currentContact.mediaExtension;
                     contactItem.description = currentContact.statusDescription;
                     contactItem.imageSourceId = currentContact.imageSourceId;
@@ -602,8 +602,8 @@ public final class ListComponent extends UIComponent {
             this.allSelected = !this.allSelected;
 
             for (int itemIndex = this.totalItemCount - 1; itemIndex >= 0; itemIndex--) {
-                BuddyListItem listItem;
-                if ((listItem = (BuddyListItem) this.listItems.elementAt(itemIndex)).itemType == 0) {
+                BuddyListItem listItem =  (BuddyListItem) this.listItems.elementAt(itemIndex);
+                if (listItem.itemType == 0) {
                     listItem.isSelected = this.allSelected;
                     listItem.contactRef.isSelected = this.allSelected;
                 }

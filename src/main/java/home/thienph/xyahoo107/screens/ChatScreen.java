@@ -46,7 +46,7 @@ public final class ChatScreen extends Screen {
         this.menuItems = new Vector();
         this.menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_hk(this)));
         this.menuItems.addElement(new ButtonAction("BUZZ!", new quyen_hl(this, var2)));
-        if ((var2 ? !GameManager.instance.yahooChat.contactList.hasContact(var4) : !GameManager.instance.friendScreen.friendsComponent.hasContact(var1)) && !var1.equals(FriendScreen.currentUserId)) {
+        if ((var2 ? !GameManager.instance.yahooChat.contactList.hasContact(var4) : !GameManager.instance.friendScreen.friendsComponent.hasContact(var1)) && !var1.equals(FriendScreen.username)) {
             this.menuItems.addElement(new ButtonAction("Thêm bạn", new quyen_hm(this, var2, var4, var1)));
         }
 

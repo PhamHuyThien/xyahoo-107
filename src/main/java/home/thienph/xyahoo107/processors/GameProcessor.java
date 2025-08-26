@@ -5,8 +5,8 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.data.game.ContextMenu;
-import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.media.BuddyGroupList;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
@@ -260,7 +260,7 @@ public class GameProcessor {
                          * byte: softkeyType - loại softkey (0=left, 1=center, 2=right)
                          *
                          * Với softkeyType = 0 (LEFT SOFTKEY):
-                         *     ButtonAction từ createUIFactory(packet)
+                         *     ButtonAction từ createButtonAction(packet)
                          *     - Nếu screenId là error code: tạo context menu với 2 items
                          *       + Item 1: "Biểu cảm" với action quyen_ax()
                          *       + Item 2: ButtonAction đã đọc
@@ -268,11 +268,11 @@ public class GameProcessor {
                          *     - Nếu không phải error code: gán trực tiếp ButtonAction cho leftSoftkey
                          *
                          * Với softkeyType = 1 (CENTER SOFTKEY):
-                         *     ButtonAction từ createUIFactory(packet)
+                         *     ButtonAction từ createButtonAction(packet)
                          *     Gán trực tiếp cho centerSoftkey
                          *
                          * Với softkeyType = 2 (RIGHT SOFTKEY):
-                         *     ButtonAction từ createUIFactory(packet)
+                         *     ButtonAction từ createButtonAction(packet)
                          *     Gán trực tiếp cho rightSoftkey
                          *
                          * Cuối cùng: đánh dấu screen.needsUpdate = true
@@ -282,7 +282,7 @@ public class GameProcessor {
 
                         switch (packet.getPayload().readByte()) {
                             case 0: // LEFT SOFTKEY
-                                ButtonAction leftButtonAction = createUIFactory(packet);
+                                ButtonAction leftButtonAction = createButtonAction(packet);
                                 if (GameManager.isValidErrorCode(screenId)) {
                                     Vector menuItems = new Vector();
                                     menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_ax()));
@@ -295,11 +295,11 @@ public class GameProcessor {
                                 break;
 
                             case 1: // CENTER SOFTKEY
-                                targetScreen.centerSoftkey = createUIFactory(packet);
+                                targetScreen.centerSoftkey = createButtonAction(packet);
                                 break;
 
                             case 2: // RIGHT SOFTKEY
-                                targetScreen.rightSoftkey = createUIFactory(packet);
+                                targetScreen.rightSoftkey = createButtonAction(packet);
                         }
 
                         targetScreen.needsUpdate = true;
@@ -429,7 +429,7 @@ public class GameProcessor {
                         DialogScreen targetDialog = (DialogScreen) GameManager.instance.findScreenById(dialogId1);
                         byte componentType = packet.getPayload().readByte();
                         Object createdComponent = null;
-                        
+
                         System.out.println("[UIComponentFactory] screen id: " + dialogId1 + ", component type: " + componentType);
 
                         switch (componentType) {
@@ -715,7 +715,8 @@ public class GameProcessor {
                                 String popupMessage = PacketUtils.readString(packet);
                                 byte dialogType = packet.getPayload().readByte();
                                 byte[] popupActionData = PacketUtils.readBytes(packet);
-                                createdComponent = ButtonAction.createPopupDialog(targetDialog, popupMessage, dialogType, new PopupDialogClickAction(popupActionData));
+                                createdComponent = ButtonAction.createTextInputPopup(targetDialog, popupMessage, dialogType, new PopupDialogClickAction(popupActionData));
+//                                UIUtils.showTextInputPopup((Screen) targetDialog, (TextInputComponent) createdComponent);
                                 break;
 
                             case 17: // ButtonComponent
@@ -1292,8 +1293,8 @@ public class GameProcessor {
                      */
                     case 50:
                         int screenId5 = PacketUtils.readInt(packet);
-                        DialogScreen dialogScreen;
-                        (dialogScreen = (DialogScreen) GameManager.instance.findScreenById(screenId5)).startSlideAnimation(1);
+                        DialogScreen dialogScreen = (DialogScreen) GameManager.instance.findScreenById(screenId5);
+                        dialogScreen.startSlideAnimation(1);
                         GameManager.instance.switchToScreen(dialogScreen);
                         break;
 
@@ -1354,9 +1355,9 @@ public class GameProcessor {
                         int inputComponentId = PacketUtils.readInt(packet);
 
                         try {
-                            Screen targetScreen4;
-                            TextInputComponent textInputComponent = (TextInputComponent) (targetScreen4 = GameManager.instance.findScreenById(inputScreenId)).findComponentByID(inputComponentId);
-                            UIUtils.showTextInput(targetScreen4, textInputComponent);
+                            Screen targetScreen4 = GameManager.instance.findScreenById(inputScreenId);
+                            TextInputComponent textInputComponent = (TextInputComponent) targetScreen4.findComponentByID(inputComponentId);
+                            UIUtils.showTextInputPopup(targetScreen4, textInputComponent);
                         } catch (Exception exception) {
                         }
                         break;
@@ -1575,9 +1576,9 @@ public class GameProcessor {
         return var4;
     }
 
-    private static ButtonAction createUIFactory(Packet var0) {
-        byte[] var1 = PacketUtils.readBytes(var0);
-        return new ButtonAction(PacketUtils.readString(var0), new quyen_as(var1));
+    private static ButtonAction createButtonAction(Packet data) {
+        byte[] payload = PacketUtils.readBytes(data);
+        return new ButtonAction(PacketUtils.readString(data), new CreateButtonAction(payload));
     }
 
     static void setDialogType(byte var0) {

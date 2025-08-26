@@ -553,12 +553,12 @@ public final class GamePacketProcessor extends PacketHandler {
                 return;
             case 4801:
                 if (PacketUtils.readBoolean(packet)) {
-                    String var215 = UIUtils.concatStrings("P. ", PacketUtils.readString(packet), null, null);
-                    String var220 = PacketUtils.readString(packet);
-                    long var230 = PacketUtils.readLong(packet);
+                    String roomName1 = UIUtils.concatStrings("P. ", PacketUtils.readString(packet), null, null);
+                    String roomId3 = PacketUtils.readString(packet);
+                    long ownerRoom = PacketUtils.readLong(packet);
                     PacketUtils.readLong(packet);
                     PacketUtils.readString(packet);
-                    gameManager.handleChatRoomInvite(var215, var220, var230);
+                    gameManager.handleChatRoomInvite(roomName1, roomId3, ownerRoom);
                     return;
                 }
 
@@ -579,11 +579,11 @@ public final class GamePacketProcessor extends PacketHandler {
                 return;
             case 4804:
                 PacketUtils.readLong(packet);
-                String var231 = PacketUtils.readString(packet);
-                String var53 = PacketUtils.readString(packet);
+                String senderName = PacketUtils.readString(packet);
+                String messageContent = PacketUtils.readString(packet);
                 PacketUtils.readInt(packet);
-                int var180 = PacketUtils.readInt(packet);
-                gameManager.receiveChatRoomMessage(var231, var53, var180);
+                int messageType1 = PacketUtils.readInt(packet);
+                gameManager.receiveChatRoomMessage(senderName, messageContent, messageType1);
                 return;
             case 4807:
                 String var194 = PacketUtils.readString(packet);
@@ -774,14 +774,14 @@ public final class GamePacketProcessor extends PacketHandler {
                 gameManager.startCardGame(var95, var98, 0, var96);
                 return;
             case 5000015:
-                long var16 = PacketUtils.readLong(packet);
-                commandId = PacketUtils.readInt(packet);
-                long[] var201 = null;
-                if (commandId > 0) {
-                    var201 = new long[commandId];
+                long accountId = PacketUtils.readLong(packet);
+                int friendIdSize = PacketUtils.readInt(packet);
+                long[] listFriendAccountId = null;
+                if (friendIdSize > 0) {
+                    listFriendAccountId = new long[friendIdSize];
 
-                    for (int var210 = 0; var210 < commandId; var210++) {
-                        var201[var210] = PacketUtils.readLong(packet);
+                    for (int var210 = 0; var210 < friendIdSize; var210++) {
+                        listFriendAccountId[var210] = PacketUtils.readLong(packet);
                     }
                 }
 
@@ -792,21 +792,21 @@ public final class GamePacketProcessor extends PacketHandler {
                 } catch (Exception var170) {
                 }
 
-                gameManager.updateUserProfile(var16, var201, var211);
+                gameManager.updateUserProfile(accountId, listFriendAccountId, var211);
                 return;
             case 5000016:
                 long var228 = PacketUtils.readLong(packet);
                 gameManager.receiveBuzz(var228);
                 return;
             case 5000018:
-                commandId = PacketUtils.readInt(packet);
+                int friendIdRequestSize = PacketUtils.readInt(packet);
                 long[] var200 = null;
                 String[] var209 = null;
-                if (commandId > 0) {
-                    var200 = new long[commandId];
-                    var209 = new String[commandId];
+                if (friendIdRequestSize > 0) {
+                    var200 = new long[friendIdRequestSize];
+                    var209 = new String[friendIdRequestSize];
 
-                    for (int var218 = 0; var218 < commandId; var218++) {
+                    for (int var218 = 0; var218 < friendIdRequestSize; var218++) {
                         var200[var218] = PacketUtils.readLong(packet);
                         var209[var218] = PacketUtils.readString(packet);
                     }
@@ -854,10 +854,11 @@ public final class GamePacketProcessor extends PacketHandler {
                 }
                 break;
             case 5000028:
-                BuddyInfo[] var224 = new BuddyInfo[commandId = PacketUtils.readInt(packet)];
+                int listFriendsSzie= PacketUtils.readInt(packet);
+                BuddyInfo[] var224 = new BuddyInfo[listFriendsSzie ];
                 BuddyGroupList var32 = new BuddyGroupList();
 
-                for (int i = 0; i < commandId; i++) {
+                for (int i = 0; i < listFriendsSzie; i++) {
                     long var226 = PacketUtils.readLong(packet);
                     String var207 = PacketUtils.readString(packet);
                     String var227 = PacketUtils.readString(packet);

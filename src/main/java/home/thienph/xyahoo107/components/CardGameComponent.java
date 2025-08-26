@@ -218,9 +218,9 @@ public final class CardGameComponent extends UIComponent {
                     break;
                 case 16:
                     System.out.println("==>");
-                    System.out.println(FriendScreen.currentUserId);
+                    System.out.println(FriendScreen.username);
                     System.out.println(this.currentPlayer);
-                    if (!isViewingOtherPlayers && FriendScreen.currentUserId.equals(this.currentPlayer) && !this.moveSentThisTurn) {
+                    if (!isViewingOtherPlayers && FriendScreen.username.equals(this.currentPlayer) && !this.moveSentThisTurn) {
                         System.out.println("=> 111");
 
                         for (int var3 = 0; var3 < handCardCount; var3++) {
@@ -255,7 +255,7 @@ public final class CardGameComponent extends UIComponent {
                                 this.selectedCardValues[var5] = (byte) selectedCards[var5].cardValue;
                             }
 
-                            PacketSender.requestSendDataUIComponent(GameScreen.currentRoomId, FriendScreen.currentUserId, currentMoveType, this.selectedCardValues);
+                            PacketSender.requestSendDataUIComponent(GameScreen.currentRoomId, FriendScreen.username, currentMoveType, this.selectedCardValues);
                             this.moveSentThisTurn = true;
                         } else {
                             selectedCount = 0;
@@ -610,7 +610,7 @@ public final class CardGameComponent extends UIComponent {
             return false;
         }
 
-        if (!this.gameEnded && FriendScreen.currentUserId.equals(this.currentPlayer)) {
+        if (!this.gameEnded && FriendScreen.username.equals(this.currentPlayer)) {
             if (this.isFirstMove && getFirstCardValue(var1) == getFirstCardValue(handCards)) {
                 if (var2 = this.isValidCombination(var9, 0)) {
                     this.isFirstMove = false;

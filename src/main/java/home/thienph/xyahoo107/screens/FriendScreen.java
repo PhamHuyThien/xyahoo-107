@@ -24,8 +24,8 @@ public final class FriendScreen extends Screen {
     public static int[] avatarData;
     public ContactListComponent friendsComponent;
     public ContactListComponent friendsRequestComponent;
-    public static String currentUserId;
-    public static long currentUserTimestamp;
+    public static String username;
+    public static long currentUserAccountId;
     public static String currentUserName;
     public static int userStatus;
     public static boolean isAvatarEnabled;
@@ -117,10 +117,10 @@ public final class FriendScreen extends Screen {
     }
 
     public static void toggleOfflineFilter(ContactListComponent var0) {
-        var0.isFilterActive = !var0.isFilterActive;
-        var0.refreshDisplayList();
-        var0.contactSelectedIndex = 0;
-        Xuka.saveBooleanSetting("hideOffline", var0.isFilterActive);
+//        var0.isFilterActive = !var0.isFilterActive;
+//        var0.refreshDisplayList();
+//        var0.contactSelectedIndex = 0;
+//        Xuka.saveBooleanSetting("hideOffline", var0.isFilterActive);
     }
 
     public void updateContactAvatar(long var1, int[] var3) {
@@ -137,7 +137,7 @@ public final class FriendScreen extends Screen {
     public static void updateStatusMessage(String var0) {
         PacketSender.c(var0, 1);
         statusMessage = var0;
-        Xuka.saveStringData(currentUserId, var0, false);
+        Xuka.saveStringData(username, var0, false);
     }
 
     public void showStatusDialog() {
@@ -450,7 +450,7 @@ public final class FriendScreen extends Screen {
                 var9.contacts.removeElementAt(var9.contacts.size() - 1);
             }
 
-            GameManager.saveBuddyList(this.friendsComponent.contactData, false, currentUserId);
+            GameManager.saveBuddyList(this.friendsComponent.contactData, false, username);
             this.friendsComponent.refreshDisplayList();
         }
     }
@@ -461,7 +461,7 @@ public final class FriendScreen extends Screen {
 
             for (int var5 = this.friendsComponent.displayItems.size(); var4 < var5; var4++) {
                 BuddyListItem var6;
-                if ((var6 = (BuddyListItem) this.friendsComponent.displayItems.elementAt(var4)).itemType == 0 && var6.timestamp == var1) {
+                if ((var6 = (BuddyListItem) this.friendsComponent.displayItems.elementAt(var4)).itemType == 0 && var6.contactId == var1) {
                     var6.statusCode = var3;
                     return;
                 }
@@ -469,30 +469,30 @@ public final class FriendScreen extends Screen {
         }
     }
 
-    public void updateContactsStatus(long[] var1, String[] var2) {
+    public void updateContactsStatus(long[] contactIds, String[] statusMessages) {
         if (currentViewMode == 1) {
             if (this.friendsComponent.contactData != null) {
-                this.friendsComponent.contactData.updateDownloadStatus("Ban Be", var1, var2);
+                this.friendsComponent.contactData.updateStatus("Ban Be", contactIds, statusMessages);
                 this.friendsComponent.refreshDisplayList();
-                String[] var3 = var2;
-                long[] var9 = var1;
-                FriendScreen var8 = this;
+                String[] messages = statusMessages;
+                long[] ids = contactIds;
+                FriendScreen currentScreen = this;
                 if (this.friendsComponent.contactData.findBuddyContactByName("Favorite") != null) {
-                    int var4 = var1.length;
+                    int contactCount = contactIds.length;
 
-                    while (--var4 >= 0) {
-                        if (var8.friendsComponent.contactData.isContatcExists("Favorite", var9[var4])) {
-                            int var5 = 0;
+                    while (--contactCount >= 0) {
+                        if (currentScreen.friendsComponent.contactData.isContatcExists("Favorite", ids[contactCount])) {
+                            int displayIndex = 0;
 
-                            for (int var6 = var8.friendsComponent.displayItems.size(); var5 < var6; var5++) {
-                                BuddyListItem var7;
-                                if ((var7 = (BuddyListItem) var8.friendsComponent.displayItems.elementAt(var5)).itemType == 0 && var7.timestamp == var9[var4]) {
-                                    var7.statusCode = 1;
-                                    var7.statusText = var3[var4];
-                                    if (var3[var4] != null && var3[var4].length() > 0) {
-                                        var7.extraField = UIUtils.concatStrings(var7.displayName, " - ", var3[var4], null);
+                            for (int displayItemsSize = currentScreen.friendsComponent.displayItems.size(); displayIndex < displayItemsSize; displayIndex++) {
+                                BuddyListItem currentItem = (BuddyListItem) currentScreen.friendsComponent.displayItems.elementAt(displayIndex);
+                                if (currentItem.itemType == 0 && currentItem.contactId == ids[contactCount]) {
+                                    currentItem.statusCode = 1;
+                                    currentItem.statusText = messages[contactCount];
+                                    if (messages[contactCount] != null && messages[contactCount].length() > 0) {
+                                        currentItem.extraField = UIUtils.concatStrings(currentItem.displayName, " - ", messages[contactCount], null);
                                     } else {
-                                        var7.extraField = var7.displayName;
+                                        currentItem.extraField = currentItem.displayName;
                                     }
                                 }
                             }
@@ -502,9 +502,9 @@ public final class FriendScreen extends Screen {
             }
         } else if (this.friendsRequestComponent.contactData != null) {
             if (currentViewMode == 2) {
-                this.friendsRequestComponent.contactData.updateDownloadStatus("Danh sách từ chối", var1, var2);
+                this.friendsRequestComponent.contactData.updateStatus("Danh sách từ chối", contactIds, statusMessages);
             } else {
-                this.friendsRequestComponent.contactData.updateDownloadStatus("Danh sách kết bạn", var1, var2);
+                this.friendsRequestComponent.contactData.updateStatus("Danh sách kết bạn", contactIds, statusMessages);
             }
 
             this.friendsRequestComponent.refreshDisplayList();

@@ -15,6 +15,6 @@ public final class quyen_dx implements Action {
     }
 
     public void action() {
-        PacketSender.requestSendDataUIComponent(GameScreen.currentRoomId, FriendScreen.currentUserId, this.a.playerComponents[this.b].playerName);
+        PacketSender.requestSendDataUIComponent(GameScreen.currentRoomId, FriendScreen.username, this.a.playerComponents[this.b].playerName);
     }
 }

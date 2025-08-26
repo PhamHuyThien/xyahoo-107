@@ -17,7 +17,7 @@ public final class BuddyListItem {
     public String fileName;
     public int[] rawData;
     public String description;
-    public long timestamp;
+    public long contactId;
     public Integer imageSourceId;
     public Image thumbnailImage;
 }

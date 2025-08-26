@@ -21,11 +21,11 @@ public final class quyen_jm implements Action {
             }
 
             if (YahooScreen.getActiveTextInput(this.a) == null) {
-                YahooScreen.setActiveTextInput(this.a, ButtonAction.createPopupDialog(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
+                YahooScreen.setActiveTextInput(this.a, ButtonAction.createTextInputPopup(this.a, "Xin nhập Yahoo! ID", 0, new quyen_jn(this)));
             }
 
             this.a.addComponent(YahooScreen.getActiveTextInput(this.a));
-            UIUtils.showTextInput(this.a, YahooScreen.getActiveTextInput(this.a));
+            UIUtils.showTextInputPopup(this.a, YahooScreen.getActiveTextInput(this.a));
         }
     }
 }

@@ -22,8 +22,8 @@ public final class quyen_ip implements Action {
     public void action() {
         long[] var1;
         if ((var1 = this.b.getSelectedContactIds()) != null) {
-            FriendScreen.setActiveTextInput(this.a, ButtonAction.createPopupDialog(this.c, "Nhập nội dung tin nhắn", 0, new quyen_iq(this, var1, this.c)));
-            UIUtils.showTextInput(this.c, FriendScreen.getActiveTextInput(this.a));
+            FriendScreen.setActiveTextInput(this.a, ButtonAction.createTextInputPopup(this.c, "Nhập nội dung tin nhắn", 0, new quyen_iq(this, var1, this.c)));
+            UIUtils.showTextInputPopup(this.c, FriendScreen.getActiveTextInput(this.a));
         } else {
             GameManager.instance.showWrappedTextDialog("Vui lòng chọn ID");
         }

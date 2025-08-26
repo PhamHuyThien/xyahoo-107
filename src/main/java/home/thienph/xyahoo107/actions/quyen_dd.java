@@ -14,15 +14,15 @@ public final class quyen_dd implements Action {
 
     public void action() {
         if (this.a.centerSoftkey.text.equals("Chơi ngay!")) {
-            PacketSender.e(GameScreen.currentRoomId, FriendScreen.currentUserId);
+            PacketSender.e(GameScreen.currentRoomId, FriendScreen.username);
         } else {
             if (this.a.centerSoftkey.text.equals("Sẵn sàng")) {
                 int var1 = this.a.playerComponents.length;
 
                 while (--var1 >= 0) {
-                    if (this.a.playerComponents[var1].playerName.equals(FriendScreen.currentUserId)) {
+                    if (this.a.playerComponents[var1].playerName.equals(FriendScreen.username)) {
                         this.a.centerSoftkey.text = "";
-                        PacketSender.d(GameScreen.currentRoomId, FriendScreen.currentUserId);
+                        PacketSender.d(GameScreen.currentRoomId, FriendScreen.username);
                     }
                 }
             }

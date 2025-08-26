@@ -111,7 +111,7 @@ public final class BuddyGroupList {
         }
     }
 
-    public void updateDownloadStatus(String var1, long[] var2, String[] var3) {
+    public void updateStatus(String var1, long[] var2, String[] var3) {
         if (var2.length != 0) {
             int var4 = 0;
             int var5 = this.contactGroups.size();
