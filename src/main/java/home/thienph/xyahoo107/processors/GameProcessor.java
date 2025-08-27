@@ -1094,15 +1094,15 @@ public class GameProcessor {
                             byte[] rightButtonAction = PacketUtils.readBytes(packet);
 
                             if (leftButtonAction != null && leftButtonAction.length > 1) {
-                                leftButton = new ButtonAction(leftButtonText, new quyen_at(leftButtonAction));
+                                leftButton = new ButtonAction(leftButtonText, new GameProcessorPopupButtonLeftAction(leftButtonAction));
                             }
 
                             if (centerButtonAction != null && centerButtonAction.length > 1) {
-                                centerButton = new ButtonAction(centerButtonText, new quyen_au(centerButtonAction));
+                                centerButton = new ButtonAction(centerButtonText, new GameProcessorPopupButtonCenterAction(centerButtonAction));
                             }
 
                             if (rightButtonAction != null && rightButtonAction.length > 1) {
-                                rightButton = new ButtonAction(rightButtonText, new quyen_av(rightButtonAction));
+                                rightButton = new ButtonAction(rightButtonText, new GameProcessorPopupButtonRightAction(rightButtonAction));
                             }
                         }
 
