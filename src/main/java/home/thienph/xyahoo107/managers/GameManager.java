@@ -1996,6 +1996,7 @@ public final class GameManager {
                 if ((targetScreen = this.findScreenById(actionId)) != null) {
                     targetScreen.startSlideAnimation(1);
                     this.switchToScreen(targetScreen);
+                    PacketSender.requestSendDataUIComponent(actionId);
                     return;
                 }
 

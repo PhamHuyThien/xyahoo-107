@@ -179,8 +179,7 @@ public class GameProcessor {
                                         ListComponent listComponent = (ListComponent) targetComponent;
                                         extractedString = listComponent.getSelectedItem().fileName;
                                     }
-
-                                    PacketUtils.writeString(extractedString, responsePacket);
+                                    PacketUtils.writeString(extractedString == null ? "": extractedString, responsePacket);
                                 }
                             } else if (dataType == 2) {
                                 if (sourceType == 0) {
@@ -190,11 +189,12 @@ public class GameProcessor {
                                     int screenId = PacketUtils.readInt(packet);
                                     Screen targetScreen = GameManager.instance.findScreenById(screenId);
                                     int componentId = PacketUtils.readInt(packet);
+                                    boolean isChecked = false;
                                     UIComponent targetComponent = targetScreen.findComponentByID(componentId);
                                     if (targetComponent instanceof CheckboxComponent) {
-                                        boolean isChecked = ((CheckboxComponent) targetComponent).isChecked;
-                                        PacketUtils.writeBoolean(isChecked, responsePacket);
+                                        isChecked = ((CheckboxComponent) targetComponent).isChecked;
                                     }
+                                    PacketUtils.writeBoolean(isChecked, responsePacket);
                                 }
                             } else if (dataType == 3 && sourceType == 1) {
                                 int screenId = PacketUtils.readInt(packet);
