@@ -68,11 +68,11 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestSendDataUIComponent(long var0, String var2) {
-        Packet var3 = new Packet(5000023, 2);
-        PacketUtils.writeLong(var0, var3);
-        PacketUtils.writeString(var2, var3);
-        NetworkManager.sendPacket(var3);
+    public static void userChat(long userId, String content) {
+        Packet packet = new Packet(5000023, 2);
+        PacketUtils.writeLong(userId, packet);
+        PacketUtils.writeString(content, packet);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void requestSendDataUIComponent(long[] var0, String var1) {
@@ -261,15 +261,15 @@ public class PacketSender {
         NetworkManager.sendPacket(var1);
     }
 
-    public static void requestSendDataUIComponent(long var0, String var2, int var3) {
-        Packet var4 = new Packet(var3 == 1 ? 5000016 : 22, var3 == 1 ? 2 : 4);
+    public static void requestBuzz(long userId, String var2, int var3) {
+        Packet packet = new Packet(var3 == 1 ? 5000016 : 22, var3 == 1 ? 2 : 4);
         if (var2 == null) {
-            PacketUtils.writeLong(var0, var4);
+            PacketUtils.writeLong(userId, packet);
         } else {
-            PacketUtils.writeString(var2, var4);
+            PacketUtils.writeString(var2, packet);
         }
 
-        NetworkManager.sendPacket(var4);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void g(String var0, String var1) {

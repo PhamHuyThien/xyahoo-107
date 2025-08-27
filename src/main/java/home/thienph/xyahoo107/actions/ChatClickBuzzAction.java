@@ -18,9 +18,9 @@ public final class ChatClickBuzzAction implements Action {
 
     public void action() {
         if (this.isYahooChat) {
-            PacketSender.requestSendDataUIComponent(0L, ChatScreen.getYahooContactId(this.chatScreen), 2);
+            PacketSender.requestBuzz(0L, ChatScreen.getYahooContactId(this.chatScreen), 2);
         } else {
-            PacketSender.requestSendDataUIComponent(this.chatScreen.chatId, null, 1);
+            PacketSender.requestBuzz(this.chatScreen.chatId, null, 1);
         }
 
         this.chatScreen.chatComponent.addPlayerMessage(this.isYahooChat ? YahooScreen.originalUsername : FriendScreen.currentUserName, "BUZZ!", 0);
