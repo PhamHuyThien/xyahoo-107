@@ -2982,19 +2982,19 @@ public final class GameManager {
         }
     }
 
-    public void blockUser(long var1, int var3) {
+    public void blockUser(long userId, int dataSave) {
         if (this.friendScreen != null) {
-            FriendScreen.removeContactFromList(var1, this.friendScreen.friendsComponent);
-            this.friendScreen.removeFromOnlineList(var1);
-            this.friendScreen.addToBlockedList(var1);
+            FriendScreen.removeContactFromList(userId, this.friendScreen.friendsComponent);
+            this.friendScreen.removeFromOnlineList(userId);
+            this.friendScreen.addToBlockedList(userId);
             if (this.friendScreen.onlineFriends.size() > 0) {
                 saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
             } else {
-                var3 = -1;
+                dataSave = -1;
             }
 
             this.showNotification("Đã chuyển ID vào danh sách đen.", (Image) null, 1);
-            saveContactStatus(var3, false);
+            saveContactStatus(dataSave, false);
             System.gc();
         }
     }

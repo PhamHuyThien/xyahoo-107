@@ -645,5 +645,6 @@ public final class FriendScreen extends Screen {
     public static void switchToMainViewAndSetRightSoftkey(FriendScreen var0) {
         var0.switchToMainView();
         var0.rightSoftkey = var0.defaultRightSoftkey;
+        PacketSender.requestGetListContactByType(1);
     }
 }

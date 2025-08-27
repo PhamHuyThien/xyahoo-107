@@ -14,9 +14,9 @@ public final class ContactListBlockAction implements Action {
     }
 
     public void action() {
-        long var1 = ContactListComponent.getSelectedItem(this.contactListComponent).contactId;
-        Packet var3 = new Packet(5000019, 2);
-        PacketUtils.writeLong(var1, var3);
-        NetworkManager.sendPacket(var3);
+        long contactId = ContactListComponent.getSelectedItem(this.contactListComponent).contactId;
+        Packet packet = new Packet(5000019, 2);
+        PacketUtils.writeLong(contactId, packet);
+        NetworkManager.sendPacket(packet);
     }
 }
