@@ -8,6 +8,7 @@ import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.managers.GameManager;
+import home.thienph.xyahoo107.screens.ChatRoomScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
 import home.thienph.xyahoo107.screens.Screen;
 import home.thienph.xyahoo107.utils.FontRenderer;

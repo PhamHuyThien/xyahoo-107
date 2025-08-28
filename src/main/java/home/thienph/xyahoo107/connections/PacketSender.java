@@ -101,11 +101,11 @@ public class PacketSender {
         NetworkManager.sendPacket(packet);
     }
 
-    public static void b(String var0, String var1) {
-        Packet var2 = new Packet(4808, 48);
-        PacketUtils.writeString(var0, var2);
-        PacketUtils.writeString(var1, var2);
-        NetworkManager.sendPacket(var2);
+    public static void acceptInviteJoinRoom(String roomKey, String password) {
+        Packet packet = new Packet(4808, 48);
+        PacketUtils.writeString(roomKey, packet);
+        PacketUtils.writeString(password, packet);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void getListUserInRoom(String roomId, int commandId) {

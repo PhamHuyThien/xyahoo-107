@@ -1,10 +1,10 @@
 package home.thienph.xyahoo107.screens;
 
 import home.thienph.xyahoo107.actions.*;
+import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.components.ChatComponent;
 import home.thienph.xyahoo107.components.TextInputComponent;
 import home.thienph.xyahoo107.components.UIComponent;
-import home.thienph.xyahoo107.components.ButtonAction;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
@@ -76,6 +76,18 @@ public final class ChatRoomScreen extends DialogScreen {
     public boolean handleInput(boolean[] var1, boolean[] var2, int[] var3) {
         if (var1[16]) {
             var1[16] = false;
+            for (int i = 0; i < super.components.size(); i++) {
+                Object component = super.components.elementAt(i);
+                if (component instanceof TextInputComponent) {
+                    TextInputComponent textInputComponent = (TextInputComponent) component;
+                    if (textInputComponent.isVisible
+                            && textInputComponent.alternateAction != null
+                            && textInputComponent.middleSoftKey.action != null) {
+                        textInputComponent.middleSoftKey.action.action();
+                        return false;
+                    }
+                }
+            }
             this.textInputComponent.setText(TextValidator.filterBadWords(this.textInputComponent.getText()));
             if (this.textInputComponent.getText().equals("")) {
                 String var5;

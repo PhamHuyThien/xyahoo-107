@@ -52,9 +52,9 @@ public final class UIUtils {
         return string;
     }
 
-    public static boolean focusComponent(final Screen Screen, final UIComponent UIComponent) {
+    public static boolean focusComponent(final Screen Screen, final UIComponent uiComponent) {
         for (int i = 0; i < Screen.componentCount; ++i) {
-            if (UIComponent.equals(Screen.components.elementAt(i)) && UIComponent.isVisible) {
+            if (uiComponent.equals(Screen.components.elementAt(i)) && uiComponent.isVisible) {
                 Screen.setSelectedIndex(i);
                 Screen.scrollToComponent(Screen.getSelectedIndex());
                 return true;
@@ -79,18 +79,17 @@ public final class UIUtils {
         focusComponent(Screen, (UIComponent) TextInputComponent);
     }
 
-    public static void hideTextInput(Screen Screen, final TextInputComponent TextInputComponent) {
-        TextInputComponent.isVisible = false;
-        TextInputComponent.posY = GameGraphics.screenHeight + 1000;
-        Screen = Screen;
-        for (int i = 0; i < Screen.componentCount; ++i) {
+    public static void hideTextInput(Screen screen, final TextInputComponent textInputComponent) {
+        textInputComponent.isVisible = false;
+        textInputComponent.posY = GameGraphics.screenHeight + 1000;
+        for (int i = 0; i < screen.componentCount; ++i) {
             final UIComponent UIComponent;
-            if ((UIComponent = (UIComponent) Screen.components.elementAt(i)).isVisible) {
-                focusComponent(Screen, UIComponent);
+            if ((UIComponent = (UIComponent) screen.components.elementAt(i)).isVisible) {
+                focusComponent(screen, UIComponent);
                 break;
             }
         }
-        TextInputComponent.setText("");
+        textInputComponent.setText("");
     }
 
     public static boolean isTextInputWithHelpBox(final UIComponent UIComponent) {

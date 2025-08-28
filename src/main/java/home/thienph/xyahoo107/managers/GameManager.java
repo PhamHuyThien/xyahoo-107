@@ -3128,7 +3128,7 @@ public final class GameManager {
         }
     }
 
-    public void showChatRoomInviteDialog(String usernameInvite, String roomName, String var3, String var4) {
+    public void showChatRoomInviteDialog(String usernameInvite, String roomName, String roomKey, String password) {
         String var5 = UIUtils.concatStrings(usernameInvite, " mời bạn", null, null);
         if (this.hasScreen(var5)) {
             this.setActiveScreen(var5).showInNavigation = true;
@@ -3139,8 +3139,8 @@ public final class GameManager {
             usernameInvite = UIUtils.concatStrings(usernameInvite, " mời bạn tham gia phòng chat ", roomName, null);
             ButtonAction.createSimpleText(dialogScreen, usernameInvite);
             this.showNotification(usernameInvite, (Image) null, 1);
-            dialogScreen.leftSoftkey = new ButtonAction("Đồng ý", new quyen_gh(this, var3, var4, dialogScreen));
-            dialogScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_gi(this, dialogScreen));
+            dialogScreen.leftSoftkey = new ButtonAction("Đồng ý", new AcceptInviteRoomAction(this, roomKey, password, dialogScreen));
+            dialogScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new RejectInviteRoomAction(this, dialogScreen));
             UIUtils.focusComponent(dialogScreen, (UIComponent) dialogScreen.components.elementAt(0));
             this.addScreen(dialogScreen);
         }
