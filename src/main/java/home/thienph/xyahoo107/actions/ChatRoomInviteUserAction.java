@@ -12,6 +12,6 @@ public final class ChatRoomInviteUserAction implements Action {
     }
 
     public void action() {
-        PacketSender.b(this.chatRoomScreen.roomId, 4806);
+        PacketSender.getListUserInRoom(this.chatRoomScreen.roomId, 4806);
     }
 }

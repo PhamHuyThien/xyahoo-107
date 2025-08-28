@@ -108,10 +108,10 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void b(String var0, int var1) {
-        Packet var2 = new Packet(var1, 48);
-        PacketUtils.writeString(var0, var2);
-        NetworkManager.sendPacket(var2);
+    public static void getListUserInRoom(String roomId, int commandId) {
+        Packet packet = new Packet(commandId, 48);
+        PacketUtils.writeString(roomId, packet);
+        NetworkManager.sendPacket(packet);
     }
 
     public static void d() {

@@ -12,6 +12,6 @@ public final class ChatRoomExtendRoomAction implements Action {
     }
 
     public void action() {
-        PacketSender.b(this.chatRoomScreen.roomId, 4809);
+        PacketSender.getListUserInRoom(this.chatRoomScreen.roomId, 4809);
     }
 }

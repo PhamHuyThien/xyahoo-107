@@ -12,6 +12,6 @@ public final class ChatRoomChangePasswordRoomAction implements Action {
     }
 
     public void action() {
-        PacketSender.b(this.chatRoomScreen.roomId, 4810);
+        PacketSender.getListUserInRoom(this.chatRoomScreen.roomId, 4810);
     }
 }

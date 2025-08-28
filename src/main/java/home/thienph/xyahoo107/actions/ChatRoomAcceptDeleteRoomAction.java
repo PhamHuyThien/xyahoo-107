@@ -12,6 +12,6 @@ final class ChatRoomAcceptDeleteRoomAction implements Action {
 
     public void action() {
         ChatRoomDeleteRoomAction var1 = this.chatRoomDeleteRoomAction;
-        PacketSender.b(this.chatRoomDeleteRoomAction.chatRoomScreen.roomId, 4812);
+        PacketSender.getListUserInRoom(this.chatRoomDeleteRoomAction.chatRoomScreen.roomId, 4812);
     }
 }

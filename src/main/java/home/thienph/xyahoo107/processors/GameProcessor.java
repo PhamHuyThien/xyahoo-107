@@ -1472,8 +1472,8 @@ public class GameProcessor {
                             for (int updateIndex = 0; updateIndex < updateCount; updateIndex++) {
                                 int updateComponentId = PacketUtils.readInt(packet);
                                 int updateType = packet.getPayload().readByte();
-                                Screen updateTargetScreen;
-                                UIComponent updateComponent = (updateTargetScreen = GameManager.instance.findScreenById(updateScreenId)).findComponentByID(updateComponentId);
+                                Screen updateTargetScreen = GameManager.instance.findScreenById(updateScreenId);
+                                UIComponent updateComponent = updateTargetScreen.findComponentByID(updateComponentId);
                                 switch (updateType) {
                                     case 0:
                                         String inputText = PacketUtils.readString(packet);
