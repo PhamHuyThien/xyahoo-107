@@ -11,6 +11,7 @@ import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
 import home.thienph.xyahoo107.managers.GameManager;
+import home.thienph.xyahoo107.screens.ChatRoomScreen;
 import home.thienph.xyahoo107.screens.ChatScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
 import home.thienph.xyahoo107.screens.PhotoViewerScreen;
@@ -43,6 +44,14 @@ public class GameProcessor {
                 int commandId = PacketUtils.readInt(packet);
                 System.out.println("[MessageProcessor.processMessage] commandId = " + commandId + ", length = " + packet.getPayload().getRemaining());
                 switch (commandId) {
+                    case 100:
+                        String title = PacketUtils.readString(packet);
+                        Screen screen = GameManager.instance.findScreenByTitle(title);
+                        GameManager.instance.destroyScreen(screen);
+                        if(screen instanceof ChatRoomScreen) {
+                            GameManager.instance.currentChatRoom = null;
+                        }
+                        break;
                     case 0:
                         int screenIdRemove = PacketUtils.readInt(packet);
                         GameManager.instance.destroyScreen(GameManager.instance.findScreenById(screenIdRemove));

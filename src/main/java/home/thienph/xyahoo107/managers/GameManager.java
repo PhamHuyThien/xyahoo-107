@@ -7,9 +7,9 @@ import home.thienph.xyahoo107.components.*;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.*;
-import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.media.BuddyGroup;
 import home.thienph.xyahoo107.data.media.BuddyGroupList;
+import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.forms.FileBrowserList;
 import home.thienph.xyahoo107.forms.FileSystemInterface;
@@ -2023,6 +2023,17 @@ public final class GameManager {
             }
         }
 
+        return null;
+    }
+
+    public Screen findScreenByTitle(String title) {
+        int var2 = this.screenCount;
+        while (--var2 >= 0) {
+            Screen screen = (Screen) this.screenStack.elementAt(var2);
+            if (screen != null && screen.title.equals(title)) {
+                return screen;
+            }
+        }
         return null;
     }
 
