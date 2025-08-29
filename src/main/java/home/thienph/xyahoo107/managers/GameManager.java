@@ -3117,6 +3117,7 @@ public final class GameManager {
     }
 
     public void handleChatRoomInvite(String roomName, String roomId, long accountId) {
+        System.out.println("currentChatRoom: "+currentChatRoom);
         if (roomName.equals(this.currentChatRoom)) {
             this.switchToScreenByTitle(roomName);
         } else if (this.currentChatRoom != null) {

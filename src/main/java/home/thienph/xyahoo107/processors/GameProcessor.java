@@ -11,11 +11,7 @@ import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
 import home.thienph.xyahoo107.managers.GameManager;
-import home.thienph.xyahoo107.screens.ChatRoomScreen;
-import home.thienph.xyahoo107.screens.ChatScreen;
-import home.thienph.xyahoo107.screens.DialogScreen;
-import home.thienph.xyahoo107.screens.PhotoViewerScreen;
-import home.thienph.xyahoo107.screens.Screen;
+import home.thienph.xyahoo107.screens.*;
 import home.thienph.xyahoo107.utils.FontRenderer;
 import home.thienph.xyahoo107.utils.PacketUtils;
 import home.thienph.xyahoo107.utils.TextRenderer;
@@ -45,16 +41,25 @@ public class GameProcessor {
                 System.out.println("[MessageProcessor.processMessage] commandId = " + commandId + ", length = " + packet.getPayload().getRemaining());
                 switch (commandId) {
                     case 100:
-                        String title = PacketUtils.readString(packet);
-                        Screen screen = GameManager.instance.findScreenByTitle(title);
+                        String titleScreenRemove = PacketUtils.readString(packet);
+                        Screen screen = GameManager.instance.findScreenByTitle(titleScreenRemove);
                         GameManager.instance.destroyScreen(screen);
                         if(screen instanceof ChatRoomScreen) {
                             GameManager.instance.currentChatRoom = null;
                         }
+                        System.out.println("new screenTitle: " + titleScreenRemove);
+                        System.out.println("screenTitle: " + screen.title);
+                        System.out.println("screen: " + screen);
+                        System.out.println("screen instanceof ChatRoomScreen: " + (screen instanceof ChatRoomScreen));
+                        System.out.println("GameManager.instance.currentChatRoom: " + GameManager.instance.currentChatRoom);
                         break;
                     case 0:
                         int screenIdRemove = PacketUtils.readInt(packet);
-                        GameManager.instance.destroyScreen(GameManager.instance.findScreenById(screenIdRemove));
+                        Screen screenRemoveById = GameManager.instance.findScreenById(screenIdRemove);
+                        GameManager.instance.destroyScreen(screenRemoveById);
+                        if (screenRemoveById instanceof ChatRoomScreen) {
+                            GameManager.instance.currentChatRoom = null;
+                        }
                         break;
                     case 1:
                         boolean var217 = PacketUtils.readBoolean(packet);
