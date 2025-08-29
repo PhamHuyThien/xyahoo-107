@@ -11,7 +11,11 @@ import home.thienph.xyahoo107.data.packet.ByteBuffer;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
 import home.thienph.xyahoo107.managers.GameManager;
-import home.thienph.xyahoo107.screens.*;
+import home.thienph.xyahoo107.screens.ChatRoomScreen;
+import home.thienph.xyahoo107.screens.ChatScreen;
+import home.thienph.xyahoo107.screens.DialogScreen;
+import home.thienph.xyahoo107.screens.PhotoViewerScreen;
+import home.thienph.xyahoo107.screens.Screen;
 import home.thienph.xyahoo107.utils.FontRenderer;
 import home.thienph.xyahoo107.utils.PacketUtils;
 import home.thienph.xyahoo107.utils.TextRenderer;
@@ -47,17 +51,12 @@ public class GameProcessor {
                         if(screen instanceof ChatRoomScreen) {
                             GameManager.instance.currentChatRoom = null;
                         }
-                        System.out.println("new screenTitle: " + titleScreenRemove);
-                        System.out.println("screenTitle: " + screen.title);
-                        System.out.println("screen: " + screen);
-                        System.out.println("screen instanceof ChatRoomScreen: " + (screen instanceof ChatRoomScreen));
-                        System.out.println("GameManager.instance.currentChatRoom: " + GameManager.instance.currentChatRoom);
                         break;
                     case 0:
                         int screenIdRemove = PacketUtils.readInt(packet);
                         Screen screenRemoveById = GameManager.instance.findScreenById(screenIdRemove);
                         GameManager.instance.destroyScreen(screenRemoveById);
-                        if (screenRemoveById instanceof ChatRoomScreen) {
+                        if(screenRemoveById instanceof ChatRoomScreen) {
                             GameManager.instance.currentChatRoom = null;
                         }
                         break;
