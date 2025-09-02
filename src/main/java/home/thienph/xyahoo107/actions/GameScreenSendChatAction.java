@@ -1,0 +1,16 @@
+package home.thienph.xyahoo107.actions;
+
+
+import home.thienph.xyahoo107.screens.GameScreen;
+
+public final class GameScreenSendChatAction implements Action {
+    private final GameScreen a;
+
+    public GameScreenSendChatAction(GameScreen var1) {
+        this.a = var1;
+    }
+
+    public void action() {
+        this.a.chatInputComponent.rightSoftKey = GameScreen.getChatSendButton(this.a);
+    }
+}

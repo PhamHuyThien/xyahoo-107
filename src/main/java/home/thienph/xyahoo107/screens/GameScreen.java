@@ -67,10 +67,10 @@ public final class GameScreen extends Screen {
     private Vector gameMenuItems;
     private ContextMenu gameMenu;
     private int statusIconY;
-    private final ButtonAction emotionButton = new ButtonAction("Biểu cảm", new quyen_da(this));
-    private final ButtonAction chatButton = new ButtonAction("Chat", new quyen_dl(this));
-    private final ButtonAction selectAllCardsButton = new ButtonAction("Chọn/hủy hết bài", new quyen_dr(this));
-    private final ButtonAction betButton = new ButtonAction("Đặt cược", new quyen_ds(this));
+    private final ButtonAction emotionButton = new ButtonAction("Biểu cảm", new GameScreenClickEmojiAction(this));
+    private final ButtonAction chatButton = new ButtonAction("Chat", new GameScreenClickChatAction(this));
+    private final ButtonAction selectAllCardsButton = new ButtonAction("Chọn/hủy hết bài", new GameScreenClickHuyBaiAction(this));
+    private final ButtonAction betButton = new ButtonAction("Đặt cược", new GameScreenClickBetAction(this));
     public boolean isSpecialGameMode;
     public String specialModeText;
     private ButtonAction continueButton;
@@ -78,9 +78,9 @@ public final class GameScreen extends Screen {
     private ButtonAction chatModeButton;
     private ButtonAction betSendButton;
     private ButtonAction betModeButton;
-    private final ButtonAction refreshButton = new ButtonAction("Cập nhật", new quyen_dt(this));
-    private final ButtonAction sendButton = new ButtonAction(TextConstant.close(), new quyen_du(this));
-    private final ButtonAction quickPlayButton = new ButtonAction("Chơi nhanh", new quyen_dv(this));
+    private final ButtonAction refreshButton = new ButtonAction("Cập nhật", new GameScreenClickUpdateAction(this));
+    private final ButtonAction sendButton = new ButtonAction(TextConstant.close(), new GameScreenClickCloseAction(this));
+    private final ButtonAction quickPlayButton = new ButtonAction("Chơi nhanh", new GameScreenClickPlaySpeedAction(this));
 
     public void setBetAmount(long var1) {
         this.betDisplayText = UIUtils.concatStrings("Cược", ": ", UIUtils.formatNumberWithDots(var1), UIUtils.concatStrings(" ", this.isGoldGame ? "gold" : "xu", null, null));
@@ -122,7 +122,7 @@ public final class GameScreen extends Screen {
     public GameScreen() {
         this.lobbyMenuItems = new Vector();
         this.lobbyMenu = new ContextMenu(this.lobbyMenuItems);
-        this.lobbyMenuButton = new ButtonAction("Menu", new quyen_dw(this));
+        this.lobbyMenuButton = new ButtonAction("Menu", new GameScreenMenuAction(this));
         super.isAtBottom = true;
         GameManager.loadGameImages();
         this.isGoldGame = false;
@@ -321,7 +321,7 @@ public final class GameScreen extends Screen {
 
             for (byte var13 = 0; var13 < this.playerComponents.length; var13++) {
                 if (!FriendScreen.username.equals(this.playerComponents[var13].playerName)) {
-                    this.kickPlayerMenuItems.addElement(new ButtonAction(this.playerComponents[var13].playerName, new quyen_dx(this, var13)));
+                    this.kickPlayerMenuItems.addElement(new ButtonAction(this.playerComponents[var13].playerName, new GameScreenClickKickPlayerAction(this, var13)));
                 }
             }
 
@@ -329,11 +329,11 @@ public final class GameScreen extends Screen {
         }
 
         this.initProfileMenu();
-        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new quyen_db(this)));
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_dc(this));
+        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new GameScreenClickExitGamesAction(this)));
+        super.leftSoftkey = new ButtonAction("Menu", new GameScreenClickMenuAction(this));
         super.rightSoftkey = null;
         if (super.centerSoftkey == null) {
-            super.centerSoftkey = new ButtonAction("", new quyen_dd(this));
+            super.centerSoftkey = new ButtonAction("", new GameCenterClickCenterSoftkeyAction(this));
         }
 
         if (FriendScreen.username.equals(this.roomOwner)) {
@@ -349,13 +349,13 @@ public final class GameScreen extends Screen {
             this.betInputComponent.id = 2222;
             this.betInputComponent.leftSoftKey = GameManager.createCloseButton();
             if (this.betSendButton == null) {
-                this.betSendButton = new ButtonAction(TextConstant.close(), new quyen_do(this));
+                this.betSendButton = new ButtonAction(TextConstant.close(), new GameScreenClickCloseBetAction(this));
             }
 
             this.betInputComponent.rightSoftKey = this.betSendButton;
-            this.betInputComponent.onCompleteAction = new quyen_dp(this);
+            this.betInputComponent.onCompleteAction = new GameScreenClickBetSendAction(this);
             if (this.betModeButton == null) {
-                this.betModeButton = new ButtonAction("Cược", new quyen_dq(this));
+                this.betModeButton = new ButtonAction("Cược", new GameScreenClickBetOKAction(this));
             }
 
             this.betInputComponent.middleSoftKey = this.betModeButton;
@@ -466,7 +466,7 @@ public final class GameScreen extends Screen {
         }
 
         System.gc();
-        super.rightSoftkey = new ButtonAction("Bỏ lượt", new quyen_df(this));
+        super.rightSoftkey = new ButtonAction("Bỏ lượt", new GameScreenClickSkipTurnAction(this));
         this.focusedComponent = this.cardGameComponent;
         this.initChatInput();
         this.initGameMenu();
@@ -475,8 +475,8 @@ public final class GameScreen extends Screen {
         this.gameMenuItems.addElement(this.selectAllCardsButton);
         this.gameMenuItems.addElement(GameLobbyScreen.buyCoinsButton);
         this.initProfileMenu();
-        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new quyen_dg(this)));
-        super.leftSoftkey = new ButtonAction("Menu", new quyen_di(this));
+        this.gameMenuItems.addElement(new ButtonAction("Rời bàn", new GameScreenClickConfirmLeaveRoomAction(this)));
+        super.leftSoftkey = new ButtonAction("Menu", new GameScreenClickMenuLeverRoomAction(this));
         System.gc();
         if (this.isChatMode) {
             this.removeComponent(this.chatInputComponent);
@@ -518,7 +518,7 @@ public final class GameScreen extends Screen {
 
             for (byte var1 = 0; var1 < this.playerComponents.length; var1++) {
                 if (!FriendScreen.username.equals(this.playerComponents[var1].playerName) && GameManager.instance.friendScreen.findContactById(this.playerComponents[var1].playerName) == null) {
-                    this.profileMenuItems.addElement(new ButtonAction(this.playerComponents[var1].playerName, new quyen_de(this, var1)));
+                    this.profileMenuItems.addElement(new ButtonAction(this.playerComponents[var1].playerName, new GameScreenClickPlayerNameAction(this, var1)));
                 }
             }
 
@@ -646,7 +646,7 @@ public final class GameScreen extends Screen {
     public void showContinueButton() {
         super.centerSoftkey.text = "";
         if (this.continueButton == null) {
-            this.continueButton = new ButtonAction("Chơi tiếp", new quyen_dj(this));
+            this.continueButton = new ButtonAction("Chơi tiếp", new GameScreenClickPlayOnAction(this));
         }
 
         super.rightSoftkey = this.continueButton;
@@ -712,13 +712,13 @@ public final class GameScreen extends Screen {
             this.chatInputComponent.id = 1111;
             this.chatInputComponent.leftSoftKey = GameManager.createCloseButton();
             if (this.chatSendButton == null) {
-                this.chatSendButton = new ButtonAction(TextConstant.close(), new quyen_dk(this));
+                this.chatSendButton = new ButtonAction(TextConstant.close(), new GameScreenClickCloseChatAction(this));
             }
 
             this.chatInputComponent.rightSoftKey = this.chatSendButton;
-            this.chatInputComponent.onCompleteAction = new quyen_dm(this);
+            this.chatInputComponent.onCompleteAction = new GameScreenSendChatAction(this);
             if (this.chatModeButton == null) {
-                this.chatModeButton = new ButtonAction("Chat", new quyen_dn(this));
+                this.chatModeButton = new ButtonAction("Chat", new GameScreenClickChatInRoomAction(this));
             }
 
             this.chatInputComponent.middleSoftKey = this.chatModeButton;

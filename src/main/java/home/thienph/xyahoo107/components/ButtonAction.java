@@ -1,14 +1,13 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.quyen_cl;
-import home.thienph.xyahoo107.actions.quyen_cm;
-import home.thienph.xyahoo107.actions.quyen_cn;
+import home.thienph.xyahoo107.actions.ButtonActionClickCloseAction;
+import home.thienph.xyahoo107.actions.ButtonActionClickOnCompleteAction;
+import home.thienph.xyahoo107.actions.ButtonActionClickOkAction;
 import home.thienph.xyahoo107.canvas.GameGraphics;
 import home.thienph.xyahoo107.constants.TextConstant;
 import home.thienph.xyahoo107.data.game.ContextMenu;
 import home.thienph.xyahoo107.managers.GameManager;
-import home.thienph.xyahoo107.screens.ChatRoomScreen;
 import home.thienph.xyahoo107.screens.DialogScreen;
 import home.thienph.xyahoo107.screens.Screen;
 import home.thienph.xyahoo107.utils.FontRenderer;
@@ -34,10 +33,10 @@ public class ButtonAction {
         inputComponent.isVisible = false;
         inputComponent.leftSoftKey = GameManager.createCloseButton();
 
-        ButtonAction closeButton = new ButtonAction(TextConstant.close(), new quyen_cl(screen, inputComponent));
+        ButtonAction closeButton = new ButtonAction(TextConstant.close(), new ButtonActionClickCloseAction(screen, inputComponent));
         inputComponent.rightSoftKey = closeButton;
-        inputComponent.onCompleteAction = new quyen_cm(inputComponent, closeButton);
-        inputComponent.middleSoftKey = new ButtonAction("OK", new quyen_cn(inputComponent, screen));
+        inputComponent.onCompleteAction = new ButtonActionClickOnCompleteAction(inputComponent, closeButton);
+        inputComponent.middleSoftKey = new ButtonAction("OK", new ButtonActionClickOkAction(inputComponent, screen));
 
         screen.addComponent(inputComponent);
         return inputComponent;

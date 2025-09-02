@@ -64,7 +64,7 @@ public final class LoginScreen extends DialogScreen {
         TextComponent usernameLabel = new TextComponent("Tài khoản:", UIUtils.leftColumnX, super.nextComponentY, FontRenderer.fontHeight);
         this.accountTypeDropdown = new DropdownComponent(new String[]{"Xubi", "Yahoo!"}, UIUtils.rightColumnX, super.nextComponentY - 3, UIUtils.rightColumnWidth, FontRenderer.fontHeight + 6);
         this.accountTypeDropdown.setSelectedIndex(loginType);
-        this.accountTypeDropdown.changeAction = new quyen_eo(this);
+        this.accountTypeDropdown.changeAction = new LoginChangeAccountTypeAction(this);
         this.addComponent(usernameLabel);
         this.addComponent(this.accountTypeDropdown);
         super.nextComponentY += 3;

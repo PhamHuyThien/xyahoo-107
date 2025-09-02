@@ -685,103 +685,149 @@ public final class ContactListComponent extends UIComponent {
         }
     }
 
-    public boolean updateContactStatus(long var1, int var3) {
+    /**
+     * Cập nhật trạng thái online/offline cho contact theo ID
+     * @param contactId ID của contact cần cập nhật
+     * @param newStatusCode Mã trạng thái mới (0=offline, 1=online, 2=away, etc.)
+     * @return true nếu cập nhật thành công và có thay đổi, false nếu không
+     */
+    public boolean updateContactStatus(long contactId, int newStatusCode) {
+        // Kiểm tra dữ liệu contact có tồn tại không
         if (this.contactData == null) {
             return false;
-        } else {
-            int var5 = var3;
-            long var8 = var1;
-            BuddyGroupList var4 = this.contactData;
-            int var6 = 0;
-            int var7 = var4.contactGroups.size();
+        }
 
-            label45:
-            while (--var7 >= 0) {
-                BuddyGroup var10;
-                int var11 = (var10 = (BuddyGroup) var4.contactGroups.elementAt(var7)).contacts.size();
+        // Cập nhật status code trong cấu trúc dữ liệu contact groups
+        int statusToUpdate = newStatusCode;
+        long targetContactId = contactId;
+        BuddyGroupList buddyGroupList = this.contactData;
+        int updatedContactCount = 0;
+        int groupIndex = buddyGroupList.contactGroups.size();
 
-                while (--var11 >= 0) {
-                    BuddyInfo var12;
-                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).contactId == var8) {
-                        var12.statusCode = var5;
-                        if (++var6 > 1) {
-                            break label45;
-                        }
+        // Duyệt qua tất cả groups từ cuối lên đầu
+        contactGroupLoop:
+        while (--groupIndex >= 0) {
+            BuddyGroup currentGroup = (BuddyGroup) buddyGroupList.contactGroups.elementAt(groupIndex);
+            int contactIndex = currentGroup.contacts.size();
+
+            // Duyệt qua tất cả contacts trong group từ cuối lên đầu
+            while (--contactIndex >= 0) {
+                BuddyInfo contactInfo = (BuddyInfo) currentGroup.contacts.elementAt(contactIndex);
+
+                // Tìm thấy contact có ID khớp
+                if (contactInfo.contactId == targetContactId) {
+                    contactInfo.statusCode = statusToUpdate;
+                    updatedContactCount++;
+
+                    // Thoát sớm nếu đã cập nhật nhiều hơn 1 contact (tránh trùng lặp)
+                    if (updatedContactCount > 1) {
+                        break contactGroupLoop;
                     }
                 }
-            }
-
-            if (this.displayItems == null) {
-                return false;
-            } else {
-                boolean var13 = false;
-                var5 = this.totalItemCount;
-
-                while (--var5 >= 0) {
-                    BuddyListItem var15;
-                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var5)).itemType == 0 && var15.contactId == var1 && var15.statusCode != var3) {
-                        var15.statusCode = var3;
-                        var13 = true;
-                    }
-                }
-
-                if (this.isFilterActive) {
-                    this.refreshDisplayList();
-                }
-
-                return var13;
             }
         }
+
+        // Kiểm tra danh sách hiển thị có tồn tại không
+        if (this.displayItems == null) {
+            return false;
+        }
+
+        // Cập nhật status code trong danh sách hiển thị UI
+        boolean hasStatusChanged = false;
+        int displayItemIndex = this.totalItemCount;
+
+        // Duyệt qua tất cả display items từ cuối lên đầu
+        while (--displayItemIndex >= 0) {
+            BuddyListItem displayItem = (BuddyListItem) this.displayItems.elementAt(displayItemIndex);
+
+            // Kiểm tra: contact item, ID khớp, và status thực sự thay đổi
+            if (displayItem.itemType == 0 &&
+                    displayItem.contactId == contactId) {
+
+                displayItem.statusCode = newStatusCode;
+                hasStatusChanged = true;
+            }
+        }
+
+        // Nếu có filter đang hoạt động, refresh lại danh sách hiển thị
+        // (có thể contact chuyển từ online->offline hoặc ngược lại cần ẩn/hiện)
+        if (this.isFilterActive) {
+            this.refreshDisplayList();
+        }
+
+        return hasStatusChanged;
     }
 
-    public boolean updateContactSubtext(long var1, String var3) {
+    /**
+     * Cập nhật subtext (mô tả trạng thái) cho contact theo ID
+     * @param contactId ID của contact cần cập nhật
+     * @param newSubtext Text mô tả mới (có thể null hoặc rỗng)
+     * @return true nếu cập nhật thành công, false nếu không tìm thấy hoặc lỗi
+     */
+    public boolean updateContactSubtext(long contactId, String newSubtext) {
+        // Kiểm tra dữ liệu contact có tồn tại không
         if (this.contactData == null) {
             return false;
-        } else {
-            String var5 = var3;
-            long var8 = var1;
-            BuddyGroupList var4 = this.contactData;
-            int var6 = 0;
-            int var7 = var4.contactGroups.size();
+        }
 
-            label46:
-            while (--var7 >= 0) {
-                BuddyGroup var10;
-                int var11 = (var10 = (BuddyGroup) var4.contactGroups.elementAt(var7)).contacts.size();
+        // Cập nhật subtext trong cấu trúc dữ liệu contact groups
+        String subtextToUpdate = newSubtext;
+        long targetContactId = contactId;
+        BuddyGroupList buddyGroupList = this.contactData;
+        int updatedContactCount = 0;
+        int groupIndex = buddyGroupList.contactGroups.size();
 
-                while (--var11 >= 0) {
-                    BuddyInfo var12;
-                    if ((var12 = (BuddyInfo) var10.contacts.elementAt(var11)).contactId == var8) {
-                        var12.description = var5;
-                        if (++var6 > 1) {
-                            break label46;
-                        }
+        // Duyệt qua tất cả groups từ cuối lên đầu
+        contactGroupLoop:
+        while (--groupIndex >= 0) {
+            BuddyGroup currentGroup = (BuddyGroup) buddyGroupList.contactGroups.elementAt(groupIndex);
+            int contactIndex = currentGroup.contacts.size();
+
+            // Duyệt qua tất cả contacts trong group từ cuối lên đầu
+            while (--contactIndex >= 0) {
+                BuddyInfo contactInfo = (BuddyInfo) currentGroup.contacts.elementAt(contactIndex);
+
+                // Tìm thấy contact có ID khớp
+                if (contactInfo.contactId == targetContactId) {
+                    contactInfo.description = subtextToUpdate;
+                    updatedContactCount++;
+
+                    // Thoát sớm nếu đã cập nhật nhiều hơn 1 contact (tránh trùng lặp)
+                    if (updatedContactCount > 1) {
+                        break contactGroupLoop;
                     }
                 }
-            }
-
-            if (this.displayItems == null) {
-                return false;
-            } else {
-                boolean var13 = false;
-                int var14 = this.totalItemCount;
-
-                while (--var14 >= 0) {
-                    BuddyListItem var15;
-                    if ((var15 = (BuddyListItem) this.displayItems.elementAt(var14)).itemType == 0 && var15.contactId == var1) {
-                        var15.statusText = var3;
-                        if (var3 != null && var3.length() > 0) {
-                            var15.extraField = var15.displayName + " - " + var3;
-                            var13 = true;
-                        } else {
-                            var15.extraField = var15.displayName;
-                        }
-                    }
-                }
-
-                return var13;
             }
         }
+
+        // Kiểm tra danh sách hiển thị có tồn tại không
+        if (this.displayItems == null) {
+            return false;
+        }
+
+        // Cập nhật subtext trong danh sách hiển thị UI
+        boolean hasUpdatedDisplayItem = false;
+        int displayItemIndex = this.totalItemCount;
+
+        // Duyệt qua tất cả display items từ cuối lên đầu
+        while (--displayItemIndex >= 0) {
+            BuddyListItem displayItem = (BuddyListItem) this.displayItems.elementAt(displayItemIndex);
+
+            // Kiểm tra xem có phải contact item và có ID khớp không
+            if (displayItem.itemType == 0 && displayItem.contactId == contactId) {
+                displayItem.statusText = newSubtext;
+
+                // Tạo text hiển thị: nếu có subtext thì ghép với tên, nếu không thì chỉ hiển thị tên
+                if (newSubtext != null && newSubtext.length() > 0) {
+                    displayItem.extraField = displayItem.displayName + " - " + newSubtext;
+                    hasUpdatedDisplayItem = true;
+                } else {
+                    displayItem.extraField = displayItem.displayName;
+                }
+            }
+        }
+
+        return hasUpdatedDisplayItem;
     }
 
     public void updateContactSubtext(String var1, String var2, int var3) {

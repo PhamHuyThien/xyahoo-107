@@ -5,19 +5,19 @@ import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.managers.GameManager;
 
 final class quyen_fa implements Action {
-    private final quyen_ez a;
+    private final MainFeedbackAction a;
 
-    quyen_fa(quyen_ez var1) {
+    quyen_fa(MainFeedbackAction var1) {
         this.a = var1;
     }
 
     public void action() {
-        quyen_ez var1 = this.a;
-        if (GameManager.getInputHandler(this.a.a).getText() != null) {
+        MainFeedbackAction var1 = this.a;
+        if (GameManager.getInputHandler(this.a.gameManager).getText() != null) {
             var1 = this.a;
-            if (GameManager.getInputHandler(this.a.a).getText().length() > 0) {
+            if (GameManager.getInputHandler(this.a.gameManager).getText().length() > 0) {
                 var1 = this.a;
-                PacketSender.f(GameManager.getInputHandler(this.a.a).getText());
+                PacketSender.f(GameManager.getInputHandler(this.a.gameManager).getText());
             }
         }
     }

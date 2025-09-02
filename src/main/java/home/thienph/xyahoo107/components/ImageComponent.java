@@ -1,7 +1,7 @@
 package home.thienph.xyahoo107.components;
 
 import home.thienph.xyahoo107.actions.Action;
-import home.thienph.xyahoo107.actions.quyen_cd;
+import home.thienph.xyahoo107.actions.ImageComponentClickOKAction;
 import home.thienph.xyahoo107.managers.ImageCache;
 import home.thienph.xyahoo107.utils.UIUtils;
 
@@ -29,7 +29,7 @@ public final class ImageComponent extends UIComponent {
     public void setClickAction(String var1, Action var2) {
         if (var2 != null) {
             this.clickAction = var2;
-            super.middleSoftKey = new ButtonAction(var1, new quyen_cd(this));
+            super.middleSoftKey = new ButtonAction(var1, new ImageComponentClickOKAction(this));
         }
     }
 

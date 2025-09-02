@@ -277,7 +277,7 @@ public class GameProcessor {
                          *     - Nếu screenId là error code: tạo context menu với 2 items
                          *       + Item 1: "Biểu cảm" với action quyen_ax()
                          *       + Item 2: ButtonAction đã đọc
-                         *       + Gán leftSoftkey = "Menu" với action quyen_ay(contextMenu)
+                         *       + Gán leftSoftkey = "Menu" với action ConfigSoftKeyOpenMenuAction(contextMenu)
                          *     - Nếu không phải error code: gán trực tiếp ButtonAction cho leftSoftkey
                          *
                          * Với softkeyType = 1 (CENTER SOFTKEY):
@@ -298,10 +298,10 @@ public class GameProcessor {
                                 ButtonAction leftButtonAction = createButtonAction(packet);
                                 if (GameManager.isValidErrorCode(screenId)) {
                                     Vector menuItems = new Vector();
-                                    menuItems.addElement(new ButtonAction("Biểu cảm", new quyen_ax()));
+                                    menuItems.addElement(new ButtonAction("Biểu cảm", new ConfigSoftKeyOpenEmojiAction()));
                                     menuItems.addElement(leftButtonAction);
                                     ContextMenu contextMenu = new ContextMenu(menuItems);
-                                    targetScreen.leftSoftkey = new ButtonAction("Menu", new quyen_ay(contextMenu));
+                                    targetScreen.leftSoftkey = new ButtonAction("Menu", new ConfigSoftKeyOpenMenuAction(contextMenu));
                                 } else {
                                     targetScreen.leftSoftkey = leftButtonAction;
                                 }
@@ -850,7 +850,7 @@ public class GameProcessor {
 
                         String phoneNumber = PacketUtils.readString(packet);
                         String confirmMessage = UIUtils.concatStrings("Gửi tin: ", messageText, Xuka.refCode, "\nĐến số: ");
-                        GameManager.instance.showConfirmDialog(UIUtils.concatStrings(confirmMessage, phoneNumber.substring(6), null, null), new quyen_aw(messageText, phoneNumber));
+                        GameManager.instance.showConfirmDialog(UIUtils.concatStrings(confirmMessage, phoneNumber.substring(6), null, null), new ConfirmSendSmsAction(messageText, phoneNumber));
                         break;
 
                     case 15:
@@ -1234,9 +1234,9 @@ public class GameProcessor {
                                 nextButton.id = nextButtonId;
                                 pageInput.id = inputFieldId;
 
-                                prevButton.linkAction = new quyen_ao(prevButtonAction);
-                                nextButton.linkAction = new quyen_ap(nextButtonAction);
-                                pageInput.middleSoftKey = new ButtonAction("Đến trang", new quyen_aq(pageInput, totalPages, inputFieldAction));
+                                prevButton.linkAction = new PrevPagingComponentAction(prevButtonAction);
+                                nextButton.linkAction = new NextPagingComponentAction(nextButtonAction);
+                                pageInput.middleSoftKey = new ButtonAction("Đến trang", new GotoPageComponentAction(pageInput, totalPages, inputFieldAction));
                             }
 
                             paginationDialog.addComponent(prevButton);
@@ -1272,7 +1272,7 @@ public class GameProcessor {
                             String itemText = PacketUtils.readString(packet);
                             byte[] actionData = PacketUtils.readBytes(packet);
                             byte itemIndexByte = (byte) itemIndex;
-                            ButtonAction buttonAction = new ButtonAction(itemText, new quyen_ar(itemIndexByte, actionData));
+                            ButtonAction buttonAction = new ButtonAction(itemText, new ContextMenuClickAction(itemIndexByte, actionData));
                             contextMenuItems.addElement(buttonAction);
                         }
 
@@ -1502,7 +1502,7 @@ public class GameProcessor {
                                         String linkText = PacketUtils.readString(packet);
                                         byte[] linkActionData = PacketUtils.readBytes(packet);
                                         ((TextLinkComponent) updateComponent).linkText = linkText;
-                                        ((TextLinkComponent) updateComponent).setLinkAction(new quyen_ag(linkActionData));
+                                        ((TextLinkComponent) updateComponent).setLinkAction(new UpdateLinkTextAction(linkActionData));
                                         break;
                                     case 7:
                                         short selectedIndex = PacketUtils.readShort(packet);

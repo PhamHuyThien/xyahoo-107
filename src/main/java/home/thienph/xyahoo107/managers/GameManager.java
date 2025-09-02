@@ -2042,10 +2042,10 @@ public final class GameManager {
         this.mainMenu = var1;
         if (this.mainMenuList == null) {
             createCloseButton();
-            ButtonAction var2 = new ButtonAction("Cấu hình", new quyen_ey(this));
-            ButtonAction var3 = new ButtonAction("Gửi góp ý", new quyen_ez(this));
-            ButtonAction var4 = new ButtonAction("Trạng thái", new quyen_fb(this));
-            ButtonAction var5 = new ButtonAction("Thoát", new quyen_fc(this));
+            ButtonAction var2 = new ButtonAction("Cấu hình", new MainConfigAction(this));
+            ButtonAction var3 = new ButtonAction("Gửi góp ý", new MainFeedbackAction(this));
+            ButtonAction var4 = new ButtonAction("Trạng thái", new MainStatusAction(this));
+            ButtonAction var5 = new ButtonAction("Thoát", new MainLogoutAction(this));
             Vector var6;
             (var6 = new Vector()).addElement(infoButton);
             var6.addElement(var3);
@@ -2118,7 +2118,7 @@ public final class GameManager {
     public void onYahooConnected() {
         this.resetConnectionCounters();
         if (YahooScreen.yahooStatus == 0 && YahooScreen.statusMessage != null && YahooScreen.statusMessage.length() > 0) {
-            PacketSender.c(YahooScreen.statusMessage, 2);
+            PacketSender.updateStatusText(YahooScreen.statusMessage, 2);
         }
 
         this.yahooChat.isConnectionReady = true;
@@ -2472,30 +2472,49 @@ public final class GameManager {
         this.addScreenToStack(this.downloadManager);
     }
 
-    public void startDownload(String var1, String var2, int var3, byte var4) {
-        String var5 = UIUtils.concatStrings("Đang tải về ", var2, null, null);
+    public void startDownload(String downloadUrl, String fileName, int fileSizeKB, byte mediaType) {
+        // Tạo thông báo trạng thái tải xuống
+        String downloadStatusMessage = UIUtils.concatStrings("Đang tải về ", fileName, null, null);
+
+        // Khởi tạo Download Manager nếu chưa tồn tại
         if (this.downloadManager == null) {
             this.downloadManager = new DownloadScreen();
             this.showDownloadManager();
             this.switchToScreen(this.downloadManager);
-            this.showNotification(UIUtils.concatStrings(var5, ". Vào Quản lý > Tải về. ", "Bạn có thể lưu vào thẻ nhớ.", null), (Image) null, 1);
+
+            // Hiển thị thông báo hướng dẫn chi tiết cho lần đầu
+            String detailedNotification = UIUtils.concatStrings(
+                    downloadStatusMessage,
+                    ". Vào Quản lý > Tải về. ",
+                    "Bạn có thể lưu vào thẻ nhớ.",
+                    null
+            );
+            this.showNotification(detailedNotification, (Image) null, 1);
         } else {
+            // Download Manager đã tồn tại - chỉ hiển thị và thông báo đơn giản
             this.showDownloadManager();
-            this.showNotification(var5, (Image) null, 1);
+            this.showNotification(downloadStatusMessage, (Image) null, 1);
         }
 
-        this.downloadManager.deleteDownloadsByType(var4);
-        if (var4 == 0) {
-            var5 = UIUtils.concatStrings("Hình", " ", var2, null);
+        // Xóa các download cùng loại trước đó (tránh trùng lặp)
+        this.downloadManager.deleteDownloadsByType(mediaType);
+
+        // Tạo tên hiển thị dựa trên loại media
+        String displayName;
+        if (mediaType == 0) {
+            displayName = UIUtils.concatStrings("Hình", " ", fileName, null);
         } else {
-            var5 = UIUtils.concatStrings("Video", " ", var2, null);
+            displayName = UIUtils.concatStrings("Video", " ", fileName, null);
         }
 
-        BuddyInfo var6 = new BuddyInfo(var1, var5, var3, null, null, -1, -1, null);
-        var6.mediaType = var4;
-        var6.description = UIUtils.concatStrings("Đang tải - ", Integer.toString(var3), " KBs", null);
-        var6.mediaExtension = var2;
-        this.downloadManager.buddyGroupList.insertContactToGroup("", var6);
+        // Tạo đối tượng thông tin download
+        BuddyInfo downloadInfo = new BuddyInfo(downloadUrl, displayName, fileSizeKB, null, null, -1, -1, null);
+        downloadInfo.mediaType = mediaType;
+        downloadInfo.description = UIUtils.concatStrings("Đang tải - ", Integer.toString(fileSizeKB), " KBs", null);
+        downloadInfo.mediaExtension = fileName;
+
+        // Thêm vào danh sách download và cập nhật giao diện
+        this.downloadManager.buddyGroupList.insertContactToGroup("", downloadInfo);
         this.downloadManager.downloadListComponent.buildListItems();
     }
 
@@ -3055,19 +3074,19 @@ public final class GameManager {
         }
     }
 
-    public void handleUserStatusChange(long var1, int var3) {
-        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactStatus(var1, var3)) {
-            this.friendScreen.updateFavoriteStatus(var1, var3);
+    public void handleUserStatusChange(long var1, int isLogin) {
+        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactStatus(var1, isLogin)) {
+            this.friendScreen.updateFavoriteStatus(var1, isLogin);
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
             BuddyInfo var6;
             if ((var6 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, var1)) != null) {
-                String var2 = UIUtils.concatStrings(var6.username, var3 == 1 ? " đã đăng nhập" : " đã thoát", null, null);
-                this.showNotification(var2, var3 == 1 ? statusIcons[1] : statusIcons[0], var4);
+                String var2 = UIUtils.concatStrings(var6.username, isLogin == 1 ? " đã đăng nhập" : " đã thoát", null, null);
+                this.showNotification(var2, isLogin == 1 ? statusIcons[1] : statusIcons[0], var4);
 
                 try {
                     ChatScreen var7;
                     if ((var7 = (ChatScreen) this.setActiveScreen(var6.username)) != null) {
-                        var7.chatComponent.addSystemMessage(var2, var3 == 1 ? 1 : 2);
+                        var7.chatComponent.addSystemMessage(var2, isLogin == 1 ? 1 : 2);
                         var7.chatComponent.scrollToBottom();
                     }
                 } catch (Exception var5) {
@@ -3076,15 +3095,15 @@ public final class GameManager {
         }
     }
 
-    public void updateUserStatusMessage(long var1, String var3) {
-        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactSubtext(var1, var3)) {
+    public void updateUserStatusMessage(long userID, String statusText) {
+        if (this.friendScreen != null && this.friendScreen.friendsComponent.updateContactSubtext(userID, statusText)) {
             int var4 = this.currentScreen instanceof ChatScreen ? 2 : 0;
-            BuddyInfo var5 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, var1);
-            String var6 = FontRenderer.getFirstLineWrapped(var3, GameGraphics.screenWidth);
-            this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, var3.equals(var6) ? null : ".."), statusIcons[1], var4);
-            if (var1 == FriendScreen.currentUserAccountId) {
-                FriendScreen.statusMessage = var3;
-                Xuka.saveStringData(FriendScreen.username, var3, false);
+            BuddyInfo var5 = this.friendScreen.friendsComponent.contactData.findDownloadFile(null, null, userID);
+            String var6 = FontRenderer.getFirstLineWrapped(statusText, GameGraphics.screenWidth);
+            this.showNotification(UIUtils.concatStrings(var5.username, ": ", var6, statusText.equals(var6) ? null : ".."), statusIcons[1], var4);
+            if (userID == FriendScreen.currentUserAccountId) {
+                FriendScreen.statusMessage = statusText;
+                Xuka.saveStringData(FriendScreen.username, statusText, false);
             }
         }
     }

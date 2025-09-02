@@ -17,7 +17,7 @@ import javax.microedition.lcdui.Image;
 import java.util.Vector;
 
 public final class YahooScreen extends Screen {
-    private static final Integer YAHOO_LOGO_INDEX = new Integer(1);
+    private static final Integer YAHOO_LOGO_INDEX = new Integer(100);
     public ContactListComponent contactList;
     public static String yahooUsername;
     public static String originalUsername;
@@ -96,12 +96,12 @@ public final class YahooScreen extends Screen {
         this.contactList.isChatMode = true;
         this.contactList.isFilterActive = Xuka.loadBooleanSetting("hideOffline", false);
         this.contextMenuItems = new Vector();
-        this.contextMenuItems.addElement(new ButtonAction("Mở/tắt ID ẩn", new quyen_jd(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new quyen_jl(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new quyen_jm(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new quyen_jo(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Mời bạn Yahoo!", new quyen_jp(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Thoát Yahoo!", new quyen_jq(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Mở/tắt ID ẩn", new YahooOpenCloseStatusAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Trạng thái", new YahooStatusAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Chat với..", new YahooChatWithAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Thêm bạn", new YahooAddFriendAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Mời bạn Yahoo!", new YahooInviteFriendAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Thoát Yahoo!", new YahooClickLogoutAction(this)));
     }
 
     public void logout() {
@@ -134,8 +134,8 @@ public final class YahooScreen extends Screen {
             var5.setText("Friends");
         }
 
-        var2.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_js(this, var2));
-        var2.centerSoftkey = new ButtonAction("OK", new quyen_je(this, var3, var5, var2));
+        var2.rightSoftkey = new ButtonAction(TextConstant.close(), new YahooCloseAddFriendAction(this, var2));
+        var2.centerSoftkey = new ButtonAction("OK", new YahooOkAddFriendAction(this, var3, var5, var2));
         var2.startSlideAnimation(1);
         GameManager.instance.addScreenToStack((Screen) var2);
         GameManager.instance.switchToLastScreen();
@@ -147,7 +147,7 @@ public final class YahooScreen extends Screen {
         if (var1) {
             if (this.contextMenu == null) {
                 this.contextMenu = new ContextMenu(this.contextMenuItems);
-                this.menuButton = new ButtonAction("Menu", new quyen_jf(this));
+                this.menuButton = new ButtonAction("Menu", new YahooClickMenuAction(this));
             }
 
             super.leftSoftkey = this.menuButton;
@@ -156,8 +156,8 @@ public final class YahooScreen extends Screen {
             UIUtils.focusComponent(this, this.contactList);
         } else {
             if (this.loginButton == null) {
-                this.loginButton = new ButtonAction("Đăng nhập", new quyen_jg(this));
-                this.backButton = new ButtonAction(TextConstant.close(), new quyen_jh(this));
+                this.loginButton = new ButtonAction("Đăng nhập", new YahooClickLoginAction(this));
+                this.backButton = new ButtonAction(TextConstant.close(), new YahooClickCloseAction(this));
             }
 
             super.leftSoftkey = null;
@@ -301,7 +301,7 @@ public final class YahooScreen extends Screen {
 
     public void showInviteFriendDialog() {
         Xuka.setSpamFlag(yahooUsername);
-        GameManager.getInstance().showConfirmDialog("Mời bạn Yahoo! dùng X Yahoo!", new quyen_ji(this));
+        GameManager.getInstance().showConfirmDialog("Mời bạn Yahoo! dùng X Yahoo!", new InviteFriendYahooAction(this));
     }
 
     public static boolean checkConnectionReady(YahooScreen var0) {
@@ -328,8 +328,8 @@ public final class YahooScreen extends Screen {
                 var0.statusDropdown = ButtonAction.createChoiceBox(var0.statusScreen, UIUtils.concatStrings("Trạng thái", ":", null, null), new String[]{"Hiển thị", "Ẩn danh"});
                 var0.statusMessageInput = ButtonAction.createLabeledTextInput(var0.statusScreen, UIUtils.concatStrings("Thông điệp", ":", null, null), 0, -1);
                 UIUtils.focusComponent(var0.statusScreen, var0.statusDropdown);
-                var0.statusScreen.centerSoftkey = new ButtonAction("OK", new quyen_jj(var0));
-                var0.statusScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new quyen_jk(var0));
+                var0.statusScreen.centerSoftkey = new ButtonAction("OK", new ClickLoginYahooAction(var0));
+                var0.statusScreen.rightSoftkey = new ButtonAction(TextConstant.close(), new CloseYahooAction(var0));
                 System.gc();
             }
 
@@ -361,7 +361,7 @@ public final class YahooScreen extends Screen {
     }
 
     public static void updateStatusMessage(YahooScreen var0, String var1) {
-        PacketSender.c(var1, 2);
+        PacketSender.updateStatusText(var1, 2);
         statusMessage = var1;
         Xuka.saveStringData(yahooUsername, var1, true);
     }

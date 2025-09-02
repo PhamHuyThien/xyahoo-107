@@ -288,13 +288,13 @@ public class PacketSender {
         NetworkManager.sendPacket(packet);
     }
 
-    public static void requestSendDataUIComponent(int var0, int var1) {
-        Packet var2 = new Packet(var1 == 1 ? 5000031 : 28, var1 == 1 ? 2 : 4);
-        PacketUtils.writeInt(var0, var2);
-        NetworkManager.sendPacket(var2);
+    public static void updateViewOnline(int viewOnline, int isXuka) {
+        Packet packet = new Packet(isXuka == 1 ? 5000031 : 28, isXuka == 1 ? 2 : 4);
+        PacketUtils.writeInt(viewOnline, packet);
+        NetworkManager.sendPacket(packet);
     }
 
-    public static void c(String var0, int var1) {
+    public static void updateStatusText(String var0, int var1) {
         Packet var2 = new Packet(var1 == 1 ? 5000035 : 29, var1 == 1 ? 2 : 4);
         if (var1 == 2) {
             YahooScreen.statusMessage = var0;

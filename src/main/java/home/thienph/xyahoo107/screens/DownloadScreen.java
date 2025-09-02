@@ -29,11 +29,11 @@ public final class DownloadScreen extends Screen {
         this.downloadListComponent.setDataSource(this.buddyGroupList, 1, false);
         super.rightSoftkey = GameManager.createCloseButton(this, false, null);
         this.contextMenuItems = new Vector();
-        this.contextMenuItems.addElement(new ButtonAction("Xem", new quyen_bf(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Xóa", new quyen_bg(this)));
-        this.contextMenuItems.addElement(new ButtonAction("Xóa tất cả", new quyen_bh(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xem", new DownloadScreenClickViewAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xóa", new DownloadScreenDeleteViewAction(this)));
+        this.contextMenuItems.addElement(new ButtonAction("Xóa tất cả", new DownloadScreenClickDeleteAllAction(this)));
         this.contextMenu = new ContextMenu(this.contextMenuItems);
-        this.downloadListComponent.itemAction = new quyen_bi(this);
+        this.downloadListComponent.itemAction = new DownloadScreenClickItemAction(this);
     }
 
     public void deleteAllDownloads() {

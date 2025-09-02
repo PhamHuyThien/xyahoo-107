@@ -949,9 +949,9 @@ public final class GamePacketProcessor extends PacketHandler {
 
                 return;
             case 5000035:
-                long var37 = PacketUtils.readLong(packet);
-                String var172 = PacketUtils.readString(packet);
-                gameManager.updateUserStatusMessage(var37, var172);
+                long userId5 = PacketUtils.readLong(packet);
+                String statusText = PacketUtils.readString(packet);
+                gameManager.updateUserStatusMessage(userId5, statusText);
                 return;
             case 5000036:
                 gameManager.setEmptyContactMessage(PacketUtils.readString(packet));

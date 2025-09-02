@@ -136,7 +136,7 @@ public final class FriendScreen extends Screen {
     }
 
     public static void updateStatusMessage(String var0) {
-        PacketSender.c(var0, 1);
+        PacketSender.updateStatusText(var0, 1);
         statusMessage = var0;
         Xuka.saveStringData(username, var0, false);
     }

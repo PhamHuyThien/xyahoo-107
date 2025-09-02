@@ -86,13 +86,6 @@ public final class LoginHandlerAction implements Action {
             }
         }
 
-        // Tải status message
-        String savedStatusMessage = Xuka.loadStringData(FriendScreen.username, false);
-        FriendScreen.statusMessage = savedStatusMessage == null ? "" : savedStatusMessage;
-        if (savedStatusMessage != null && savedStatusMessage.length() > 0) {
-            FriendScreen.updateStatusMessage(FriendScreen.statusMessage);
-        }
-
         System.gc();
         GameGraphics.instance.initializeConnection();
 
@@ -104,5 +97,12 @@ public final class LoginHandlerAction implements Action {
                 contactListVersion,
                 GameManager.loginType,
                 FriendScreen.statusMessage);
+
+        // Tải status message
+        String savedStatusMessage = Xuka.loadStringData(FriendScreen.username, false);
+        FriendScreen.statusMessage = savedStatusMessage == null ? "" : savedStatusMessage;
+        if (savedStatusMessage != null && savedStatusMessage.length() > 0) {
+            FriendScreen.updateStatusMessage(FriendScreen.statusMessage);
+        }
     }
 }

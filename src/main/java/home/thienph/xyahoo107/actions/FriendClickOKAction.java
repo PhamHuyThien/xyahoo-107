@@ -22,9 +22,9 @@ public final class FriendClickOKAction implements Action {
                 var2 = 1;
             }
 
-            PacketSender.requestSendDataUIComponent(var2, 1);
+            PacketSender.updateViewOnline(var2, 1);
         } else if (var2 != FriendScreen.userStatus) {
-            PacketSender.requestSendDataUIComponent(var2, 1);
+            PacketSender.updateViewOnline(var2, 1);
         }
 
         FriendScreen.userStatus = var2;
