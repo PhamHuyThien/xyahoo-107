@@ -4,10 +4,10 @@ import home.thienph.xyahoo107.connections.PacketHandler;
 import home.thienph.xyahoo107.connections.PacketSender;
 import home.thienph.xyahoo107.data.game.CardInfo;
 import home.thienph.xyahoo107.data.game.GameRoom;
+import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.data.media.BuddyInfo;
 import home.thienph.xyahoo107.data.packet.Packet;
 import home.thienph.xyahoo107.main.Xuka;
-import home.thienph.xyahoo107.data.media.BuddyGroupList;
 import home.thienph.xyahoo107.managers.GameManager;
 import home.thienph.xyahoo107.screens.FriendScreen;
 import home.thienph.xyahoo107.screens.GameScreen;
@@ -846,17 +846,17 @@ public final class GamePacketProcessor extends PacketHandler {
                 return;
             case 5000026:
                 if (PacketUtils.readBoolean(packet)) {
-                    long var229 = PacketUtils.readLong(packet);
-                    String var185 = PacketUtils.readString(packet);
-                    var3 = PacketUtils.readInt(packet);
-                    int var208 = PacketUtils.readInt(packet);
-                    gameManager.handleFriendAccepted(var229, var185, var3, var208);
+                    long userId5 = PacketUtils.readLong(packet);
+                    String username = PacketUtils.readString(packet);
+                    int status = PacketUtils.readInt(packet);
+                    int data = PacketUtils.readInt(packet);
+                    gameManager.handleFriendAccepted(userId5, username, status, data);
                     return;
                 }
                 break;
             case 5000028:
-                int listFriendsSzie= PacketUtils.readInt(packet);
-                BuddyInfo[] var224 = new BuddyInfo[listFriendsSzie ];
+                int listFriendsSzie = PacketUtils.readInt(packet);
+                BuddyInfo[] var224 = new BuddyInfo[listFriendsSzie];
                 BuddyGroupList var32 = new BuddyGroupList();
 
                 for (int i = 0; i < listFriendsSzie; i++) {
@@ -905,29 +905,68 @@ public final class GamePacketProcessor extends PacketHandler {
                 byte var205 = packet.getPayload().readByte();
                 gameManager.handleUserStatusChange(var34, var205);
                 return;
-            case 5000032:
-                int var44;
-                if ((var44 = PacketUtils.readInt(packet)) != 0) {
-                    Vector var45 = new Vector();
-                    BuddyGroupList var183 = new BuddyGroupList();
 
-                    for (int var196 = 0; var196 < var44; var196++) {
-                        String var4 = PacketUtils.readString(packet);
-                        String var5;
-                        String[] var50 = FontRenderer.wrapTextToLines(var5 = PacketUtils.readString(packet), Screen.screenWidth - 30);
-                        String var51 = PacketUtils.readString(packet);
-                        long var52 = PacketUtils.readLong(packet);
-                        if (!var45.contains(var4)) {
-                            BuddyInfo var6;
-                            (var6 = new BuddyInfo(var4, "", 0, var50[0] + (var50.length > 1 ? ".." : ""), new int[0], 0, 0, null)).contactId = var52;
-                            var183.addContactToGroup("", var6);
-                            var45.addElement(var4);
+            /**
+             * Case 5000032: Xử lý packet chứa danh sách tin nhắn offline
+             */
+            case 5000032:
+                // Đọc số lượng tin nhắn offline từ packet
+                int offlineMessageCount = PacketUtils.readInt(packet);
+
+                if (offlineMessageCount != 0) {
+                    // Tạo danh sách để tracking sender đã xử lý (tránh trùng lặp)
+                    Vector processedSenders = new Vector();
+
+                    // Tạo buddy group list để hiển thị danh sách người gửi
+                    BuddyGroupList offlineMessageSenders = new BuddyGroupList();
+
+                    // Duyệt qua từng tin nhắn offline
+                    for (int messageIndex = 0; messageIndex < offlineMessageCount; messageIndex++) {
+                        // Đọc thông tin từng tin nhắn
+                        String senderName1 = PacketUtils.readString(packet);
+                        String messageContent1 = PacketUtils.readString(packet);
+                        String timestamp = PacketUtils.readString(packet);
+                        long senderId = PacketUtils.readLong(packet);
+
+                        // Wrap text để fit màn hình (trừ padding 30px)
+                        String[] wrappedMessageLines = FontRenderer.wrapTextToLines(
+                                messageContent1,
+                                Screen.screenWidth - 30
+                        );
+
+                        // Chỉ thêm sender vào danh sách nếu chưa được xử lý (tránh duplicate)
+                        if (!processedSenders.contains(senderName1)) {
+                            // Tạo preview text: dòng đầu + ".." nếu có nhiều dòng
+                            String messagePreview = wrappedMessageLines[0] + (wrappedMessageLines.length > 1 ? ".." : "");
+
+                            // Tạo BuddyInfo cho sender
+                            BuddyInfo senderInfo = new BuddyInfo(
+                                    senderName1,
+                                    "",
+                                    0,
+                                    messagePreview,
+                                    new int[0],
+                                    0,
+                                    0,
+                                    null
+                            );
+                            senderInfo.contactId = senderId;
+
+                            // Thêm vào group list để hiển thị
+                            offlineMessageSenders.addContactToGroup("", senderInfo);
+
+                            // Đánh dấu sender đã được xử lý
+                            processedSenders.addElement(senderName1);
                         }
 
-                        gameManager.addOfflineMessage(var4, UIUtils.concatStrings(var5, " (", var51, ")"));
+                        // Thêm tin nhắn vào storage với format: "content (timestamp)"
+                        String formattedMessage = UIUtils.concatStrings(messageContent1, " (", timestamp, ")"
+                        );
+                        gameManager.addOfflineMessage(senderName1, formattedMessage);
                     }
 
-                    gameManager.showOfflineMessages(var183);
+                    // Hiển thị màn hình offline messages với danh sách senders
+                    gameManager.showOfflineMessages(offlineMessageSenders);
                     return;
                 }
                 break;
@@ -971,7 +1010,7 @@ public final class GamePacketProcessor extends PacketHandler {
                 UIUtils.clearRecordStores(true);
                 return;
             case 6000000:
-                PacketSender.requestSendDataUIComponent(Xuka.refCode);
+                PacketSender.sendAppRefCode(Xuka.refCode);
                 return;
             case 11712001:
                 GameManager.instance.setLoadingState(false);

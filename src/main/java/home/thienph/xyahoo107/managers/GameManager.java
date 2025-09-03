@@ -2094,7 +2094,7 @@ public final class GameManager {
         }
     }
 
-    public void showAppInfo(String var1) {
+    public void showAppInfo(String appInfo) {
         StringBuffer var2;
         (var2 = new StringBuffer("X Yahoo!")).append(" - ");
         var2.append(version);
@@ -2102,7 +2102,7 @@ public final class GameManager {
         var2.append("Build ID: ");
         var2.append(Xuka.buildID);
         var2.append("\n");
-        var2.append(var1);
+        var2.append(appInfo);
         this.showWrappedTextDialog(var2.toString());
         System.gc();
     }
@@ -2970,47 +2970,121 @@ public final class GameManager {
         instance.switchToScreenByTitle(var4.title);
     }
 
-    public void handleFriendAccepted(long var1, String var3, int var4, int var5) {
-        if (this.friendScreen != null) {
-            if (this.friendScreen.isUserBlocked(var1)) {
-                this.friendScreen.removeFromBlockedAndRefresh(var1);
-            } else {
-                this.showNotification(UIUtils.concatStrings(var3, " đồng ý kết bạn với bạn.", null, null), (Image) null, 1);
-            }
-
-            BuddyInfo var10;
-            (var10 = new BuddyInfo(var3, "", var4, "", new int[0], 0, 0, null)).contactId = var1;
-            FriendScreen.addContactToList("Bạn Bè", var10, this.friendScreen.friendsComponent);
-            saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
-            this.friendScreen.addToOnlineList(var1);
-            saveContactStatus(var5, false);
-            if (this.friendScreen.isRequestPending(var1)) {
-                this.friendScreen.removeFromPendingList(var1);
-            }
-
-            System.gc();
+    public void handleFriendAccepted(long friendId, String friendName, int statusCode, int data) {
+        // Kiểm tra màn hình friend có tồn tại không
+        if (this.friendScreen == null) {
+            return;
         }
+
+        // Xử lý trường hợp user này đang bị block
+        if (this.friendScreen.isUserBlocked(friendId)) {
+            // Nếu đang bị block, chỉ remove khỏi blocked list mà không thông báo
+            this.friendScreen.removeFromBlockedAndRefresh(friendId);
+        } else {
+            // Hiển thị thông báo chấp nhận kết bạn
+            String acceptNotification = UIUtils.concatStrings(
+                    friendName,
+                    " đồng ý kết bạn với bạn.",
+                    null,
+                    null
+            );
+            this.showNotification(acceptNotification, (Image) null, 1);
+        }
+
+        // Tạo đối tượng BuddyInfo cho người bạn mới
+        BuddyInfo newFriendInfo = new BuddyInfo(
+                friendName,           // displayName
+                "",                   // description (empty)
+                statusCode,       // status
+                "",                   // additionalInfo (empty)
+                new int[0],          // permissions array (empty)
+                0,                   // groupId
+                0,                   // priority
+                null                 // customData
+        );
+        newFriendInfo.contactId = friendId;
+
+        // Thêm vào danh sách bạn bè chính
+        FriendScreen.addContactToList("Bạn Bè", newFriendInfo, this.friendScreen.friendsComponent);
+
+        // Lưu danh sách buddy
+        saveBuddyList(
+                this.friendScreen.friendsComponent.contactData,
+                false,
+                FriendScreen.username
+        );
+
+        // Thêm vào danh sách online
+        this.friendScreen.addToOnlineList(friendId);
+
+        // Lưu trạng thái online của contact
+        saveContactStatus(data, false);
+
+        // Xóa khỏi danh sách pending request nếu có
+        if (this.friendScreen.isRequestPending(friendId)) {
+            this.friendScreen.removeFromPendingList(friendId);
+        }
+
+        // Gọi garbage collector để giải phóng memory
+        // (Quan trọng sau khi tạo object mới trong môi trường J2ME)
+        System.gc();
     }
 
-    public void removeFriend(long var1, int var3) {
-        if (this.friendScreen != null) {
-            String var4 = this.friendScreen.getUserNameById(var1);
-            FriendScreen.removeContactFromList(var1, this.friendScreen.friendsComponent);
-            this.friendScreen.removeFromOnlineList(var1);
-            this.friendScreen.removeFromBlockedList(var1);
-            if (this.friendScreen.onlineFriends.size() > 0) {
-                saveBuddyList(this.friendScreen.friendsComponent.contactData, false, FriendScreen.username);
-            } else {
-                var3 = -1;
-            }
-
-            saveContactStatus(var3, false);
-            if (var4 != null) {
-                this.showNotification(UIUtils.concatStrings("Đã xóa ", var4, null, null), (Image) null, 1);
-            }
-
-            System.gc();
+    /**
+     * Xóa một người bạn khỏi danh sách và cập nhật UI
+     * @param friendId ID của người bạn cần xóa
+     * @param statusToSave Status code cần lưu (có thể bị override thành -1)
+     */
+    public void removeFriend(long friendId, int statusToSave) {
+        // Kiểm tra màn hình friend có tồn tại không
+        if (this.friendScreen == null) {
+            return;
         }
+
+        // Lấy tên user để hiển thị thông báo
+        String removedUserName = this.friendScreen.getUserNameById(friendId);
+
+        // Xóa contact khỏi danh sách bạn bè chính
+        FriendScreen.removeContactFromList(friendId, this.friendScreen.friendsComponent);
+
+        // Xóa khỏi danh sách online
+        this.friendScreen.removeFromOnlineList(friendId);
+
+        // Xóa khỏi danh sách bị block
+        this.friendScreen.removeFromBlockedList(friendId);
+
+        // Xử lý lưu dữ liệu và status
+        int finalStatusToSave = statusToSave;
+
+        if (this.friendScreen.onlineFriends.size() > 0) {
+            // Còn bạn online -> lưu danh sách buddy bình thường
+            saveBuddyList(
+                    this.friendScreen.friendsComponent.contactData,
+                    false,
+                    FriendScreen.username
+            );
+        } else {
+            // Không còn bạn online -> đặt status thành -1 (offline hoàn toàn)
+            finalStatusToSave = -1;
+        }
+
+        // Lưu trạng thái contact
+        saveContactStatus(finalStatusToSave, false);
+
+        // Hiển thị thông báo xóa thành công (nếu có tên user)
+        if (removedUserName != null) {
+            String notificationMessage = UIUtils.concatStrings(
+                    "Đã xóa ",
+                    removedUserName,
+                    null,
+                    null
+            );
+            this.showNotification(notificationMessage, (Image) null, 1);
+        }
+
+        // Gọi garbage collector để giải phóng memory
+        // (Quan trọng trong môi trường J2ME có memory hạn chế)
+        System.gc();
     }
 
     public void blockUser(long userId, int dataSave) {
@@ -3112,10 +3186,17 @@ public final class GameManager {
         this.friendScreen.addOfflineMessage(var1, var2);
     }
 
-    public void showOfflineMessages(BuddyGroupList var1) {
-        this.friendScreen.createOfflineMessageScreen(var1);
+    public void showOfflineMessages(BuddyGroupList sendersList) {
+        // Tạo màn hình offline message với danh sách senders
+        this.friendScreen.createOfflineMessageScreen(sendersList);
+
+        // Bắt đầu slide animation (direction = 1: slide in from right)
         this.friendScreen.offlineMessageScreen.startSlideAnimation(1);
+
+        // Thêm vào stack để có thể back về
         this.addScreenToStack(this.friendScreen.offlineMessageScreen);
+
+        // Chuyển sang màn hình offline messages
         this.switchToScreen(this.friendScreen.offlineMessageScreen);
     }
 

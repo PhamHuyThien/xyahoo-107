@@ -20,7 +20,7 @@ public class PacketSender {
         NetworkManager.sendPacket(var2);
     }
 
-    public static void requestSendDataUIComponent(String var0) {
+    public static void sendAppRefCode(String var0) {
         Packet var1 = new Packet(6000000, 2);
         PacketUtils.writeString(var0, var1);
         NetworkManager.sendPacket(var1);
